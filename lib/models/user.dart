@@ -1,0 +1,123 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/services/util/logic_service.dart';
+
+class UserModel {
+  final String id;
+  String firstName;
+  String lastName;
+  String cin;
+  String phoneNumber;
+  String agency;
+  String sector;
+  double price;
+  String matricule;
+  DateTime birthday;
+  // exrat
+  String photo;
+  String email;
+  String password;
+  Gender gender;
+  String adress;
+  DateTime dateCreated;
+  UserStatus status;
+  bool notificationStatus;
+  String? fcm;
+  Role role;
+  // expeditor
+  String secondaryphoneNumber;
+  String fiscalMatricule;
+  double returnPrice;
+  UserModel({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.cin,
+    this.phoneNumber = '',
+    this.agency = '',
+    this.sector = '',
+    this.price = 0,
+    this.matricule = '',
+    required this.birthday,
+    this.photo = '',
+    required this.email,
+    required this.password,
+    required this.gender,
+    this.adress = '',
+    required this.dateCreated,
+    this.status = UserStatus.active,
+    this.notificationStatus = true,
+    this.fcm,
+    required this.role,
+    this.secondaryphoneNumber = '',
+    this.fiscalMatricule = '',
+    this.returnPrice = 0,
+  });
+
+  String getFullName() =>
+      "${firstName.isEmpty ? '' : capitalize(firstName)} ${lastName.isEmpty ? '' : capitalize(lastName)}";
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'cin': cin,
+      'phoneNumber': phoneNumber,
+      'agency': agency,
+      'sector': sector,
+      'price': price,
+      'matricule': matricule,
+      'birthday': birthday.millisecondsSinceEpoch,
+      'photo': photo,
+      'email': email,
+      'password': password,
+      'gender': gender.name,
+      'adress': adress,
+      'dateCreated': dateCreated.millisecondsSinceEpoch,
+      'status': status.name,
+      'notificationStatus': notificationStatus,
+      'fcm': fcm,
+      'role': role.name,
+      'secondaryphoneNumber': secondaryphoneNumber,
+      'fiscalMatricule': fiscalMatricule,
+      'returnPrice': returnPrice,
+    };
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      id: map['id'] as String,
+      firstName: map['firstName'] as String,
+      lastName: map['lastName'] as String,
+      cin: map['cin'] as String,
+      phoneNumber: map['phoneNumber'] as String,
+      agency: map['agency'] as String,
+      sector: map['sector'] as String,
+      price: map['price'] as double,
+      matricule: map['matricule'] as String,
+      birthday: DateTime.fromMillisecondsSinceEpoch(map['birthday'] as int),
+      photo: map['photo'] as String,
+      email: map['email'] as String,
+      password: map['password'] as String,
+      gender:getUserGenderFromString(map['gender']),
+      adress: map['adress'] as String,
+      dateCreated: DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int),
+      status:getUserStatusFromString(map['status']),
+      notificationStatus: map['notificationStatus'] as bool,
+      fcm: map['fcm'] != null ? map['fcm'] as String : null,
+      role:getUserRoleFromString(map['role']),
+      secondaryphoneNumber: map['secondaryphoneNumber'] as String,
+      fiscalMatricule: map['fiscalMatricule'] as String,
+      returnPrice: map['returnPrice'] as double,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+

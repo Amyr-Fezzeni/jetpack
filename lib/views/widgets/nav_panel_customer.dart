@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:jetpack/models/enum_classes.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/default_screen.dart';
+import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/views/widgets/popup.dart';
+import 'package:provider/provider.dart';
+import '../../constants/fixed_messages.dart';
+import '../../providers/user_provider.dart';
+import '../../services/util/language.dart';
+import '../../services/util/navigation_service.dart';
+import '../settings/settings.dart';
+
+class NavPanel extends StatelessWidget {
+  const NavPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: context.w * .7,
+      margin: const EdgeInsets.only(),
+      decoration: BoxDecoration(
+          color: context.bgcolor,
+          borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(10), bottomRight: Radius.circular(10))),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Row(children: [
+                    profileIcon(size: 50),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Txt(context.currentUser.getFullName()))
+                  ]),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            
+             
+              divider(bottom: 5),
+              buildMenuTile(
+                  title: txt('Settings'),
+                  icon: Icons.settings,
+                  screen: const SettingsScreen()),
+              buildMenuTile(
+                  title: txt('Help & Support'),
+                  icon: Icons.contact_support_outlined,
+                  screen: const DefaultScreen(
+                      title: 'Helps & support', leading: true)),
+              const Spacer(),
+              Builder(builder: (context) {
+                return InkWell(
+                  onTap: () async {
+                    Scaffold.of(context).closeDrawer();
+                    Future.delayed(const Duration(milliseconds: 100)).then(
+                        (value) => popup(
+                            NavigationService.navigatorKey.currentContext!,
+                            "Ok",
+                            confirmFunction: () => NavigationService
+                                .navigatorKey.currentContext!
+                                .read<UserProvider>()
+                                .logOut(NavigationService
+                                    .navigatorKey.currentContext!),
+                            description: '${txt(logoutMessage)}?'));
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Icon(
+                          Icons.logout_rounded,
+                          color: context.invertedColor.withOpacity(.7),
+                          size: 25,
+                        ),
+                      ),
+                      Txt("Log Out")
+                    ],
+                  ),
+                );
+              }),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

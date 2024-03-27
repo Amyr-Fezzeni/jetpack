@@ -1,0 +1,78 @@
+name: jetpack
+description: "JetPack"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.6
+  firebase_core: ^2.25.5
+  shared_preferences: ^2.2.2
+  crossplat_objectid: ^3.0.0
+  path_provider: ^2.1.1
+  provider: ^6.0.5
+  open_file: ^3.3.2
+  file_picker: ^8.0.0+1
+  permission_handler: ^11.0.1
+  flutter_svg: ^2.0.5
+  firebase_storage: ^11.5.1
+  cloud_firestore: ^4.13.1
+  firebase_messaging: ^14.7.4
+  badges: ^3.1.2
+  carousel_slider: ^4.2.1
+  flutter_local_notifications: ^16.1.0
+  gradient_borders: ^1.0.0
+  flutter_datetime_picker_plus: ^2.1.0
+  material_design_icons_flutter: ^7.0.7296
+  image_picker: ^1.0.4
+  camera: ^0.10.5+5
+  flutter_native_splash: ^2.3.5
+  shimmer: ^3.0.0
+  gap: ^3.0.1
+  percent_indicator: ^4.2.3
+  cached_network_image: ^3.3.0
+  flutter_launcher_icons: ^0.13.1
+  url_launcher: ^6.2.3
+  animate_icons: ^2.0.0
+  google_fonts: ^6.2.1
+  awesome_notifications: ^0.9.3+1
+  crypto: ^3.0.3
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^3.0.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/logo/
+    - assets/icons/
+    - assets/icons/svg/
+    - assets/images/
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/Logo.png"
+  min_sdk_android: 21
+  adaptive_icon_background: #FFFFFF

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86647914195",
+    "project_id": "jetpack-128ea",
+    "storage_bucket": "jetpack-128ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86647914195:android:3a6b6e38fe067b92a39e26",
+        "android_client_info": {
+          "package_name": "com.example.jetpack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYRng-uwximRrjfKllxlD0qCGHOV21-vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
