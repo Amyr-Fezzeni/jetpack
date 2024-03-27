@@ -39,6 +39,8 @@ class GenderRadio extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            
             Icon(
               _gender.icon,
               color: _gender.isSelected ? context.primaryColor : style.invertedColor,
