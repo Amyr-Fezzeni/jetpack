@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//style
+
 
 const lightPanelColor = Color.fromARGB(255, 55, 72, 144);
 const darkPanelColor = Color.fromARGB(255, 16, 21, 51);
@@ -14,15 +14,6 @@ const darknavBarColor = Color.fromARGB(255, 35, 45, 55);
 const primaryGradient = [
   Color.fromARGB(255, 82, 113, 255),
   Color.fromARGB(255, 91, 121, 251)
-];
-const secondGradient = [
-  Color.fromRGBO(213, 116, 10, 1),
-  Color.fromRGBO(228, 150, 67, 1)
-];
-
-const categoryGradient = [
-  Color.fromRGBO(1, 114, 180, 1),
-  Color.fromRGBO(180, 214, 240, 1)
 ];
 
 final defaultShadow = [
