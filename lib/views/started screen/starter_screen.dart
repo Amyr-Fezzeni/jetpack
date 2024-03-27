@@ -16,8 +16,7 @@ class StarterScreen extends StatelessWidget {
       body: Column(
         children: [
           const Spacer(),
-          Container(
-            // color: Colors.amber,
+          SizedBox(
             child: Center(
               child: Image.asset(introImage),
             ),
