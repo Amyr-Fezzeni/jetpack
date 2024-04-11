@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/providers/notification_provider.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:provider/provider.dart';
@@ -62,8 +63,70 @@ class CustomBottomNavigationBar extends StatelessWidget {
           children: [
             iconBar(Icons.home_filled, txt('Home'), 0),
             iconBar(Icons.person, txt('Profile'), 1),
-            iconBar(Icons.notifications_none, txt('Notifications'), 2,
-                url: notificationIcon),
+            Builder(builder: (context) {
+              int count = context
+                  .watch<NotificationProvider>()
+                  .notifications
+                  .where((element) => !element.seen)
+                  .toList()
+                  .length;
+
+              return InkWell(
+                onTap: () {
+                  context.read<MenuProvider>().updateCurrentPage(2);
+                  HapticFeedback.lightImpact();
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  decoration: context.currentPage != 2
+                      ? null
+                      : BoxDecoration(
+                          color: context.primaryColor.withOpacity(.1),
+                          borderRadius: BorderRadius.circular(smallRadius)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 35,
+                        width: 35,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: pngIcon(notificationIcon,
+                                  selected: context.currentPage == 2, size: 20),
+                            ),
+                            if (count > 0)
+                              Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                        color: context.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(bigRadius)),
+                                    child: Center(
+                                      child: Txt(
+                                          (count > 99 ? '+99' : count)
+                                              .toString(),
+                                          size: 10,
+                                          color: Colors.white),
+                                    ),
+                                  ))
+                          ],
+                        ),
+                      ),
+                      if (context.currentPage == 2) ...[
+                        const Gap(5),
+                        Txt("Notifications")
+                      ]
+                    ],
+                  ),
+                ),
+              );
+            }),
             iconBar(Icons.bar_chart_rounded, txt('Dashboard'), 3),
           ]),
     );

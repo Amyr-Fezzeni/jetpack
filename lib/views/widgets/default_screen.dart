@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/theme_notifier.dart';
@@ -8,13 +9,13 @@ class DefaultScreen extends StatelessWidget {
   final bool appbar;
   final bool leading;
   const DefaultScreen(
-      {super.key, this.title = "", this.leading = true, this.appbar = true});
+      {super.key, this.title = "", this.leading = true, this.appbar = false});
 
   @override
   Widget build(BuildContext context) {
     var style = context.watch<ThemeNotifier>();
     return Scaffold(
-      // appBar: appbar ? appBar(title, leading: leading) : null,
+      appBar: appbar ? appBar(title, leading: leading) : null,
       backgroundColor: style.bgColor,
       body: Center(
           child: Text(

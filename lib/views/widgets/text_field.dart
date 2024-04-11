@@ -45,7 +45,7 @@ class CustomTextField extends StatefulWidget {
       this.maxLines = 1,
       this.onSubmit,
       this.padding = 0,
-      this.trailing = true,
+      this.trailing = false,
       this.submitted = false,
       this.editable = true,
       this.icon,

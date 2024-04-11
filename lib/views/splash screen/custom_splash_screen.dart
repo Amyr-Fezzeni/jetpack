@@ -5,7 +5,6 @@ import 'package:jetpack/providers/theme_notifier.dart';
 import 'package:jetpack/services/shared_data.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/views/auth/login.dart';
 import 'package:jetpack/views/started%20screen/starter_screen.dart';
 import 'package:provider/provider.dart';
 

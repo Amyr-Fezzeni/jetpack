@@ -15,12 +15,20 @@ String? Function(dynamic) phoneNumberValidator = (value) {
           : txt('Phone number invalid');
 };
 
+String? Function(dynamic) priceValidator = (value) {
+  return value.toString().isNotEmpty &&
+          double.tryParse(value.toString()) != null &&
+          double.parse(value.toString()) > 0
+      ? null
+      : txt('Price should be greater than 0');
+};
+
 String? Function(dynamic) nameValidator = (value) {
   bool nameValid = RegExp(r"^[a-zA-Z]").hasMatch(value ?? " ") ||
       !RegExp("^[\u0000-\u007F]+\$").hasMatch(value ?? " ");
 
   return value.toString().isEmpty
-      ? txt("Please enter your name")
+      ? txt("Name is required")
       : value.toString().length < 3
           ? txt('Too short')
           : !nameValid
@@ -32,7 +40,7 @@ String? Function(dynamic) emailValidator = (value) {
   bool emailValid = RegExp(
           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
       .hasMatch(value ?? " ");
-  return !emailValid ? txt('Please enter your email') : null;
+  return !emailValid ? txt('Email is required') : null;
 };
 
 String? Function(dynamic) passwordValidator = (value) {

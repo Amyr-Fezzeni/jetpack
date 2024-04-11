@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
-import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/providers/theme_notifier.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
@@ -61,49 +60,6 @@ Widget gradientButton(
         ),
       ),
     );
-
-// class PrimaryButton extends StatelessWidget {
-//   final String title;
-//   final Function() onClick;
-//   final bool isBig;
-
-//   const PrimaryButton({
-//     super.key,
-//     this.title = "",
-//     required this.onClick,
-//     this.isBig = false,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: onClick,
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-//         child: Container(
-//           width: double.infinity,
-//           height: isBig ? 62 : 56,
-//           decoration: const BoxDecoration(
-//             color: blue,
-//             borderRadius: BorderRadius.all(
-//               Radius.circular(4),
-//             ),
-//           ),
-//           alignment: Alignment.center,
-//           child: Text(
-//             title,
-//             style: TextStyle(
-//               fontSize: isBig ? 20 : 16,
-//               fontWeight: FontWeight.w700,
-//               letterSpacing: isBig ? 0.5 : 0,
-//               color: Colors.white,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 Widget socialMediaButton(
     {required Function? function,
@@ -189,25 +145,30 @@ Widget profileIcon(
     {void Function()? ontap,
     double size = 40,
     double radius = 100,
+    String url = '',
     bool shadow = true}) {
   return Builder(builder: (context) {
-    return Center(
-      child: InkWell(
-        onTap: ontap,
-        child: Container(
-          height: size,
-          width: size,
-          decoration: BoxDecoration(
-              boxShadow: shadow ? defaultShadow : null,
-              border: Border.all(
-                  width: 2, color: context.primaryColor.withOpacity(.7)),
-              color: context.bgcolor,
-              borderRadius: BorderRadius.circular(radius)),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: context.currentUser.photo.isNotEmpty
-                ? Image.network(context.currentUser.photo, fit: BoxFit.cover)
-                : Image.asset(profileImg, fit: BoxFit.cover),
+    return SizedBox(
+      height: size,
+      width: size,
+      child: Center(
+        child: InkWell(
+          onTap: ontap,
+          child: Container(
+            height: size,
+            width: size,
+            decoration: BoxDecoration(
+                boxShadow: shadow ? defaultShadow : null,
+                border: Border.all(
+                    width: 2, color: context.primaryColor.withOpacity(.7)),
+                color: context.bgcolor,
+                borderRadius: BorderRadius.circular(radius)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius),
+              child: url.isNotEmpty
+                  ? Image.network(url, fit: BoxFit.cover)
+                  : Image.asset(profileImg, fit: BoxFit.cover),
+            ),
           ),
         ),
       ),
@@ -215,8 +176,9 @@ Widget profileIcon(
   });
 }
 
-Widget borderButton(String text,
-    {Function? function,
+Widget borderButton(
+    {String text = '',
+    Function? function,
     Color? color,
     double h = 35,
     double opacity = 1,

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/app_settings/theme.dart';
-import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
-import 'package:jetpack/providers/profile_provider.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/page_transitions.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +16,13 @@ extension ContextExt on BuildContext {
   TextStyle get text => watch<ThemeNotifier>().text18;
   TextStyle get title => watch<ThemeNotifier>().title;
   Color get bgcolor => watch<ThemeNotifier>().bgColor;
+  Color get iconColor => watch<ThemeNotifier>().invertedColor.withOpacity(.7);
   Color get primaryColor => watch<ThemeNotifier>().primaryColor;
   Color get secondaryColor => watch<ThemeNotifier>().secondaryColor;
   Color get invertedColor => watch<ThemeNotifier>().invertedColor;
   Color get navBarColor => watch<ThemeNotifier>().navBarColor;
   Color get panelColor => watch<ThemeNotifier>().panelColor;
+
   AppThemeModel get appTheme => watch<ThemeNotifier>().appTheme;
   ThemeNotifier get theme => read<ThemeNotifier>();
 
@@ -35,10 +35,9 @@ extension ContextExt on BuildContext {
       : watch<ThemeNotifier>().appTheme == AppThemeModel.dark;
 
   UserModel get currentUser => watch<UserProvider>().currentUser!;
-  bool get isCreator => currentUser.role == Role.creator;
+
   // App State
   int get currentPage => watch<MenuProvider>().currentPage;
-  List<Map<String, dynamic>> get screens => watch<MenuProvider>().screens;
 
   moveTo(Widget screen) => Navigator.push(this, SlideTransition1(screen));
   replaceWith(Widget screen) => Navigator.pushReplacement(
@@ -49,7 +48,7 @@ extension ContextExt on BuildContext {
           (Route<dynamic> route) => false);
 
   showPopUpScreen(Widget screen) => showModalBottomSheet(
-      isScrollControlled: true,
+      // isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.transparent,
       context: this,
@@ -57,7 +56,4 @@ extension ContextExt on BuildContext {
 
   NotificationProvider get notificationProvider => read<NotificationProvider>();
   NotificationProvider get watchNotification => watch<NotificationProvider>();
-
-  ProfileProvider get profileProvider => read<ProfileProvider>();
-  ProfileProvider get profileWatch => watch<ProfileProvider>();
 }

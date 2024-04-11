@@ -122,42 +122,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signup(Map<String, dynamic> userData) async {
-    isLoading = true;
-    notifyListeners();
-    isLoading = false;
-    UserModel user = UserModel(
-        id: generateId(),
-        firstName: userData['firstName'],
-        lastName: userData['lastName'],
-        cin: userData['cin'],
-        birthday: userData['birthday'],
-        gender: userData['gender'],
-        email: userData['email'].toLowerCase().trim(),
-        phoneNumber: userData['phoneNumber'],
-        photo: userData['photo'],
-        password: userData['password'],
-        dateCreated: DateTime.now(),
-        role: userData['role']);
-    var result = await UserService.addUser(user);
-    if (result == "true") {
-      startUserListen(user.id);
-      UserService.saveFcm(user.id);
-      DataPrefrences.setLogin(user.email);
-      DataPrefrences.setPassword(user.password);
-      NavigationService.navigatorKey.currentContext!
-          .read<NotificationProvider>()
-          .startNotificationsListen();
 
-      Navigator.of(NavigationService.navigatorKey.currentContext!)
-          .pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const StructureHomeScreen()),
-              (Route<dynamic> route) => false);
-    } else {
-      popup(NavigationService.navigatorKey.currentContext!, 'ok',
-          cancel: false, description: result);
-    }
-  }
 
   Future<void> changePassword(BuildContext context, String oldPassword,
       String newPassword, String newPasswordConfirmed) async {
@@ -174,13 +139,13 @@ class UserProvider with ChangeNotifier {
       await popup(context, "Ok", cancel: false, description: txt(passError2));
       return;
     }
-    if (oldPassword != currentUser?.password) {
+    if (generateMD5(oldPassword) != currentUser?.password) {
       await popup(context, "Ok", cancel: false, description: txt(passError3));
       return;
     }
 
-    bool result =
-        await UserService.changePassword(currentUser!.id, newPassword);
+    bool result = await UserService.changePassword(
+        currentUser!.id, generateMD5(newPassword));
 
     if (result) {
       DataPrefrences.setPassword(newPassword);

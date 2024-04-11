@@ -15,67 +15,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var style = context.watch<ThemeNotifier>();
-    // Widget detailCard(
-    //     {required BuildContext context,
-    //     required IconData icon,
-    //     required String title,
-    //     Widget? screen,
-    //     bool? switchValue,
-    //     void Function(bool)? onSwitchTap}) {
-    //   var style = context.watch<ThemeNotifier>();
-    //   return Padding(
-    //     padding: const EdgeInsets.symmetric(horizontal: 4).copyWith(top: 0),
-    //     child: Card(
-    //       color: style.bgColor,
-    //       elevation: 1,
-    //       child: InkWell(
-    //         onTap: screen == null
-    //             ? null
-    //             : () async {
-    //                 await showModalBottomSheet(
-    //                     isScrollControlled: true,
-    //                     backgroundColor: Colors.transparent,
-    //                     context: context,
-    //                     builder: (context) => screen);
-    //               },
-    //         child: Container(
-    //           decoration: BoxDecoration(
-    //             border: Border.all(color: blue.withOpacity(.1)),
-    //             borderRadius: BorderRadius.circular(4),
-    //             color: Colors.white.withOpacity(context.isDark ? 0.1 : 1),
-    //           ),
-    //           width: double.infinity,
-    //           height: 50,
-    //           padding: const EdgeInsets.symmetric(horizontal: 15),
-    //           child: Row(
-    //             children: [
-    //               Icon(
-    //                 icon,
-    //                 color: Colors.grey,
-    //                 size: 25,
-    //               ),
-    //               const SizedBox(
-    //                 width: 15,
-    //               ),
-    //               Text(title, style: style.text18),
-    //               const Spacer(),
-    //               if (switchValue != null)
-    //                 CupertinoSwitch(
-    //                     activeColor: blue,
-    //                     value: switchValue,
-    //                     onChanged: onSwitchTap ??
-    //                         (value) {
-    //                           log(title);
-    //                         }),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
-
     return Scaffold(
       backgroundColor: context.bgcolor,
       appBar: appBar('Settings', leading: true),
@@ -100,7 +39,10 @@ class SettingsScreen extends StatelessWidget {
               buildMenuTile(
                   title: 'Privacy preferences',
                   icon: Icons.privacy_tip_outlined,
-                  screen: const DefaultScreen(title: 'Privacy preferences')),
+                  screen: const DefaultScreen(
+                    title: 'Privacy preferences',
+                    appbar: true,
+                  )),
               Txt('App Settings', color: context.primaryColor),
               divider(bottom: 10),
               buildMenuTile(

@@ -57,7 +57,7 @@ class NotificationService {
     final headers = {
       'content-type': 'application/json',
       'Authorization':
-          'key=AAAACS7hesQ:APA91bGNRaqrovELp1iNzGzNK_92QwCsuc4E9c5xNVYgXDZuR9HMxBCBZVCyuaDcrSK-SMPFPjck383Jz8Z6rsD5srf87lxh3L8hNg3kK4xXQEWoOJlo8OadJ782li9nYY4X2Ruxmdhp' // 'key=YOUR_SERVER_KEY'
+          'key=AAAAFCyePtM:APA91bESdwcwN-ZS8N6Q-Jp_Xt1fVHAaTanuFzDSJcCDoi5rDNloGxJ8PnjXLC2TFkk6cJivGd2HtQ9_GUfKfXCBpqszGLuhTa14TSOEvIQf9Rq_uC592XBm7CTwlHRdt_AqBEBAz5Ai' // 'key=YOUR_SERVER_KEY'
     };
 
     final response = await http.post(Uri.parse(postUrl),

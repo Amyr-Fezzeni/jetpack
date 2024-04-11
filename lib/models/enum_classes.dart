@@ -1,6 +1,6 @@
 enum Gender { male, female, other }
 enum UserStatus { active, banned, disabled, deleted }
-enum Role { creator, admin }
+enum Role { expeditor, admin, delivery }
 
 UserStatus getUserStatusFromString(String? value) =>
     {
@@ -20,5 +20,6 @@ Gender getUserGenderFromString(String? value) => {
 Role getUserRoleFromString(String? value) =>
     {
       'admin': Role.admin,
+      'expeditor': Role.expeditor,
     }[value] ??
-    Role.creator;
+    Role.delivery;

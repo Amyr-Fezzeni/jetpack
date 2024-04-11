@@ -31,6 +31,7 @@ class Client {
       'state': governorate,
       'city': city,
       'adress': adress,
+      'governorate':governorate
     };
   }
 
@@ -49,5 +50,6 @@ class Client {
 
   String toJson() => json.encode(toMap());
 
-  factory Client.fromJson(String source) => Client.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Client.fromJson(String source) =>
+      Client.fromMap(json.decode(source) as Map<String, dynamic>);
 }

@@ -43,11 +43,15 @@ dependencies:
   percent_indicator: ^4.2.3
   cached_network_image: ^3.3.0
   flutter_launcher_icons: ^0.13.1
-  url_launcher: ^6.2.3
+  url_launcher: ^6.2.5
   animate_icons: ^2.0.0
   google_fonts: ^6.2.1
   awesome_notifications: ^0.9.3+1
   crypto: ^3.0.3
+  fl_chart: ^0.67.0
+  barcode_scan2: ^4.3.0
+  barcode: ^2.2.6
+  barcode_widget: ^2.0.4
 
 
 dev_dependencies:

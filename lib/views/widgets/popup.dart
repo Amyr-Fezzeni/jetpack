@@ -180,3 +180,26 @@ Future<DateTime?> datePopup(
   debugPrint('Value:$date');
   return date;
 }
+
+Future<void> customPopup(BuildContext context, Widget widget,
+    {bool maxWidth = true}) async {
+  // final context = NavigationService.navigatorKey.currentContext!;
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: context.bgcolor,
+          surfaceTintColor: context.bgcolor,
+          elevation: 4,
+          // insetPadding: EdgeInsets.symmetric(
+          //     horizontal: context.w / (context.isSmall ? 60 : 20),
+          //     vertical: 20),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(smallRadius)),
+          child:
+              SizedBox(width: maxWidth ? double.infinity : null, child: widget),
+        );
+      });
+}
+
+

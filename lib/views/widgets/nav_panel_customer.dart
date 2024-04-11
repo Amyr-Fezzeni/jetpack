@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:jetpack/models/enum_classes.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:jetpack/views/agency/agency_list.dart';
+import 'package:jetpack/views/profile/profile.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/views/sector/sector_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/default_screen.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -31,21 +32,34 @@ class NavPanel extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Row(children: [
-                    profileIcon(size: 50),
-                    Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Txt(context.currentUser.getFullName()))
-                  ]),
-                  const SizedBox(height: 20),
-                ],
+              InkWell(
+                onTap: () => context.moveTo(const ProfileScreen()),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Row(children: [
+                      profileIcon(size: 50),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Txt(context.currentUser.getFullName()))
+                    ]),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-            
-             
               divider(bottom: 5),
+              if ([Role.admin, Role.expeditor]
+                  .contains(context.currentUser.role))
+                buildMenuTile(
+                    title: txt('Agency'),
+                    icon: Icons.apartment_rounded,
+                    screen: const AgencyListScreen()),
+              if ([Role.admin, Role.expeditor]
+                  .contains(context.currentUser.role))
+                buildMenuTile(
+                    title: txt('Sector'),
+                    icon: Icons.location_on,
+                    screen: const SectorListScreen()),
               buildMenuTile(
                   title: txt('Settings'),
                   icon: Icons.settings,

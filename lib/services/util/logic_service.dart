@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:crossplat_objectid/crossplat_objectid.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 import 'language.dart';
 
 String generateId() {
@@ -12,6 +15,17 @@ String generateId() {
 
 int createUniqueId() {
   return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+}
+
+String generateBarCodeId() {
+  final random = math.Random();
+  final buffer = StringBuffer();
+
+  for (int i = 0; i < 12; i++) {
+    buffer.write(random.nextInt(10));
+  }
+
+  return buffer.toString();
 }
 
 String generateMD5(String input) {
@@ -238,5 +252,31 @@ Future<PlatformFile?> pickImage() async {
     return null;
   } else {
     return result.files.first;
+  }
+}
+
+Future<String?> scanQrcode() async {
+  try {
+    log("here");
+    final barcode = await BarcodeScanner.scan();
+    log('1');
+    log(barcode.toString());
+
+    log('barcode?:${barcode.rawContent}');
+    return barcode.rawContent;
+  } on PlatformException catch (e) {
+    if (e.code == BarcodeScanner.cameraAccessDenied) {
+      log('The user did not grant the camera permission!');
+      return null;
+    } else {
+      log('Unknown error: $e');
+      return null;
+    }
+  } on FormatException {
+    log('User returned using the "back"-button before scanning anything. Result');
+    return null;
+  } catch (e) {
+    log(e.toString());
+    return null;
   }
 }

@@ -5,7 +5,6 @@ import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:provider/provider.dart';
 
-
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
@@ -17,11 +16,12 @@ class NotificationScreen extends StatelessWidget {
         .where((element) => !element.seen)
         .toList()
         .length;
-    
+
     return Scaffold(
       backgroundColor: context.bgcolor,
-      appBar: appBar("Notifications ${count > 0 ? "($count)" : ""}"),
-      body:const  SizedBox(
+      appBar: appBar("Notifications ${count > 0 ? "($count)" : ""}",
+          leading: false),
+      body: const SizedBox(
         child: NotificationBody(),
       ),
     );

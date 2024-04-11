@@ -10,11 +10,11 @@ class UserModel {
   String lastName;
   String cin;
   String phoneNumber;
-  String agency;
-  String sector;
+  Map<String, dynamic>? agency;
+  Map<String, dynamic> sector;
   double price;
   String matricule;
-  DateTime birthday;
+  DateTime? birthday;
   // exrat
   String photo;
   String email;
@@ -36,11 +36,11 @@ class UserModel {
     required this.lastName,
     required this.cin,
     this.phoneNumber = '',
-    this.agency = '',
-    this.sector = '',
+    this.agency,
+    required this.sector,
     this.price = 0,
     this.matricule = '',
-    required this.birthday,
+    this.birthday,
     this.photo = '',
     required this.email,
     required this.password,
@@ -70,7 +70,7 @@ class UserModel {
       'sector': sector,
       'price': price,
       'matricule': matricule,
-      'birthday': birthday.millisecondsSinceEpoch,
+      'birthday': birthday?.millisecondsSinceEpoch,
       'photo': photo,
       'email': email,
       'password': password,
@@ -94,21 +94,24 @@ class UserModel {
       lastName: map['lastName'] as String,
       cin: map['cin'] as String,
       phoneNumber: map['phoneNumber'] as String,
-      agency: map['agency'] as String,
-      sector: map['sector'] as String,
+      agency: map['agency'],
+      sector: map['sector'] is Map<String, dynamic>
+          ? map['sector']
+          : {"id": '', "name": ""},
       price: map['price'] as double,
       matricule: map['matricule'] as String,
       birthday: DateTime.fromMillisecondsSinceEpoch(map['birthday'] as int),
       photo: map['photo'] as String,
       email: map['email'] as String,
       password: map['password'] as String,
-      gender:getUserGenderFromString(map['gender']),
+      gender: getUserGenderFromString(map['gender']),
       adress: map['adress'] as String,
-      dateCreated: DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int),
-      status:getUserStatusFromString(map['status']),
+      dateCreated:
+          DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int),
+      status: getUserStatusFromString(map['status']),
       notificationStatus: map['notificationStatus'] as bool,
       fcm: map['fcm'] != null ? map['fcm'] as String : null,
-      role:getUserRoleFromString(map['role']),
+      role: getUserRoleFromString(map['role']),
       secondaryphoneNumber: map['secondaryphoneNumber'] as String,
       fiscalMatricule: map['fiscalMatricule'] as String,
       returnPrice: map['returnPrice'] as double,
@@ -117,7 +120,6 @@ class UserModel {
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
-
-

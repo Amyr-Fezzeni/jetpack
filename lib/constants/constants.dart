@@ -38,3 +38,5 @@ const supportedImges = ['jpg', 'jpeg', 'webp', 'gif', 'png'];
 const supportedVideos = ['mp4', 'mov', 'webm', 'ogm', 'ogv'];
 const supportedAudios = ['mp3', 'wav'];
 const supportedDocuments = ['pdf', 'txt'];
+
+const List<Map<String, dynamic>> city = [];
