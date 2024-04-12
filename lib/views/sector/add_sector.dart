@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/constants/tunis_data.dart';
 import 'package:jetpack/models/sector.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/agency_service.dart';
@@ -11,6 +12,7 @@ import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/custom_drop_down.dart';
 import 'package:jetpack/views/widgets/data%20picker/pick_delivery.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
@@ -46,6 +48,7 @@ class _AddSectorState extends State<AddSector> {
         Sector(
             id: generateId(),
             name: '',
+            city: '',
             delivery: {"id": '', "name": ''},
             regions: []);
     name.text = sector.name;
@@ -103,7 +106,7 @@ class _AddSectorState extends State<AddSector> {
                           Builder(builder: (context) {
                             return Txt(
                                 sector.delivery['name'].isEmpty
-                                    ? 'Sector'
+                                    ? 'Delivery'
                                     : sector.delivery['name'],
                                 bold: !sector.delivery['name'].isEmpty,
                                 color: context.invertedColor.withOpacity(
@@ -119,27 +122,33 @@ class _AddSectorState extends State<AddSector> {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                            hint: txt("Add region"),
-                            controller: region,
-                            marginV: 0,
-                            keybordType: TextInputType.name,
-                            submitted: submitted),
-                      ),
-                      gradientButton(
-                          function: () {
-                            sector.regions.add(region.text);
-                            region.clear();
-                            setState(() {});
-                          },
-                          text: "Add"),
-                      const Gap(15)
-                    ],
-                  ),
-                  const Gap(20),
+                  CustDropDown<String>(
+                      maxListHeight: 150,
+                      hintText: txt('City'),
+                      defaultSelectedIndex: sector.city.isEmpty
+                          ? -1
+                          : tunisData.keys.toList().indexOf(sector.city),
+                      items: tunisData.keys
+                          .map((e) =>
+                              CustDropdownMenuItem(value: e, child: Txt(e)))
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => sector.city = value)),
+                  const Gap(15),
+                  if (sector.city.isNotEmpty) ...[
+                    CustDropDown<String>(
+                        maxListHeight: 150,
+                        hintText: txt('Governorate'),
+                        defaultSelectedIndex: -1,
+                        items: tunisData[sector.city]!
+                            .keys
+                            .map((e) =>
+                                CustDropdownMenuItem(value: e, child: Txt(e)))
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => sector.regions.add(value))),
+                    const Gap(15)
+                  ],
                   ...sector.regions.map((e) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Column(

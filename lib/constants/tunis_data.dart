@@ -1,4 +1,4 @@
-data = {
+const tunisData = {
     "Ariana": {
         "Ariana Ville": {
             "Ariana": {"zip": "2080"},
@@ -2472,7 +2472,4 @@ data = {
 
     },
 
-}
-
-for key, item in data.items():
-    print(key)
+};

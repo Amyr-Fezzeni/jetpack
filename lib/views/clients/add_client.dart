@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/constants/tunis_data.dart';
 import 'package:jetpack/models/client.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/client_service.dart';
@@ -11,6 +12,7 @@ import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/custom_drop_down.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
@@ -106,16 +108,38 @@ class _AddClientState extends State<AddClient> {
                       controller: secondaryPhoneController,
                       keybordType: TextInputType.phone,
                       submitted: submitted),
-                  CustomTextField(
-                      hint: txt("Client city"),
-                      controller: city,
-                      keybordType: TextInputType.text,
-                      submitted: submitted),
-                  CustomTextField(
-                      hint: txt("Client governorate"),
-                      controller: governorate,
-                      keybordType: TextInputType.text,
-                      submitted: submitted),
+                  CustDropDown<String>(
+                      maxListHeight: 150,
+                      hintText: txt('City'),
+                      defaultSelectedIndex: client.city.isEmpty
+                          ? -1
+                          : tunisData.keys.toList().indexOf(client.city),
+                      items: tunisData.keys
+                          .map((e) =>
+                              CustDropdownMenuItem(value: e, child: Txt(e)))
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => client.city = value)),
+                  const Gap(15),
+                  if (client.city.isNotEmpty) ...[
+                    CustDropDown<String>(
+                        maxListHeight: 150,
+                        hintText: txt('Governorate'),
+                        defaultSelectedIndex: client.governorate.isEmpty
+                            ? -1
+                            : tunisData[client.city]!
+                                .keys
+                                .toList()
+                                .indexOf(client.governorate),
+                        items: tunisData[client.city]!
+                            .keys
+                            .map((e) =>
+                                CustDropdownMenuItem(value: e, child: Txt(e)))
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => client.governorate = value)),
+                    const Gap(15)
+                  ],
                   CustomTextField(
                       hint: txt("Client adress"),
                       controller: adress,
@@ -151,8 +175,6 @@ class _AddClientState extends State<AddClient> {
                                 client.secondaryPhoneNumber =
                                     secondaryPhoneController.text;
                                 client.adress = adress.text;
-                                client.city = city.text;
-                                client.governorate = governorate.text;
 
                                 if (widget.client != null) {
                                   await ClientService.clientCollection

@@ -112,10 +112,11 @@ class _CustDropDownState extends State<CustDropDown>
                     mainAxisAlignment: _isReverse
                         ? MainAxisAlignment.end
                         : MainAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
                           constraints: BoxConstraints(
                               maxHeight: widget.maxListHeight,
                               maxWidth: size.width),
@@ -213,6 +214,8 @@ class _CustDropDownState extends State<CustDropDown>
               }
             : null,
         child: Container(
+          height: 50,
+          margin: const EdgeInsets.symmetric(horizontal: 15),
           padding: const EdgeInsets.symmetric(vertical: 5)
               .copyWith(left: 15, right: 10),
           decoration: _getDecoration(),
@@ -245,6 +248,7 @@ class _CustDropDownState extends State<CustDropDown>
     if (_isOpen && !_isReverse) {
       return BoxDecoration(
           border: Border.all(color: context.invertedColor.withOpacity(.3)),
+          color: context.invertedColor.withOpacity(.05),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(widget.borderRadius),
               topRight: Radius.circular(
@@ -253,6 +257,7 @@ class _CustDropDownState extends State<CustDropDown>
     } else if (_isOpen && _isReverse) {
       return BoxDecoration(
           border: Border.all(color: context.invertedColor.withOpacity(.3)),
+          color: context.invertedColor.withOpacity(.05),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(widget.borderRadius),
               bottomRight: Radius.circular(
@@ -260,7 +265,8 @@ class _CustDropDownState extends State<CustDropDown>
               )));
     } else if (!_isOpen) {
       return BoxDecoration(
-          border: Border.all(color: context.invertedColor.withOpacity(.3)),
+          border: Border.all(color: context.invertedColor.withOpacity(0)),
+          color: context.invertedColor.withOpacity(.05),
           borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius)));
     }
     return null;
