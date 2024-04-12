@@ -31,7 +31,7 @@ class Client {
       'state': governorate,
       'city': city,
       'adress': adress,
-      'governorate':governorate
+      'governorate': governorate
     };
   }
 

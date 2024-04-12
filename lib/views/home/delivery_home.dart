@@ -9,7 +9,6 @@ import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
-import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -224,7 +223,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
               String? barcode = await scanQrcode();
               log(barcode.toString());
 
-              popup(context, "Ok",
+              popup(context, 
                   description: barcode.toString(), cancel: false);
             },
             child: Container(

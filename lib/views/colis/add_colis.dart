@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/constants/tunis_data.dart';
+import 'package:jetpack/models/client.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/services/agency_service.dart';
 import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
+import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/custom_drop_down.dart';
 import 'package:jetpack/views/widgets/data%20picker/pick_client.dart';
 import 'package:jetpack/views/widgets/data%20picker/pick_delivery.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -31,10 +36,18 @@ class _AddColisState extends State<AddColis> {
   TextEditingController items = TextEditingController();
   TextEditingController comment = TextEditingController();
   TextEditingController price = TextEditingController();
+  // client data
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController secondaryPhoneController = TextEditingController();
+  TextEditingController adress = TextEditingController();
 
   bool submitted = false;
   bool loading = false;
   late Colis colis;
+  late Client client;
+
   bool validateInfo() {
     List<bool> validators = [];
     validators.addAll([
@@ -74,6 +87,22 @@ class _AddColisState extends State<AddColis> {
     comment.text = colis.phone1;
     price.text = colis.price.toString();
     items.text = colis.numberOfItems.toString();
+    // client
+    client = Client(
+        id: generateId(),
+        firstName: '',
+        lastName: '',
+        adress: '',
+        phoneNumber: '',
+        secondaryPhoneNumber: '',
+        governorate: '',
+        city: '');
+    firstNameController.text = client.firstName;
+    lastNameController.text = client.lastName;
+    adress.text = client.adress;
+    phoneController.text = client.phoneNumber;
+    secondaryPhoneController.text = client.secondaryPhoneNumber;
+
     if (widget.colis == null) {
       checkBarCodeUniqueId();
     }
@@ -296,6 +325,191 @@ class _AddColisState extends State<AddColis> {
                     ),
                   ),
                   CustomTextField(
+                      hint: txt("First name"),
+                      controller: firstNameController,
+                      validator: nameValidator,
+                      keybordType: TextInputType.name,
+                      submitted: submitted),
+                  CustomTextField(
+                      hint: txt("Last name"),
+                      controller: lastNameController,
+                      validator: nameValidator,
+                      keybordType: TextInputType.name,
+                      submitted: submitted),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                            hint: txt("Phone number"),
+                            marginV: 0,
+                            controller: phoneController,
+                            keybordType: TextInputType.phone,
+                            submitted: submitted),
+                      ),
+                      const Gap(10),
+                      gradientButton(
+                          function: () {
+                            ClientService.clientCollection
+                                .where('phoneNumber',
+                                    isEqualTo: phoneController.text)
+                                .get()
+                                .then((data) async {
+                              if (data.docs.isEmpty) {
+                                popup(context,
+                                    cancel: false,
+                                    description:
+                                        "No Client found with this phone number '${phoneController.text}'");
+                              } else {
+                                final clientData =
+                                    Client.fromMap(data.docs.first.data());
+                                customPopup(context,
+                                    Builder(builder: (context) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                                horizontal: 15)
+                                            .copyWith(bottom: 15),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 10),
+                                        decoration: BoxDecoration(
+                                          color: context.invertedColor
+                                              .withOpacity(.05),
+                                          borderRadius: BorderRadius.circular(
+                                              smallRadius),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Txt("Client Name",
+                                                    bold: true, extra: ': '),
+                                                Flexible(
+                                                    child: Txt(
+                                                        '${clientData.firstName} ${clientData.lastName}'))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Txt("Adress",
+                                                    bold: true, extra: ': '),
+                                                Flexible(
+                                                    child:
+                                                        Txt(clientData.adress))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Txt("Governorate",
+                                                    bold: true, extra: ': '),
+                                                Flexible(
+                                                    child: Txt(
+                                                        clientData.governorate))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Txt("City",
+                                                    bold: true, extra: ': '),
+                                                Flexible(
+                                                    child: Txt(clientData.city))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Txt("Phone number",
+                                                    bold: true, extra: ': '),
+                                                Flexible(
+                                                    child: Txt(
+                                                        clientData.phoneNumber))
+                                              ],
+                                            ),
+                                            if (clientData.secondaryPhoneNumber
+                                                .isNotEmpty)
+                                              Row(
+                                                children: [
+                                                  Txt("secondary phone number",
+                                                      bold: true, extra: ': '),
+                                                  Flexible(
+                                                      child: Txt(clientData
+                                                          .secondaryPhoneNumber))
+                                                ],
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      gradientButton(
+                                          function: () {
+                                            setState(() {
+                                              client = clientData;
+                                              firstNameController.text =
+                                                  client.firstName;
+                                              lastNameController.text =
+                                                  client.lastName;
+                                              secondaryPhoneController.text =
+                                                  client.secondaryPhoneNumber;
+                                              adress.text = client.adress;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          text: "Confirm")
+                                    ],
+                                  );
+                                }));
+                              }
+                            });
+                          },
+                          text: "Check"),
+                      const Gap(15)
+                    ],
+                  ),
+                  const Gap(10),
+                  CustomTextField(
+                      hint: txt("Secondary phone number"),
+                      controller: secondaryPhoneController,
+                      keybordType: TextInputType.phone,
+                      submitted: submitted),
+                  CustDropDown<String>(
+                      maxListHeight: 150,
+                      hintText: txt('City'),
+                      defaultSelectedIndex: client.city.isEmpty
+                          ? -1
+                          : tunisData.keys.toList().indexOf(client.city),
+                      items: tunisData.keys
+                          .map((e) =>
+                              CustDropdownMenuItem(value: e, child: Txt(e)))
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => client.city = value)),
+                  const Gap(15),
+                  if (client.city.isNotEmpty) ...[
+                    CustDropDown<String>(
+                        maxListHeight: 150,
+                        hintText: txt('Governorate'),
+                        defaultSelectedIndex: client.governorate.isEmpty
+                            ? -1
+                            : tunisData[client.city]!
+                                .keys
+                                .toList()
+                                .indexOf(client.governorate),
+                        items: tunisData[client.city]!
+                            .keys
+                            .map((e) =>
+                                CustDropdownMenuItem(value: e, child: Txt(e)))
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => client.governorate = value)),
+                    const Gap(15)
+                  ],
+                  CustomTextField(
+                      hint: txt("Client adress"),
+                      controller: adress,
+                      keybordType: TextInputType.text,
+                      submitted: submitted),
+                  const Gap(20),
+                  // colis
+                  CustomTextField(
                       hint: txt("Comment"),
                       controller: comment,
                       keybordType: TextInputType.text,
@@ -426,7 +640,7 @@ class _AddColisState extends State<AddColis> {
                                   if (result == 'true') {
                                     Navigator.pop(context);
                                   } else {
-                                    popup(context, "Ok",
+                                    popup(context,
                                         cancel: false, description: result);
                                   }
                                 }
@@ -436,7 +650,7 @@ class _AddColisState extends State<AddColis> {
                         ),
                   if (widget.colis != null &&
                       colis.id != context.userId &&
-                      context.currentUser.role == Role.admin)
+                      context.currentUser.role == Role.expeditor)
                     Center(
                       child: gradientButton(
                         text: txt("Delete"),

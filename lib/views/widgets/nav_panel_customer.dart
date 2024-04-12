@@ -77,7 +77,7 @@ class NavPanel extends StatelessWidget {
                     Future.delayed(const Duration(milliseconds: 100)).then(
                         (value) => popup(
                             NavigationService.navigatorKey.currentContext!,
-                            "Ok",
+                           
                             confirmFunction: () => NavigationService
                                 .navigatorKey.currentContext!
                                 .read<UserProvider>()

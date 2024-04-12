@@ -1,10 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/models/enum_classes.dart';
-import 'package:jetpack/models/user.dart';
-import 'package:jetpack/services/user_service.dart';
-import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/auth/forget_password_screen.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
@@ -12,7 +8,6 @@ import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:provider/provider.dart';
-import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import '../../../../providers/user_provider.dart';
@@ -143,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               final validateEmail =
                                   emailValidator(emailController.text);
                               if (validateEmail != null) {
-                                popup(context, "Ok",
+                                popup(context,
                                     cancel: false,
                                     title: txt("Worning"),
                                     description: validateEmail);
@@ -152,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               final validatePassword =
                                   passwordValidator(passwordController.text);
                               if (validatePassword != null) {
-                                popup(context, "Ok",
+                                popup(context,
                                     cancel: false,
                                     title: txt("Worning"),
                                     description: validatePassword);

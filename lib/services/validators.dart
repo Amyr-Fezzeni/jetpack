@@ -77,24 +77,24 @@ String? Function(dynamic) passwordValidator = (value) {
 Future<void> validatorPhone(
     BuildContext context, String oldPhoneNumber, String phone) async {
   if (phone.isEmpty) {
-    popup(context, "Ok",
+    popup(context,
         cancel: false, description: "${txt('Empty phone number')}!");
     return;
   }
   if (phone.length != 8) {
-    popup(context, "Ok",
+    popup(context,
         cancel: false, description: "${txt('Invalid phone number')}!");
     return;
   }
   if (phone ==
       context.read<UserProvider>().currentUser?.phoneNumber.toString()) {
-    popup(context, "Ok",
+    popup(context,
         cancel: false,
         description: "${txt('You cannot update the same phone number')}!");
     return;
   }
   if (await UserService.checkExistingPhone(phone)) {
-    popup(context, "Ok",
+    popup(context,
         cancel: false,
         description: "${txt('The phone number already exists')}!");
     return;
@@ -102,13 +102,13 @@ Future<void> validatorPhone(
 
   await context.read<UserProvider>().changePhoneNumber(phone).then((result) {
     if (result) {
-      popup(context, "Ok",
+      popup(context,
               cancel: false,
               description:
                   "${txt('The phone number has been changed successfully')}.")
           .then((value) => Navigator.pop(context));
     } else {
-      popup(context, "Ok",
+      popup(context,
               cancel: false,
               description: txt('Connection error, please try again later'))
           .then((value) => Navigator.pop(context));

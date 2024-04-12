@@ -149,6 +149,7 @@ class _AddSectorState extends State<AddSector> {
                             setState(() => sector.regions.add(value))),
                     const Gap(15)
                   ],
+                 
                   ...sector.regions.map((e) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Column(
@@ -204,7 +205,7 @@ class _AddSectorState extends State<AddSector> {
                                   if (result == 'true') {
                                     Navigator.pop(context);
                                   } else {
-                                    popup(context, "Ok",
+                                    popup(context,
                                         cancel: false, description: result);
                                   }
                                 }

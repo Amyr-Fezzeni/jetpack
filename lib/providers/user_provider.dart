@@ -96,7 +96,7 @@ class UserProvider with ChangeNotifier {
           MaterialPageRoute(builder: (_) => const StructureHomeScreen()),
           (Route<dynamic> route) => false);
     } else {
-      popup(context, "Ok", cancel: false, description: txt(loginError2));
+      popup(context, cancel: false, description: txt(loginError2));
     }
   }
 
@@ -128,19 +128,19 @@ class UserProvider with ChangeNotifier {
       String newPassword, String newPasswordConfirmed) async {
     final validate = passwordValidator(newPassword);
     if (validate != null) {
-      await popup(context, "Ok", cancel: false, description: txt(validate));
+      await popup(context, cancel: false, description: txt(validate));
       return;
     }
     if (newPasswordConfirmed.isEmpty || newPassword.isEmpty) {
-      await popup(context, "Ok", cancel: false, description: txt(passError1));
+      await popup(context, cancel: false, description: txt(passError1));
       return;
     }
     if (newPasswordConfirmed != newPassword) {
-      await popup(context, "Ok", cancel: false, description: txt(passError2));
+      await popup(context, cancel: false, description: txt(passError2));
       return;
     }
     if (generateMD5(oldPassword) != currentUser?.password) {
-      await popup(context, "Ok", cancel: false, description: txt(passError3));
+      await popup(context, cancel: false, description: txt(passError3));
       return;
     }
 
@@ -149,9 +149,9 @@ class UserProvider with ChangeNotifier {
 
     if (result) {
       DataPrefrences.setPassword(newPassword);
-      await popup(context, "Ok", cancel: false, description: txt(passSuccess));
+      await popup(context, cancel: false, description: txt(passSuccess));
     } else {
-      await popup(context, "Ok", cancel: false, description: txt(defaultError));
+      await popup(context, cancel: false, description: txt(defaultError));
     }
 
     Navigator.pop(context);
@@ -169,10 +169,10 @@ class UserProvider with ChangeNotifier {
 
     bool result = await UserService.changeName(currentUser!);
     if (result) {
-      await popup(context, "Ok",
+      await popup(context,
           cancel: false, description: "${txt(nameSuccess)}.");
     } else {
-      await popup(context, "Ok",
+      await popup(context,
           cancel: false, description: "${txt(defaultError)}.");
     }
     Navigator.pop(context);
@@ -183,16 +183,16 @@ class UserProvider with ChangeNotifier {
     currentUser!.email = email;
     final validator = emailValidator(email);
     if (validator != null) {
-      popup(context, "Ok", cancel: false, description: validator);
+      popup(context, cancel: false, description: validator);
       return;
     }
     bool result = await UserService.changeEmail(currentUser!, email);
     if (result) {
-      await popup(context, "Ok",
+      await popup(context,
           cancel: false, description: "${txt(emailSuccess)}.");
       Navigator.pop(context);
     } else {
-      await popup(context, "Ok",
+      await popup(context,
           cancel: false, description: "${txt(emailError)}.");
     }
 

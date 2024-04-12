@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/constants/tunis_data.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/models/sector.dart';
 import 'package:jetpack/models/user.dart';
+import 'package:jetpack/services/agency_service.dart';
 import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/validators.dart';
+import 'package:jetpack/views/widgets/custom_drop_down.dart';
 import 'package:jetpack/views/widgets/data%20picker/pick_agency.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
-import 'package:jetpack/views/widgets/data%20picker/pick_sector.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
@@ -47,6 +50,7 @@ class _AddUserState extends State<AddUser> {
 
   bool submitted = false;
   bool loading = false;
+  String city = '';
   late UserModel user;
   bool validateInfo() {
     List<bool> validators = [];
@@ -70,6 +74,7 @@ class _AddUserState extends State<AddUser> {
     return !validators.any((v) => v == false);
   }
 
+  List<Sector> sectors = [];
   Map<String, dynamic> agency = {"id": '', "name": ''};
 
   @override
@@ -102,6 +107,10 @@ class _AddUserState extends State<AddUser> {
     price.text = user.price > 0 ? user.price.toString() : '';
     returnPriceController.text =
         user.returnPrice > 0 ? user.returnPrice.toString() : ''.toString();
+    SectorService.sectorCollection.get().then((docs) {
+      sectors = docs.docs.map((e) => Sector.fromMap(e.data())).toList();
+      setState(() {});
+    });
   }
 
   @override
@@ -340,47 +349,68 @@ class _AddUserState extends State<AddUser> {
                         ),
                       ),
                     ),
-                  if ([Role.delivery].contains(user.role))
+                  if ([Role.delivery].contains(user.role)) ...[
+                    CustDropDown<String>(
+                        maxListHeight: 150,
+                        hintText: txt('City'),
+                        defaultSelectedIndex: city.isEmpty
+                            ? -1
+                            : tunisData.keys.toList().indexOf(city),
+                        items: tunisData.keys
+                            .map((e) =>
+                                CustDropdownMenuItem(value: e, child: Txt(e)))
+                            .toList(),
+                        onChanged: (value) => setState(() => city = value)),
+                    const Gap(15),
+                    if (city.isNotEmpty) ...[
+                      CustDropDown<String>(
+                          maxListHeight: 150,
+                          hintText: txt('Governorate'),
+                          defaultSelectedIndex: -1,
+                          items: tunisData[city]!
+                              .keys
+                              .map((e) =>
+                                  CustDropdownMenuItem(value: e, child: Txt(e)))
+                              .toList(),
+                          onChanged: (value) => setState(() {
+                                final sectorsList = sectors.where(
+                                    (sector) => sector.regions.contains(value));
+
+                                setState(() {
+                                  user.sector = {
+                                    "id": sectorsList.isNotEmpty
+                                        ? sectorsList.first.id
+                                        : '',
+                                    "name": sectorsList.isNotEmpty
+                                        ? sectorsList.first.name
+                                        : ''
+                                  };
+                                });
+                              })),
+                      const Gap(15),
+                    ],
                     Container(
-                      height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 15)
-                          .copyWith(bottom: 15),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: context.invertedColor.withOpacity(.05),
-                        borderRadius: BorderRadius.circular(smallRadius),
-                      ),
-                      child: InkWell(
-                        onTap: () async {
-                          final data = await pickSector();
-                          if (data != null) {
-                            setState(() {
-                              user.sector = {"id": data.id, "name": data.name};
-                            });
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Builder(builder: (context) {
-                              return Txt(
-                                  user.sector['name'].isEmpty
-                                      ? 'Sector'
-                                      : user.sector['name'],
-                                  bold: user.sector['name'].isNotEmpty,
-                                  color: context.invertedColor.withOpacity(
-                                      user.sector['name'].isEmpty ? .4 : 1));
-                            }),
-                            const Spacer(),
-                            Icon(
-                              Icons.keyboard_arrow_right_sharp,
-                              color: context.iconColor,
-                              size: 25,
-                            )
-                          ],
+                        height: 50,
+                        width: double.maxFinite,
+                        margin: const EdgeInsets.symmetric(horizontal: 15)
+                            .copyWith(bottom: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        decoration: BoxDecoration(
+                          color: context.invertedColor.withOpacity(.05),
+                          borderRadius: BorderRadius.circular(smallRadius),
                         ),
-                      ),
-                    ),
+                        child: Row(
+                          children: [
+                            Txt(
+                                user.sector['name'].isEmpty
+                                    ? 'No sector found'
+                                    : user.sector['name'],
+                                bold: user.sector['name'].isNotEmpty,
+                                color: context.invertedColor.withOpacity(
+                                    user.sector['name'].isEmpty ? .4 : 1)),
+                          ],
+                        )),
+                  ],
                   CustomTextField(
                       hint: txt("Adress"),
                       controller: adressController,
@@ -503,7 +533,7 @@ class _AddUserState extends State<AddUser> {
                                   if (result == 'true') {
                                     Navigator.pop(context);
                                   } else {
-                                    popup(context, "Ok",
+                                    popup(context,
                                         cancel: false, description: result);
                                   }
                                 }

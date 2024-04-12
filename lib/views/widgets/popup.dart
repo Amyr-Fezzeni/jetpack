@@ -8,8 +8,9 @@ import 'package:jetpack/providers/theme_notifier.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 
-Future<dynamic> popup(BuildContext context, String confirmText,
-    {String? title,
+Future<dynamic> popup(BuildContext context,
+    {String confirmText = "Ok",
+    String? title,
     String? description,
     Function? confirmFunction,
     bool cancel = true}) {
@@ -201,5 +202,3 @@ Future<void> customPopup(BuildContext context, Widget widget,
         );
       });
 }
-
-

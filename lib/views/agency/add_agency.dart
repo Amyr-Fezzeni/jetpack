@@ -146,7 +146,7 @@ class _AddAgencyState extends State<AddAgency> {
                                   if (result == 'true') {
                                     Navigator.pop(context);
                                   } else {
-                                    popup(context, "Ok",
+                                    popup(context,
                                         cancel: false, description: result);
                                   }
                                 }

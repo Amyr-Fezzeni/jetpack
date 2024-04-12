@@ -77,7 +77,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       log("Otp code validation false, ${codeController.text} == $currentCode");
       popup(
         context,
-        "Ok",
+       
         cancel: false,
         description: "Le code saisi est incorrect ou expiré",
         title: "Alerte",
