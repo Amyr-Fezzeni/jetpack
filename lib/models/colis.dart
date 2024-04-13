@@ -4,12 +4,15 @@ import 'dart:convert';
 enum ColisStatus {
   inProgress,
   depot,
-  delivery,
+  inDelivery,
+  delivered,
+  deliveredPaid,
   confirmed,
   firstAttempt,
   secondAttempt,
   canceled,
-  clientCanceled
+  clientCanceled,
+  returnDepot,
 }
 
 class Colis {
@@ -26,6 +29,7 @@ class Colis {
   double price;
   bool isFragile;
   bool exchange;
+  bool openable;
   String comment;
   DateTime? creationDate;
   DateTime? pickupDate;
@@ -55,6 +59,7 @@ class Colis {
     required this.expeditorId,
     required this.deliveryId,
     required this.deliveryName,
+    required this.openable
   });
 
   Map<String, dynamic> toMap() {
@@ -79,6 +84,7 @@ class Colis {
       'expeditorId': expeditorId,
       'deliveryId': deliveryId,
       'deliveryName': deliveryName,
+      'openable':openable
     };
   }
 
@@ -95,11 +101,18 @@ class Colis {
       numberOfItems: map['numberOfItems'] as int,
       price: map['price'] as double,
       isFragile: map['isFragile'] as bool,
+      openable: map['openable']?? false,
       exchange: map['exchange'] as bool,
       comment: map['comment'] as String,
-      creationDate: map['creationDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int) : null,
-      pickupDate: map['pickupDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['pickupDate'] as int) : null,
-      deliveryDate: map['deliveryDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int) : null,
+      creationDate: map['creationDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int)
+          : null,
+      pickupDate: map['pickupDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['pickupDate'] as int)
+          : null,
+      deliveryDate: map['deliveryDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
+          : null,
       status: map['status'] as String,
       expeditorId: map['expeditorId'] as String,
       deliveryId: map['deliveryId'] as String,
@@ -111,4 +124,9 @@ class Colis {
 
   factory Colis.fromJson(String source) =>
       Colis.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Colis(id: $id, clientId: $clientId, name: $name, governorate: $governorate, city: $city, address: $address, phone1: $phone1, phone2: $phone2, numberOfItems: $numberOfItems, price: $price, isFragile: $isFragile, exchange: $exchange, openable: $openable, comment: $comment, creationDate: $creationDate, pickupDate: $pickupDate, deliveryDate: $deliveryDate, expeditorId: $expeditorId, deliveryId: $deliveryId, deliveryName: $deliveryName)';
+  }
 }

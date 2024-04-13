@@ -3,6 +3,7 @@ import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/views/widgets/popup.dart';
 
 class CustDropDown<T> extends StatefulWidget {
   final List<CustDropdownMenuItem> items;
@@ -283,5 +284,73 @@ class CustDropdownMenuItem<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return child;
+  }
+}
+
+class SimpleDropDown extends StatefulWidget {
+  final String selectedValue;
+  final String hint;
+  final List<String> values;
+  final Function(String) onChanged;
+  const SimpleDropDown(
+      {super.key,
+      required this.selectedValue,
+      required this.values,
+      required this.onChanged,
+      required this.hint});
+
+  @override
+  State<SimpleDropDown> createState() => _SimpleDropDownState();
+}
+
+class _SimpleDropDownState extends State<SimpleDropDown> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15).copyWith(bottom: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+        color: context.invertedColor.withOpacity(.05),
+        borderRadius: BorderRadius.circular(smallRadius),
+      ),
+      child: InkWell(
+        onTap: () => customPopup(context, Builder(builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: widget.values
+                .map((e) => Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            widget.onChanged(e);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Center(child: Txt(e, bold: true))),
+                        ),
+                        divider()
+                      ],
+                    ))
+                .toList(),
+          );
+        }), maxWidth: false),
+        child: Row(
+          children: [
+            Txt(
+                widget.selectedValue.isNotEmpty
+                    ? widget.selectedValue
+                    : widget.hint,
+                color: widget.selectedValue.isNotEmpty
+                    ? null
+                    : context.invertedColor.withOpacity(.4)),
+            const Spacer(),
+            Icon(Icons.arrow_drop_down_rounded,
+                color: context.iconColor, size: 25)
+          ],
+        ),
+      ),
+    );
   }
 }

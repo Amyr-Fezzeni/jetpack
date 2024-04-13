@@ -5,7 +5,7 @@ import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/agency/agency_list.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
-import 'package:jetpack/views/colis/colis_list.dart';
+import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/home/admin_home.dart';
 import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
                     card(Icons.apartment_rounded, 'Agency',
                         const AgencyListScreen()),
                     card(Icons.local_shipping_rounded, 'Colis',
-                        const ColisListScreen()),
+                        const ColisGridList()),
                     card(Icons.people_rounded, 'Client',
                         const ClientListScreen()),
                   ],

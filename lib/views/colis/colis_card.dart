@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/colis/add_colis.dart';
 
 class ColisCard extends StatelessWidget {
@@ -13,8 +14,15 @@ class ColisCard extends StatelessWidget {
     return Card(
       color: context.bgcolor,
       child: ListTile(
-        title: Txt(colis.name),
-        subtitle: Txt(colis.phone1, size: 10, color: context.iconColor),
+        title: Txt(capitalize(colis.name), bold: true),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Txt(colis.id, size: 10, color: context.primaryColor, bold: true),
+            Txt("${colis.price.toStringAsFixed(2)} Dt",
+                size: 10, color: context.iconColor),
+          ],
+        ),
         trailing: InkWell(
           onTap: () => context.moveTo(AddColis(colis: colis)),
           child: Icon(Icons.arrow_forward_ios_rounded,

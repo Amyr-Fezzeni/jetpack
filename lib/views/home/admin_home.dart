@@ -6,7 +6,7 @@ import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
-import 'package:jetpack/views/colis/colis_list.dart';
+import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 class AdminHomeScreen extends StatefulWidget {
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                     card(Icons.people_outline, 'Delivery',
                         const UsersListScreen(role: Role.delivery)),
                     card(Icons.local_shipping_rounded, 'Colis',
-                        const ColisListScreen()),
+                        const ColisGridList()),
                     card(Icons.people_rounded, 'Client',
                         const ClientListScreen()),
                   ],

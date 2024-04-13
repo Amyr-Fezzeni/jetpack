@@ -8,7 +8,6 @@ class AgencyService {
   static CollectionReference<Map<String, dynamic>> agencyCollection =
       FirebaseFirestore.instance.collection('agency');
 
-
   static Future<String> addAgency(Agency agency) async {
     try {
       await agencyCollection.doc(agency.id).set(agency.toMap());
@@ -19,11 +18,9 @@ class AgencyService {
   }
 }
 
-
 class SectorService {
   static CollectionReference<Map<String, dynamic>> sectorCollection =
       FirebaseFirestore.instance.collection('sector');
-
 
   static Future<String> addSector(Sector sector) async {
     try {
@@ -33,14 +30,26 @@ class SectorService {
     }
     return "true";
   }
+
+  static Future<Sector?> getSector(String governorate) async {
+    try {
+      final sectorDocs = await sectorCollection
+          .where('regions', arrayContains: governorate)
+          .get();
+      return sectorDocs.docs.isEmpty
+          ? null
+          : Sector.fromMap(sectorDocs.docs.first.data());
+    } on Exception {
+      return null;
+    }
+  }
 }
 
 class ClientService {
   static CollectionReference<Map<String, dynamic>> clientCollection =
       FirebaseFirestore.instance.collection('client');
 
-
-  static Future<String> addSector(Client client) async {
+  static Future<String> addClient(Client client) async {
     try {
       await clientCollection.doc(client.id).set(client.toMap());
     } on Exception {

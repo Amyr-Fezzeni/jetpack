@@ -49,7 +49,7 @@ class Client {
   }
 
   String toJson() => json.encode(toMap());
-
+  String getFullName() => "$firstName $lastName";
   factory Client.fromJson(String source) =>
       Client.fromMap(json.decode(source) as Map<String, dynamic>);
 }
