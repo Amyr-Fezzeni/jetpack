@@ -70,10 +70,7 @@ Future<dynamic> popup(BuildContext context,
                             text: txt("Cancel"),
                             h: 40,
                             w: 140,
-                            colors: [
-                              darkRed,
-                              darkRed,
-                            ]),
+                            color: darkRed),
                       gradientButton(
                           function: () {
                             Navigator.pop(context);
@@ -82,7 +79,7 @@ Future<dynamic> popup(BuildContext context,
                             }
                           },
                           text: confirmText,
-                          colors: [context.primaryColor, context.primaryColor],
+                          color:context.primaryColor,
                           h: 40,
                           w: 140),
                     ],
@@ -159,14 +156,14 @@ Future<DateTime?> datePopup(
                           h: 40,
                           w: 140,
                           raduis: smallRadius,
-                          colors: [darkRed, darkRed]),
+                          color: darkRed),
                       gradientButton(
                           function: () {
                             Navigator.pop(context);
                             date = tempDate;
                           },
                           text: txt("Confirm"),
-                          colors: [context.primaryColor, context.primaryColor],
+                          color:context.primaryColor,
                           h: 40,
                           raduis: smallRadius,
                           w: 140),

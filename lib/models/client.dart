@@ -9,17 +9,18 @@ class Client {
   String secondaryPhoneNumber;
   String governorate;
   String city;
+  String region;
   String adress;
-  Client({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.phoneNumber,
-    required this.secondaryPhoneNumber,
-    required this.governorate,
-    required this.city,
-    required this.adress,
-  });
+  Client(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      required this.phoneNumber,
+      required this.secondaryPhoneNumber,
+      required this.governorate,
+      required this.city,
+      required this.adress,
+      required this.region});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -31,6 +32,7 @@ class Client {
       'state': governorate,
       'city': city,
       'adress': adress,
+      'region': region,
       'governorate': governorate
     };
   }
@@ -42,8 +44,9 @@ class Client {
       lastName: map['lastName'] as String,
       phoneNumber: map['phoneNumber'] as String,
       secondaryPhoneNumber: map['secondaryPhoneNumber'] as String,
-      governorate: map['governorate'] as String,
-      city: map['city'] as String,
+      governorate: map['governorate'] ?? '',
+      city: map['city'] ?? '',
+      region: map['region'] ?? '',
       adress: map['adress'] as String,
     );
   }

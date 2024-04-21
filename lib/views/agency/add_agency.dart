@@ -161,7 +161,7 @@ class _AddAgencyState extends State<AddAgency> {
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                        colors: [darkRed, darkRed],
+                        color:darkRed,
                         function: () async {
                           await AgencyService.agencyCollection
                               .doc(agency.id)

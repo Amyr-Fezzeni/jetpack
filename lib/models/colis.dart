@@ -1,18 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 enum ColisStatus {
   inProgress,
+  ready,
+  pickup,
   depot,
   inDelivery,
-  delivered,
-  deliveredPaid,
   confirmed,
-  firstAttempt,
-  secondAttempt,
+  delivered,
+  appointment,
   canceled,
-  clientCanceled,
   returnDepot,
+  closed
 }
 
 class Colis {
@@ -21,6 +23,7 @@ class Colis {
   String name;
   String governorate;
   String city;
+  String region;
   String address;
   String phone1;
   String phone2; // Optional
@@ -31,36 +34,48 @@ class Colis {
   bool exchange;
   bool openable;
   String comment;
+  String deliveryComment;
   DateTime? creationDate;
   DateTime? pickupDate;
+  DateTime? appointmentDate;
   DateTime? deliveryDate;
   String status; // In progress, at the depot, final return
   String expeditorId;
+  String expeditorName;
   String deliveryId;
   String deliveryName;
-  Colis({
-    required this.id,
-    required this.clientId,
-    required this.name,
-    required this.governorate,
-    required this.city,
-    required this.address,
-    required this.phone1,
-    required this.phone2,
-    required this.numberOfItems,
-    required this.price,
-    required this.isFragile,
-    required this.exchange,
-    required this.comment,
-    this.creationDate,
-    this.pickupDate,
-    this.deliveryDate,
-    required this.status,
-    required this.expeditorId,
-    required this.deliveryId,
-    required this.deliveryName,
-    required this.openable
-  });
+  String sectorId;
+  String sectorName;
+  int tentative;
+  Colis(
+      {required this.id,
+      required this.clientId,
+      required this.name,
+      required this.governorate,
+      required this.city,
+      required this.region,
+      required this.address,
+      required this.phone1,
+      required this.phone2,
+      this.numberOfItems = 1,
+      required this.expeditorName,
+      this.tentative = 1,
+      this.price = 0,
+      this.isFragile = true,
+      this.exchange = false,
+      required this.comment,
+      this.deliveryComment = '',
+      this.creationDate,
+      this.pickupDate,
+      this.deliveryDate,
+      required this.status,
+      required this.expeditorId,
+      this.deliveryId = '',
+      this.deliveryName = '',
+      this.sectorId = '',
+      this.sectorName = '',
+      this.appointmentDate,
+      this.openable = true});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -69,14 +84,17 @@ class Colis {
       'name': name,
       'governorate': governorate,
       'city': city,
+      'region': region,
       'address': address,
       'phone1': phone1,
+      'deliveryComment': deliveryComment,
       'phone2': phone2,
       'numberOfItems': numberOfItems,
       'price': price,
       'isFragile': isFragile,
       'exchange': exchange,
       'comment': comment,
+      'tentative': tentative,
       'creationDate': creationDate?.millisecondsSinceEpoch,
       'pickupDate': pickupDate?.millisecondsSinceEpoch,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
@@ -84,7 +102,11 @@ class Colis {
       'expeditorId': expeditorId,
       'deliveryId': deliveryId,
       'deliveryName': deliveryName,
-      'openable':openable
+      'openable': openable,
+      'sectorId': sectorId,
+      'sectorName': sectorName,
+      'expeditorName': expeditorName,
+      'appointmentDate':appointmentDate
     };
   }
 
@@ -95,17 +117,25 @@ class Colis {
       name: map['name'] as String,
       governorate: map['governorate'] as String,
       city: map['city'] as String,
+      region: map['region'] ?? '',
       address: map['address'] as String,
       phone1: map['phone1'] as String,
       phone2: map['phone2'] as String,
       numberOfItems: map['numberOfItems'] as int,
       price: map['price'] as double,
       isFragile: map['isFragile'] as bool,
-      openable: map['openable']?? false,
+      openable: map['openable'] ?? false,
       exchange: map['exchange'] as bool,
       comment: map['comment'] as String,
+      deliveryComment: map['deliveryComment'] ?? '',
+      tentative: map['tentative'] ?? 1,
+      sectorId: map['sectorId'] ?? '',
+      sectorName: map['sectorName'] ?? '',
       creationDate: map['creationDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int)
+          : null,
+      appointmentDate:map['appointmentDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['appointmentDate'] as int)
           : null,
       pickupDate: map['pickupDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['pickupDate'] as int)
@@ -115,6 +145,7 @@ class Colis {
           : null,
       status: map['status'] as String,
       expeditorId: map['expeditorId'] as String,
+      expeditorName: map['expeditorName'] ?? '',
       deliveryId: map['deliveryId'] as String,
       deliveryName: map['deliveryName'] as String,
     );
@@ -128,5 +159,44 @@ class Colis {
   @override
   String toString() {
     return 'Colis(id: $id, clientId: $clientId, name: $name, governorate: $governorate, city: $city, address: $address, phone1: $phone1, phone2: $phone2, numberOfItems: $numberOfItems, price: $price, isFragile: $isFragile, exchange: $exchange, openable: $openable, comment: $comment, creationDate: $creationDate, pickupDate: $pickupDate, deliveryDate: $deliveryDate, expeditorId: $expeditorId, deliveryId: $deliveryId, deliveryName: $deliveryName)';
+  }
+}
+
+getColor(String status) {
+  switch (status) {
+    case "confirmed":
+      return Colors.blue;
+
+    case "delivered":
+      return Colors.green;
+
+    case "returnDepot":
+      return Colors.orange;
+
+    case "canceled":
+      return Colors.red;
+
+    case "appointment":
+      return Colors.orange;
+
+    default:
+      return Colors.black;
+  }
+}
+
+getText(String status) {
+  switch (status) {
+    case "confirmed":
+      return 'Client confirmed';
+    case "delivered":
+      return 'Colis delivered';
+    case "returnDepot":
+      return 'Client not availble';
+    case "canceled":
+      return 'Client canceled';
+    case "appointment":
+      return 'Appointment';
+    default:
+      return 'In delivery';
   }
 }

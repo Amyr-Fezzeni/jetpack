@@ -5,26 +5,22 @@ class RunSheet {
   final String id;
   String agenceId;
   String deliveryId;
-  String expeditorId;
   DateTime? dateCreated;
-  DateTime? date;
+  String date;
   DateTime? collectionDate;
   List<String> colis;
-  List<String> exchangeColis;
-  int tentative;
+
+
   double price;
   String note;
   RunSheet({
     required this.id,
     required this.agenceId,
     required this.deliveryId,
-    required this.expeditorId,
     required this.dateCreated,
     required this.date,
     required this.collectionDate,
     required this.colis,
-    required this.exchangeColis,
-    required this.tentative,
     required this.price,
     required this.note,
   });
@@ -34,13 +30,10 @@ class RunSheet {
       'id': id,
       'agenceId': agenceId,
       'deliveryId': deliveryId,
-      'expeditorId': expeditorId,
       'dateCreated': dateCreated?.millisecondsSinceEpoch,
-      'date': date?.millisecondsSinceEpoch,
+      'date': date,
       'collectionDate': collectionDate?.millisecondsSinceEpoch,
       'colis': colis,
-      'exchangeColis': exchangeColis,
-      'tentative': tentative,
       'price': price,
       'note': note,
     };
@@ -51,13 +44,10 @@ class RunSheet {
       id: map['id'] as String,
       agenceId: map['agenceId'] as String,
       deliveryId: map['deliveryId'] as String,
-      expeditorId: map['expeditorId'] as String,
       dateCreated: map['dateCreated'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int) : null,
-      date: map['date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['date'] as int) : null,
+      date: map['date'] as String,
       collectionDate: map['collectionDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['collectionDate'] as int) : null,
       colis: List<String>.from(map['colis'] ??[]),
-      exchangeColis: List<String>.from(map['exchangeColis'] ??[]),
-      tentative: map['tentative'] as int,
       price: map['price'] as double,
       note: map['note'] as String,
     );
@@ -66,4 +56,9 @@ class RunSheet {
   String toJson() => json.encode(toMap());
 
   factory RunSheet.fromJson(String source) => RunSheet.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'RunSheet(id: $id, agenceId: $agenceId, deliveryId: $deliveryId, dateCreated: $dateCreated, date: $date, collectionDate: $collectionDate, colis: $colis, price: $price, note: $note)';
+  }
 }

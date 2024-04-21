@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,14 +47,17 @@ class _AddColisState extends State<AddColis> {
   bool loading = false;
   late Colis colis;
   late Client client;
+  Sector? sector;
   bool clientExist = false;
   bool validateInfo() {
     List<bool> validators = [];
     validators.addAll([
-      colis.deliveryId.isNotEmpty,
+      colis.sectorId.isNotEmpty,
+      phoneNumberValidator(phoneController.text) == null,
       double.tryParse(items.text) != null && double.tryParse(items.text)! >= 0,
       double.tryParse(price.text) != null && double.tryParse(price.text)! >= 0,
     ]);
+    log(validators.toString());
     return !validators.any((v) => v == false);
   }
 
@@ -64,25 +69,19 @@ class _AddColisState extends State<AddColis> {
 //colis
     colis = widget.colis ??
         Colis(
-          id: generateBarCodeId(),
-          name: '',
-          governorate: '',
-          city: '',
-          address: '',
-          phone1: '',
-          phone2: '',
-          numberOfItems: 0,
-          price: 0,
-          isFragile: false,
-          exchange: false,
-          comment: '',
-          openable: false,
-          status: ColisStatus.inProgress.name,
-          clientId: '',
-          expeditorId: context.userprovider.currentUser!.id,
-          deliveryId: '',
-          deliveryName: '',
-        );
+            id: generateBarCodeId(),
+            name: '',
+            governorate: '',
+            city: '',
+            region: '',
+            address: '',
+            phone1: '',
+            phone2: '',
+            comment: '',
+            status: ColisStatus.inProgress.name,
+            clientId: '',
+            expeditorId: context.userprovider.currentUser!.id,
+            expeditorName: context.userprovider.currentUser!.getFullName());
 
     comment.text = colis.phone1;
     price.text = colis.price.toString();
@@ -96,7 +95,8 @@ class _AddColisState extends State<AddColis> {
         phoneNumber: '',
         secondaryPhoneNumber: '',
         governorate: '',
-        city: '');
+        city: '',
+        region: '');
     firstNameController.text = client.firstName;
     lastNameController.text = client.lastName;
     adress.text = client.adress;
@@ -120,20 +120,25 @@ class _AddColisState extends State<AddColis> {
   }
 
   setSector() async {
-    final Sector? sector = await SectorService.getSector(client.governorate);
+    final Sector? sector = await SectorService.getSector(client.region);
+    log(sector.toString());
     if (sector == null) {
       setState(() {
         colis.deliveryId = '';
         colis.deliveryName = '';
+        colis.sectorId = '';
+        colis.sectorName = '';
       });
       await popup(context,
-          description: "No sector found with governorate data");
+          cancel: false, description: "No sector found with governorate data");
       return;
     }
 
     setState(() {
       colis.deliveryId = sector.delivery['id'];
       colis.deliveryName = sector.delivery['name'];
+      colis.sectorId = sector.id;
+      colis.sectorName = sector.name;
     });
   }
 
@@ -352,19 +357,6 @@ class _AddColisState extends State<AddColis> {
                 //     ),
                 //   ),
                 // ),
-
-                CustomTextField(
-                    hint: txt("First name"),
-                    controller: firstNameController,
-                    validator: nameValidator,
-                    keybordType: TextInputType.name,
-                    submitted: submitted),
-                CustomTextField(
-                    hint: txt("Last name"),
-                    controller: lastNameController,
-                    validator: nameValidator,
-                    keybordType: TextInputType.name,
-                    submitted: submitted),
                 Row(
                   children: [
                     Expanded(
@@ -372,6 +364,7 @@ class _AddColisState extends State<AddColis> {
                           hint: txt("Phone number"),
                           marginV: 0,
                           controller: phoneController,
+                          validator: phoneNumberValidator,
                           keybordType: TextInputType.phone,
                           submitted: submitted),
                     ),
@@ -477,7 +470,10 @@ class _AddColisState extends State<AddColis> {
                                               client.secondaryPhoneNumber;
                                           adress.text = client.adress;
                                           clientExist = true;
-
+                                          colis.governorate =
+                                              client.governorate;
+                                          colis.city = client.city;
+                                          colis.region = client.region;
                                           Navigator.pop(context);
                                           setState(() {});
                                           setSector();
@@ -495,32 +491,64 @@ class _AddColisState extends State<AddColis> {
                 ),
                 const Gap(10),
                 CustomTextField(
+                    hint: txt("First name"),
+                    controller: firstNameController,
+                    validator: nameValidator,
+                    keybordType: TextInputType.name,
+                    submitted: submitted),
+                CustomTextField(
+                    hint: txt("Last name"),
+                    controller: lastNameController,
+                    keybordType: TextInputType.name,
+                    submitted: submitted),
+
+                CustomTextField(
                     hint: txt("Secondary phone number"),
                     controller: secondaryPhoneController,
+                    validator: phoneNumberValidator,
                     keybordType: TextInputType.phone,
                     submitted: submitted),
 
                 SimpleDropDown(
-                  selectedValue: client.city,
-                  hint: "City",
-                  onChanged: (city) => setState(() {
-                    client.city = city;
-                    colis.city = city;
+                  selectedValue: colis.governorate,
+                  hint: "Governorate",
+                  onChanged: (governorate) => setState(() {
+                    client.governorate = governorate;
+                    colis.governorate = governorate;
+                    client.city = '';
+                    colis.city = '';
+                    client.region = '';
+                    colis.region = '';
                   }),
                   values: tunisData.keys.toList(),
                 ),
-                if (client.city.isNotEmpty) ...[
+                if (colis.governorate.isNotEmpty)
                   SimpleDropDown(
-                    selectedValue: client.governorate,
-                    hint: "Governorate",
-                    onChanged: (governorate) {
+                    selectedValue: colis.city,
+                    hint: "City",
+                    onChanged: (city) {
                       setState(() {
-                        client.governorate = governorate;
-                        colis.governorate = governorate;
+                        client.city = city;
+                        colis.city = city;
+                        client.region = '';
+                        colis.region = '';
+                      });
+                    },
+                    values: tunisData[colis.governorate]!.keys.toList(),
+                  ),
+                if (colis.city.isNotEmpty) ...[
+                  SimpleDropDown(
+                    selectedValue: colis.region,
+                    hint: "Region",
+                    onChanged: (region) {
+                      setState(() {
+                        client.region = region;
+                        colis.region = region;
                       });
                       setSector();
                     },
-                    values: tunisData[client.city]!.keys.toList(),
+                    values: tunisData[colis.governorate]![colis.city]!
+                        as List<String>,
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 15)
@@ -534,11 +562,11 @@ class _AddColisState extends State<AddColis> {
                     child: Row(
                       children: [
                         Txt(
-                            colis.deliveryName.isEmpty
+                            colis.sectorName.isEmpty
                                 ? "No sector found"
-                                : "Delivery: ${colis.deliveryName}",
-                            color: context.invertedColor.withOpacity(
-                                colis.deliveryName.isEmpty ? .4 : 1))
+                                : colis.sectorName,
+                            color: context.invertedColor
+                                .withOpacity(colis.sectorName.isEmpty ? .4 : 1))
                       ],
                     ),
                   )
@@ -571,7 +599,7 @@ class _AddColisState extends State<AddColis> {
                     submitted: submitted),
                 CustomTextField(
                     hint: txt("0"),
-                    label: txt("Price (Dt)"),
+                    label: txt("Price (TND)"),
                     controller: price,
                     keybordType: TextInputType.number,
                     validator: (value) {
@@ -640,29 +668,29 @@ class _AddColisState extends State<AddColis> {
                   ),
                 ),
                 const Gap(20),
-                if (widget.colis != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15)
-                        .copyWith(bottom: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Txt("Status", bold: true),
-                        const Gap(10),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: [
-                            ...ColisStatus.values.map((status) => checkBox(
-                                colis.status == status.name,
-                                txt(status.name),
-                                () => setState(
-                                    () => colis.status = status.name))),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                // if (widget.colis != null)
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 15)
+                //         .copyWith(bottom: 20),
+                //     child: Column(
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         Txt("Status", bold: true),
+                //         const Gap(10),
+                //         Wrap(
+                //           spacing: 10,
+                //           runSpacing: 10,
+                //           children: [
+                //             ...ColisStatus.values.map((status) => checkBox(
+                //                 colis.status == status.name,
+                //                 txt(status.name),
+                //                 () => setState(
+                //                     () => colis.status = status.name))),
+                //           ],
+                //         ),
+                //       ],
+                //     ),
+                //   ),
                 context.userprovider.isLoading
                     ? Center(
                         child: Container(
@@ -743,7 +771,7 @@ class _AddColisState extends State<AddColis> {
                     child: gradientButton(
                       text: txt("Delete"),
                       w: context.w - 30,
-                      colors: [darkRed, darkRed],
+                      color: darkRed,
                       function: () async {
                         await ColisService.colisCollection
                             .doc(colis.id)

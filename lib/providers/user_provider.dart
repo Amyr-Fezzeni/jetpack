@@ -3,8 +3,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
+import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/splash%20screen/custom_splash_screen.dart';
 import 'package:provider/provider.dart';
 import '../constants/fixed_messages.dart';
@@ -51,9 +53,13 @@ class UserProvider with ChangeNotifier {
   Future<void> removeData() async {
     await UserService.removeFcm(currentUser!.id);
     await UserService.connectStatus(true);
-    NavigationService.navigatorKey.currentContext!
-        .read<NotificationProvider>()
+    NavigationService.navigatorKey.currentContext!.notificationProvider
         .removeNotificationStream();
+    NavigationService.navigatorKey.currentContext!.expeditorRead
+        .stopColisStream();
+    NavigationService.navigatorKey.currentContext!.deliveryRead
+        .stopColisStream();
+    NavigationService.navigatorKey.currentContext!.adminRead.stopColisStream();
 
     stopUserListen();
     currentUser = null;
@@ -91,7 +97,18 @@ class UserProvider with ChangeNotifier {
         DataPrefrences.setPassword(generateMD5(password));
       }
       await UserService.saveFcm(user.id);
-
+      if (currentUser!.role == Role.admin) {
+        NavigationService.navigatorKey.currentContext!.adminRead
+            .startColisStream();
+      }
+      if (currentUser!.role == Role.expeditor) {
+        NavigationService.navigatorKey.currentContext!.expeditorRead
+            .startColisStream();
+      }
+      if (currentUser!.role == Role.delivery) {
+        NavigationService.navigatorKey.currentContext!.deliveryRead
+            .startColisStream();
+      }
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const StructureHomeScreen()),
           (Route<dynamic> route) => false);
@@ -111,6 +128,18 @@ class UserProvider with ChangeNotifier {
       NavigationService.navigatorKey.currentContext!
           .read<NotificationProvider>()
           .startNotificationsListen();
+      if (currentUser!.role == Role.admin) {
+        NavigationService.navigatorKey.currentContext!.adminRead
+            .startColisStream();
+      }
+      if (currentUser!.role == Role.expeditor) {
+        NavigationService.navigatorKey.currentContext!.expeditorRead
+            .startColisStream();
+      }
+      if (currentUser!.role == Role.delivery) {
+        NavigationService.navigatorKey.currentContext!.deliveryRead
+            .startColisStream();
+      }
       UserService.saveFcm(user.id);
       UserService.connectStatus(true);
       Navigator.of(NavigationService.navigatorKey.currentContext!)
@@ -121,8 +150,6 @@ class UserProvider with ChangeNotifier {
       return false;
     }
   }
-
-
 
   Future<void> changePassword(BuildContext context, String oldPassword,
       String newPassword, String newPasswordConfirmed) async {
@@ -169,11 +196,9 @@ class UserProvider with ChangeNotifier {
 
     bool result = await UserService.changeName(currentUser!);
     if (result) {
-      await popup(context,
-          cancel: false, description: "${txt(nameSuccess)}.");
+      await popup(context, cancel: false, description: "${txt(nameSuccess)}.");
     } else {
-      await popup(context,
-          cancel: false, description: "${txt(defaultError)}.");
+      await popup(context, cancel: false, description: "${txt(defaultError)}.");
     }
     Navigator.pop(context);
     // updateUser();
@@ -188,12 +213,10 @@ class UserProvider with ChangeNotifier {
     }
     bool result = await UserService.changeEmail(currentUser!, email);
     if (result) {
-      await popup(context,
-          cancel: false, description: "${txt(emailSuccess)}.");
+      await popup(context, cancel: false, description: "${txt(emailSuccess)}.");
       Navigator.pop(context);
     } else {
-      await popup(context,
-          cancel: false, description: "${txt(emailError)}.");
+      await popup(context, cancel: false, description: "${txt(emailError)}.");
     }
 
     // updateUser();

@@ -54,6 +54,7 @@ class _AddClientState extends State<AddClient> {
             firstName: '',
             lastName: '',
             adress: '',
+            region: '',
             phoneNumber: '',
             secondaryPhoneNumber: '',
             governorate: '',
@@ -108,37 +109,42 @@ class _AddClientState extends State<AddClient> {
                       controller: secondaryPhoneController,
                       keybordType: TextInputType.phone,
                       submitted: submitted),
-                  CustDropDown<String>(
-                      maxListHeight: 150,
-                      hintText: txt('City'),
-                      defaultSelectedIndex: client.city.isEmpty
-                          ? -1
-                          : tunisData.keys.toList().indexOf(client.city),
-                      items: tunisData.keys
-                          .map((e) =>
-                              CustDropdownMenuItem(value: e, child: Txt(e)))
-                          .toList(),
-                      onChanged: (value) =>
-                          setState(() => client.city = value)),
-                  const Gap(15),
-                  if (client.city.isNotEmpty) ...[
-                    CustDropDown<String>(
-                        maxListHeight: 150,
-                        hintText: txt('Governorate'),
-                        defaultSelectedIndex: client.governorate.isEmpty
-                            ? -1
-                            : tunisData[client.city]!
-                                .keys
-                                .toList()
-                                .indexOf(client.governorate),
-                        items: tunisData[client.city]!
-                            .keys
-                            .map((e) =>
-                                CustDropdownMenuItem(value: e, child: Txt(e)))
-                            .toList(),
-                        onChanged: (value) =>
-                            setState(() => client.governorate = value)),
-                    const Gap(15)
+                  ...[
+                    SimpleDropDown(
+                      selectedValue: client.governorate,
+                      hint: "Governorate",
+                      onChanged: (governorate) => setState(() {
+                        client.governorate = governorate;
+                        client.city = '';
+                        client.region = '';
+                      }),
+                      values: tunisData.keys.toList(),
+                    ),
+                    if (client.governorate.isNotEmpty)
+                      SimpleDropDown(
+                        selectedValue: client.city,
+                        hint: "City",
+                        onChanged: (city) {
+                          setState(() {
+                            client.city = city;
+                            client.region = '';
+                          });
+                        },
+                        values: tunisData[client.governorate]!.keys.toList(),
+                      ),
+                    if (client.city.isNotEmpty) ...[
+                      SimpleDropDown(
+                        selectedValue: client.region,
+                        hint: "Region",
+                        onChanged: (region) {
+                          setState(() {
+                            client.region = region;
+                          });
+                        },
+                        values: tunisData[client.governorate]![client.city]!
+                            as List<String>,
+                      ),
+                    ],
                   ],
                   CustomTextField(
                       hint: txt("Client adress"),
@@ -196,13 +202,12 @@ class _AddClientState extends State<AddClient> {
                           ),
                         ),
                   if (widget.client != null &&
-                      client.id != context.userId &&
-                      context.currentUser.role == Role.admin)
+                      context.currentUser.role == Role.expeditor)
                     Center(
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                        colors: [darkRed, darkRed],
+                        color:darkRed,
                         function: () async {
                           await ClientService.clientCollection
                               .doc(client.id)

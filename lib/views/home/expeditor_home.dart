@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/constants/style.dart';
-import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
-import 'package:jetpack/views/agency/agency_list.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
 import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/home/admin_home.dart';
-import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 
 class ExpeditorHomeScreen extends StatefulWidget {
@@ -47,31 +43,10 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
                   ],
                 ),
                 const Gap(20),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    height: 45,
-                    width: 45,
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                        boxShadow: defaultShadow,
-                        borderRadius: BorderRadius.circular(smallRadius),
-                        color: context.bgcolor),
-                    child: Icon(Icons.qr_code_scanner_rounded,
-                        color: context.primaryColor, size: 25),
-                  ),
-                ),
-                const Gap(10),
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    card(Icons.people_outline_outlined, 'Epeditor',
-                        const UsersListScreen(role: Role.expeditor)),
-                    card(Icons.people_outline, 'Delivery',
-                        const UsersListScreen(role: Role.delivery)),
-                    card(Icons.apartment_rounded, 'Agency',
-                        const AgencyListScreen()),
                     card(Icons.local_shipping_rounded, 'Colis',
                         const ColisGridList()),
                     card(Icons.people_rounded, 'Client',

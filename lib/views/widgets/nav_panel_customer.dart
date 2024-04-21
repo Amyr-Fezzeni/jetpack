@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/views/agency/agency_list.dart';
-import 'package:jetpack/views/profile/profile.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/sector/sector_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
@@ -32,30 +31,33 @@ class NavPanel extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              InkWell(
-                onTap: () => context.moveTo(const ProfileScreen()),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Row(children: [
-                      profileIcon(size: 50),
-                      Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Txt(context.currentUser.getFullName()))
-                    ]),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-              divider(bottom: 5),
-              if ([Role.admin, Role.expeditor]
-                  .contains(context.currentUser.role))
+              const SizedBox(height: 20),
+              Row(children: [
+                profileIcon(size: 50, url: context.currentUser.photo),
+                Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                            child: Txt(context.currentUser.getFullName(),
+                                bold: true)),
+                        Flexible(
+                          child: Txt(
+                              "${context.currentUser.role == Role.admin ? 'Admin' : context.currentUser.role == Role.expeditor ? 'Expeditor' : 'Delivery'} account",
+                              color: context.iconColor),
+                        ),
+                      ],
+                    ))
+              ]),
+              divider(bottom: 5, top: 5),
+              if ([Role.admin].contains(context.currentUser.role))
                 buildMenuTile(
                     title: txt('Agency'),
                     icon: Icons.apartment_rounded,
                     screen: const AgencyListScreen()),
-              if ([Role.admin, Role.expeditor]
-                  .contains(context.currentUser.role))
+              if ([Role.admin].contains(context.currentUser.role))
                 buildMenuTile(
                     title: txt('Sector'),
                     icon: Icons.location_on,
@@ -77,7 +79,6 @@ class NavPanel extends StatelessWidget {
                     Future.delayed(const Duration(milliseconds: 100)).then(
                         (value) => popup(
                             NavigationService.navigatorKey.currentContext!,
-                           
                             confirmFunction: () => NavigationService
                                 .navigatorKey.currentContext!
                                 .read<UserProvider>()

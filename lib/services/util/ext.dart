@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/app_settings/theme.dart';
+import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/providers/admin_provider.dart';
+import 'package:jetpack/providers/delivery_provider.dart';
+import 'package:jetpack/providers/expeditor_provider.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
 import 'package:jetpack/services/util/language.dart';
@@ -30,6 +34,7 @@ extension ContextExt on BuildContext {
   UserProvider get userprovider => read<UserProvider>();
   LanguageModel get currentLanguage => watch<UserProvider>().currentLanguage;
   String get userId => userprovider.currentUser!.id;
+  Role get role => userprovider.currentUser!.role;
   bool get isDark => watch<ThemeNotifier>().appTheme == AppThemeModel.system
       ? getSystemTheme()
       : watch<ThemeNotifier>().appTheme == AppThemeModel.dark;
@@ -53,7 +58,19 @@ extension ContextExt on BuildContext {
       barrierColor: Colors.transparent,
       context: this,
       builder: (context) => screen);
+  pop() => Navigator.pop(this);
 
+
+  //notifications
   NotificationProvider get notificationProvider => read<NotificationProvider>();
   NotificationProvider get watchNotification => watch<NotificationProvider>();
+
+  AdminProvider get adminRead => read<AdminProvider>();
+  AdminProvider get adminWatch => watch<AdminProvider>();
+
+  DeliveryProvider get deliveryRead => read<DeliveryProvider>();
+  DeliveryProvider get deliveryWatch => watch<DeliveryProvider>();
+
+  ExpeditorProvider get expeditorRead => read<ExpeditorProvider>();
+  ExpeditorProvider get expeditorWatch => watch<ExpeditorProvider>();
 }

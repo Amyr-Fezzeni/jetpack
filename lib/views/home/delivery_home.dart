@@ -1,20 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
-import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/services/util/logic_service.dart';
+import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DeliveryHomeScreen extends StatefulWidget {
   const DeliveryHomeScreen({super.key});
@@ -25,16 +22,10 @@ class DeliveryHomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<DeliveryHomeScreen> {
   String currentFilter = "Runsheet";
-  late final Stream<QuerySnapshot<Map<String, dynamic>>> colisFunction;
 
   @override
   void initState() {
     super.initState();
-    colisFunction = FirebaseFirestore.instance
-        .collection('colis')
-        .where('status', isEqualTo: ColisStatus.depot.name)
-        .where('deliveryId', isEqualTo: context.userId)
-        .snapshots();
   }
 
   @override
@@ -42,6 +33,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
     return Scaffold(
       backgroundColor: context.bgcolor,
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
@@ -133,11 +125,11 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   {
                     switch (currentFilter) {
                       case "Runsheet":
-                        return runsheetCard();
+                        return runsheetWidget();
                       case "Paiement":
-                        return paimentCard();
+                        return paimentWidget();
                       case "Retour":
-                        return returnCard();
+                        return returnWidget();
                       case "Pickup":
                         return pickupWidget();
 
@@ -152,34 +144,83 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 
-  Widget runsheetCard() {
-    return Card(
-      color: context.bgcolor,
-      child: InkWell(
-        onTap: () => context.showPopUpScreen(DraggableScrollableSheet(
-            initialChildSize: 1,
-            builder: (context, scroll) => SingleChildScrollView(
-                  controller: scroll,
-                  child: Container(
+  Widget runsheetWidget() {
+    return Column(
+      children: [
+        if (context.deliveryWatch.depot.isNotEmpty)
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(smallRadius),
+                  border:
+                      Border.all(color: context.invertedColor.withOpacity(.2))),
+              child: Center(
+                child: Txt(
+                    "you have ${context.deliveryWatch.depot.length} colis at depot"),
+              )),
+        Column(
+          children: context.deliveryWatch.depot
+              .map((colis) => Card(
                     color: context.bgcolor,
-                    height: 600,
-                    width: context.w,
-                  ),
-                ))),
-        child: ListTile(
-          title: Txt("name"),
-          subtitle: Txt("description", size: 10, color: context.iconColor),
-          leading: profileIcon(),
-          trailing: InkWell(
-            onTap: () => {launchUrl(Uri(scheme: 'tel', path: '50100100'))},
-            child: const Icon(Icons.phone, color: Colors.green, size: 25),
-          ),
+                    child: ListTile(
+                      title: Txt(colis.name, bold: true),
+                      subtitle: Txt(colis.id,
+                          size: 10, color: context.primaryColor, bold: true),
+                      trailing: InkWell(
+                        onTap: () =>
+                            customPopup(context, ColisDetails(colis: colis)),
+                        child: Icon(Icons.edit_document,
+                            color: context.iconColor, size: 35),
+                      ),
+                    ),
+                  ))
+              .toList(),
         ),
-      ),
+        const Gap(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            borderButton(
+                text: 'End of day report',
+                textColor: context.invertedColor.withOpacity(.6),
+                color: context.invertedColor.withOpacity(.2),
+                trailing: Icon(
+                  Icons.download,
+                  color: context.invertedColor.withOpacity(.6),
+                  size: 20,
+                ),
+                function: () {
+                  context.deliveryRead.generateDayReport();
+                }),
+            borderButton(
+                text: 'Generate runsheet',
+                textColor: context.primaryColor,
+                opacity: 0.1,
+                trailing: Icon(
+                  Icons.download,
+                  color: context.primaryColor,
+                  size: 20,
+                ),
+                function: () {}),
+          ],
+        ),
+        const Gap(10),
+        if (context.deliveryWatch.runsheetData != null)
+          SizedBox(
+            height: context.h,
+            child: ReorderableListView(
+                children: context.deliveryWatch.runsheetData!.colis
+                    .map((id) => colisRunsheetCard(id))
+                    .toList(),
+                onReorder: (oldIndex, newIndex) => context.deliveryRead
+                    .updateOrderRunsheet(oldIndex, newIndex)),
+          ),
+      ],
     );
   }
 
-  Widget paimentCard() {
+  Widget paimentWidget() {
     return Card(
       color: context.bgcolor,
       child: InkWell(
@@ -196,7 +237,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 
-  Widget returnCard() {
+  Widget returnWidget() {
     return Card(
       color: context.bgcolor,
       child: InkWell(
@@ -216,62 +257,68 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
   Widget pickupWidget() {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: () async {
-              String? barcode = await scanQrcode();
-              log(barcode.toString());
+        // Align(
+        //   alignment: Alignment.center,
+        //   child: InkWell(
+        //     onTap: () async {
+        //       String? barcode = await scanQrcode();
+        //       log(barcode.toString());
 
-              popup(context, 
-                  description: barcode.toString(), cancel: false);
-            },
-            child: Container(
-              height: 45,
-              width: 45,
-              margin: const EdgeInsets.only(top: 10, bottom: 10),
+        //       popup(context, description: barcode.toString(), cancel: false);
+        //     },
+        //     child: Container(
+        //       height: 45,
+        //       width: 45,
+        //       margin: const EdgeInsets.only(top: 10, bottom: 10),
+        //       decoration: BoxDecoration(
+        //           boxShadow: defaultShadow,
+        //           borderRadius: BorderRadius.circular(smallRadius),
+        //           color: context.bgcolor),
+        //       child: Icon(Icons.qr_code_scanner_rounded,
+        //           color: context.primaryColor, size: 35),
+        //     ),
+        //   ),
+        // ),
+        if (context.deliveryWatch.pickup.isNotEmpty)
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                  boxShadow: defaultShadow,
                   borderRadius: BorderRadius.circular(smallRadius),
-                  color: context.bgcolor),
-              child: Icon(Icons.qr_code_scanner_rounded,
-                  color: context.primaryColor, size: 35),
-            ),
-          ),
+                  border:
+                      Border.all(color: context.invertedColor.withOpacity(.2))),
+              child: Center(
+                child: Txt(
+                    "you have ${context.deliveryWatch.pickup.length} manifest to pickup"),
+              )),
+        Column(
+          children: context.deliveryWatch.pickup
+              .map((manifest) => Card(
+                    color: context.bgcolor,
+                    child: ListTile(
+                      title: Txt(manifest.expeditorName, bold: true),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Txt(manifest.id,
+                              translate: false,
+                              size: 10,
+                              color: context.primaryColor),
+                          Txt("${manifest.colis.length} colis",
+                              size: 10, translate: false, bold: true),
+                        ],
+                      ),
+                      trailing: InkWell(
+                        onTap: () async {
+                          context.deliveryRead.scanManifest(manifest);
+                        },
+                        child: Icon(Icons.qr_code_scanner_rounded,
+                            color: context.iconColor, size: 35),
+                      ),
+                    ),
+                  ))
+              .toList(),
         ),
-        StreamBuilder(
-            stream: colisFunction,
-            builder: (context, data) {
-              if (data.connectionState == ConnectionState.active &&
-                  data.data != null) {
-                return Column(
-                  children: data.data!.docs
-                      .map((e) => Colis.fromMap(e.data()))
-                      .map((colis) => Card(
-                            color: context.bgcolor,
-                            child: ListTile(
-                              title: Txt(colis.name, bold: true),
-                              subtitle: Txt(colis.id,
-                                  size: 10,
-                                  color: context.primaryColor,
-                                  bold: true),
-                              trailing: InkWell(
-                                onTap: () => customPopup(
-                                    context,
-                                    ColisDetails(
-                                      colis: colis,
-                                    )),
-                                child: Icon(Icons.edit_document,
-                                    color: context.iconColor, size: 35),
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-        const Gap(10),
       ],
     );
   }

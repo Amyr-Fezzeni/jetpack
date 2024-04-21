@@ -113,6 +113,22 @@ class _AddUserState extends State<AddUser> {
     });
   }
 
+  setSector() async {
+    final Sector? sector = await SectorService.getSector(user.region);
+    if (sector == null) {
+      setState(() {
+        user.sector = {"id": '', "name": ''};
+      });
+      await popup(context,
+          cancel: false, description: "No sector found with adress data");
+      return;
+    }
+
+    setState(() {
+      user.sector = {"id": sector.id, "name": sector.name};
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -349,52 +365,49 @@ class _AddUserState extends State<AddUser> {
                         ),
                       ),
                     ),
-                  if ([Role.delivery].contains(user.role)) ...[
-                    CustDropDown<String>(
-                        maxListHeight: 150,
-                        hintText: txt('City'),
-                        defaultSelectedIndex: city.isEmpty
-                            ? -1
-                            : tunisData.keys.toList().indexOf(city),
-                        items: tunisData.keys
-                            .map((e) =>
-                                CustDropdownMenuItem(value: e, child: Txt(e)))
-                            .toList(),
-                        onChanged: (value) => setState(() => city = value)),
-                    const Gap(15),
-                    if (city.isNotEmpty) ...[
-                      CustDropDown<String>(
-                          maxListHeight: 150,
-                          hintText: txt('Governorate'),
-                          defaultSelectedIndex: -1,
-                          items: tunisData[city]!
-                              .keys
-                              .map((e) =>
-                                  CustDropdownMenuItem(value: e, child: Txt(e)))
-                              .toList(),
-                          onChanged: (value) => setState(() {
-                                final sectorsList = sectors.where(
-                                    (sector) => sector.regions.contains(value));
+                  // if ([Role.delivery].contains(user.role))
 
-                                setState(() {
-                                  user.sector = {
-                                    "id": sectorsList.isNotEmpty
-                                        ? sectorsList.first.id
-                                        : '',
-                                    "name": sectorsList.isNotEmpty
-                                        ? sectorsList.first.name
-                                        : ''
-                                  };
-                                });
-                              })),
-                      const Gap(15),
-                    ],
-                    Container(
-                        height: 50,
-                        width: double.maxFinite,
+                  ...[
+                    SimpleDropDown(
+                      selectedValue: user.governorate,
+                      hint: "Governorate",
+                      onChanged: (governorate) => setState(() {
+                        user.governorate = governorate;
+                        user.city = '';
+                        user.region = '';
+                      }),
+                      values: tunisData.keys.toList(),
+                    ),
+                    if (user.governorate.isNotEmpty)
+                      SimpleDropDown(
+                        selectedValue: user.city,
+                        hint: "City",
+                        onChanged: (city) {
+                          setState(() {
+                            user.city = city;
+                            user.region = '';
+                          });
+                        },
+                        values: tunisData[user.governorate]!.keys.toList(),
+                      ),
+                    if (user.city.isNotEmpty) ...[
+                      SimpleDropDown(
+                        selectedValue: user.region,
+                        hint: "Region",
+                        onChanged: (region) {
+                          setState(() {
+                            user.region = region;
+                          });
+                          setSector();
+                        },
+                        values: tunisData[user.governorate]![user.city]!
+                            as List<String>,
+                      ),
+                      Container(
                         margin: const EdgeInsets.symmetric(horizontal: 15)
                             .copyWith(bottom: 15),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
                         decoration: BoxDecoration(
                           color: context.invertedColor.withOpacity(.05),
                           borderRadius: BorderRadius.circular(smallRadius),
@@ -403,13 +416,14 @@ class _AddUserState extends State<AddUser> {
                           children: [
                             Txt(
                                 user.sector['name'].isEmpty
-                                    ? 'No sector found'
-                                    : user.sector['name'],
-                                bold: user.sector['name'].isNotEmpty,
+                                    ? "No sector found"
+                                    : "Sector: ${user.sector['name']}",
                                 color: context.invertedColor.withOpacity(
-                                    user.sector['name'].isEmpty ? .4 : 1)),
+                                    user.sector['name'].isEmpty ? .4 : 1))
                           ],
-                        )),
+                        ),
+                      )
+                    ],
                   ],
                   CustomTextField(
                       hint: txt("Adress"),
@@ -548,7 +562,7 @@ class _AddUserState extends State<AddUser> {
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                        colors: [darkRed, darkRed],
+                         color:darkRed,
                         function: () async {
                           await UserService.userCollection
                               .doc(user.id)

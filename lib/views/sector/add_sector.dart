@@ -48,6 +48,7 @@ class _AddSectorState extends State<AddSector> {
         Sector(
             id: generateId(),
             name: '',
+            governorate: '',
             city: '',
             delivery: {"id": '', "name": ''},
             regions: []);
@@ -122,34 +123,41 @@ class _AddSectorState extends State<AddSector> {
                       ),
                     ),
                   ),
-                  CustDropDown<String>(
-                      maxListHeight: 150,
-                      hintText: txt('City'),
-                      defaultSelectedIndex: sector.city.isEmpty
-                          ? -1
-                          : tunisData.keys.toList().indexOf(sector.city),
-                      items: tunisData.keys
-                          .map((e) =>
-                              CustDropdownMenuItem(value: e, child: Txt(e)))
-                          .toList(),
-                      onChanged: (value) =>
-                          setState(() => sector.city = value)),
-                  const Gap(15),
-                  if (sector.city.isNotEmpty) ...[
-                    CustDropDown<String>(
-                        maxListHeight: 150,
-                        hintText: txt('Governorate'),
-                        defaultSelectedIndex: -1,
-                        items: tunisData[sector.city]!
-                            .keys
-                            .map((e) =>
-                                CustDropdownMenuItem(value: e, child: Txt(e)))
-                            .toList(),
-                        onChanged: (value) =>
-                            setState(() => sector.regions.add(value))),
-                    const Gap(15)
+                  ...[
+                    SimpleDropDown(
+                      selectedValue: sector.governorate,
+                      hint: "Governorate",
+                      onChanged: (governorate) => setState(() {
+                        sector.governorate = governorate;
+                        sector.city = '';
+                      }),
+                      values: tunisData.keys.toList(),
+                    ),
+                    if (sector.governorate.isNotEmpty)
+                      SimpleDropDown(
+                        selectedValue: sector.city,
+                        hint: "City",
+                        onChanged: (city) {
+                          setState(() {
+                            sector.city = city;
+                          });
+                        },
+                        values: tunisData[sector.governorate]!.keys.toList(),
+                      ),
+                    if (sector.city.isNotEmpty) ...[
+                      SimpleDropDown(
+                        selectedValue: '',
+                        hint: "Region",
+                        onChanged: (region) {
+                          setState(() {
+                            sector.regions.add(region);
+                          });
+                        },
+                        values: tunisData[sector.governorate]![sector.city]!
+                            as List<String>,
+                      ),
+                    ],
                   ],
-                 
                   ...sector.regions.map((e) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Column(
@@ -220,7 +228,7 @@ class _AddSectorState extends State<AddSector> {
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                        colors: [darkRed, darkRed],
+                         color:darkRed,
                         function: () async {
                           await SectorService.sectorCollection
                               .doc(sector.id)

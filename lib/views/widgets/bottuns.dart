@@ -13,53 +13,46 @@ Widget gradientButton(
         {required Function? function,
         required String text,
         Widget? widget,
-        List<Color>? colors,
+        Color? color,
         double? w,
         double raduis = smallRadius,
         double h = 50}) =>
-    Container(
-      width: w,
-      constraints: BoxConstraints(minHeight: h),
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: colors ??
-              [
-                NavigationService.navigatorKey.currentContext!.primaryColor,
-                NavigationService.navigatorKey.currentContext!.primaryColor
-              ],
+    Builder(builder: (context) {
+      return Container(
+        width: w,
+        constraints: BoxConstraints(minHeight: h),
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          color: color ?? context.primaryColor,
+          borderRadius: BorderRadius.all(Radius.circular(raduis)),
         ),
-        borderRadius: BorderRadius.all(Radius.circular(raduis)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: InkWell(
-        onTap: () async {
-          if (function != null) {
-            function();
-          }
-        },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              text,
-              style: NavigationService.navigatorKey.currentContext!.text
-                  .copyWith(fontSize: 14, color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-            if (widget != null) ...[
-              const SizedBox(
-                width: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: InkWell(
+          onTap: () async {
+            if (function != null) {
+              function();
+            }
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                text,
+                style: context.text.copyWith(fontSize: 14, color: Colors.white),
+                textAlign: TextAlign.center,
               ),
-              widget,
-            ]
-          ],
+              if (widget != null) ...[
+                const SizedBox(
+                  width: 0,
+                ),
+                widget,
+              ]
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
 
 Widget socialMediaButton(
     {required Function? function,
@@ -188,6 +181,7 @@ Widget borderButton(
     Widget? trailing,
     bool bold = false,
     double border = 2,
+   
     double? w}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(radius),
@@ -322,3 +316,20 @@ Widget checkBox(bool value, String title, Function() function,
         ],
       ),
     );
+
+Widget phoneWidget(String phone, {required String id}) =>
+    Builder(builder: (context) {
+      return InkWell(
+        onTap: () {},
+        child: Container(
+          height: 40,
+          width: 100,
+          decoration: BoxDecoration(
+              boxShadow: defaultShadow,
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(smallRadius)),
+          child: const Center(
+              child: Icon(Icons.phone, color: Colors.white, size: 30)),
+        ),
+      );
+    });

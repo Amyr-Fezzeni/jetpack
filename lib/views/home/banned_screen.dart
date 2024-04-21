@@ -32,7 +32,7 @@ class BannedScreen extends StatelessWidget {
             const Spacer(),
             gradientButton(
                 function: () => context.read<UserProvider>().logOut(context),
-                colors: [darkBgColor, darkBgColor],
+                 color:darkBgColor,
                 text: txt("Log out")),
             const Spacer(),
           ],

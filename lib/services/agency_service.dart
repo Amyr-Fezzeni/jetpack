@@ -31,11 +31,11 @@ class SectorService {
     return "true";
   }
 
-  static Future<Sector?> getSector(String governorate) async {
+  static Future<Sector?> getSector(String region) async {
     try {
-      final sectorDocs = await sectorCollection
-          .where('regions', arrayContains: governorate)
-          .get();
+      final sectorDocs =
+          await sectorCollection.where('regions', arrayContains: region).get();
+      // log(sectorDocs.docs.first.data().toString());
       return sectorDocs.docs.isEmpty
           ? null
           : Sector.fromMap(sectorDocs.docs.first.data());

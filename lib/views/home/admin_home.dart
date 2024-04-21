@@ -9,6 +9,7 @@ import 'package:jetpack/views/clients/clients_list.dart';
 import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
 
@@ -17,7 +18,6 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<AdminHomeScreen> {
-  String currentFilter = "Runsheet";
   @override
   Widget build(BuildContext context) {
     return Scaffold(

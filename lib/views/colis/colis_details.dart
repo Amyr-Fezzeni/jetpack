@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
+import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/loader.dart';
 
 class ColisDetails extends StatelessWidget {
   final Colis colis;
+
   const ColisDetails({super.key, required this.colis});
 
   @override
@@ -17,14 +21,25 @@ class ColisDetails extends StatelessWidget {
       children: [
         const Gap(40),
         Center(
-          child: SizedBox(
-            height: 100,
-            width: 200,
-            child: BarcodeWidget(
-              barcode: Barcode.code128(),
-              data: colis.id,
-              style: context.text,
-              color: context.invertedColor.withOpacity(.7),
+          child: InkWell(
+            onTap: context.role == Role.admin
+                ? () {
+                    context.adminRead.scanDepot(colis);
+                  }
+                : context.role == Role.delivery
+                    ? () {
+                        context.deliveryRead.scanRunsheet(colis);
+                      }
+                    : null,
+            child: SizedBox(
+              height: 100,
+              width: 200,
+              child: BarcodeWidget(
+                barcode: Barcode.code128(),
+                data: colis.id,
+                style: context.text,
+                color: context.invertedColor.withOpacity(.7),
+              ),
             ),
           ),
         ),
@@ -47,14 +62,20 @@ class ColisDetails extends StatelessWidget {
               ),
               Row(
                 children: [
+                  Txt("Governorate", bold: true, extra: ': '),
+                  Flexible(child: Txt(colis.governorate))
+                ],
+              ),
+              Row(
+                children: [
                   Txt("City", bold: true, extra: ': '),
                   Flexible(child: Txt(colis.city))
                 ],
               ),
               Row(
                 children: [
-                  Txt("Governorate", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.governorate))
+                  Txt("Region", bold: true, extra: ': '),
+                  Flexible(child: Txt(colis.region))
                 ],
               ),
               Row(
@@ -106,6 +127,36 @@ class ColisDetails extends StatelessWidget {
                   Flexible(child: Txt(colis.exchange ? 'Yes' : "No"))
                 ],
               ),
+              Row(
+                children: [
+                  Txt("Openable", bold: true, extra: ': '),
+                  Flexible(child: Txt(colis.openable ? 'Yes' : "No"))
+                ],
+              ),
+              Row(
+                children: [
+                  Txt("Attempt", bold: true, extra: ': '),
+                  Flexible(child: Txt(colis.tentative.toString()))
+                ],
+              ),
+              divider(),
+              Row(
+                children: [
+                  Txt("Sector", bold: true, extra: ': '),
+                  Flexible(child: Txt(colis.sectorName))
+                ],
+              ),
+              if ([Role.admin.name, Role.expeditor.name]
+                  .contains(context.currentUser.role.name))
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Txt("Delivery", bold: true, extra: ': '),
+                    Expanded(child: Txt(colis.deliveryName)),
+                    const Spacer(),
+                    phoneWidget('', id: colis.deliveryId)
+                  ],
+                ),
             ],
           ),
         ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/models/client.dart';
 import 'package:jetpack/services/util/ext.dart';
-import 'package:jetpack/views/clients/add_client.dart';
 import 'package:jetpack/views/clients/client_card.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 
@@ -28,11 +27,6 @@ class _ClientListScreenState extends State<ClientListScreen> {
     return Scaffold(
       appBar: appBar('Client List'),
       backgroundColor: context.bgcolor,
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: context.primaryColor,
-          child:
-              const Icon(Icons.assignment_add, color: Colors.white, size: 25),
-          onPressed: () => context.moveTo(const AddClient())),
       body: SizedBox(
         width: context.w,
         child: SingleChildScrollView(

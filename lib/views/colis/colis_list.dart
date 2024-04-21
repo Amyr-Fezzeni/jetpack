@@ -1,78 +1,164 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/models/colis.dart';
+import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/views/widgets/popup.dart';
 
 class ColisList extends StatefulWidget {
   final String title;
-  final List<Colis> colisData;
-  const ColisList({super.key, required this.title, required this.colisData});
+  final List<ColisStatus> status;
+  const ColisList({super.key, required this.title, required this.status});
 
   @override
   State<ColisList> createState() => _ColisListState();
 }
 
 class _ColisListState extends State<ColisList> {
-  List<Colis> selected = [];
-
+  List<String> selected = [];
+  List<Colis> colis = [];
   @override
   Widget build(BuildContext context) {
+    colis = context.role == Role.admin
+        ? context.adminWatch.allColis
+            .where((c) => widget.status.map((e) => e.name).contains(c.status))
+            .toList()
+        : context.expeditorWatch.allColis
+            .where((c) => widget.status.map((e) => e.name).contains(c.status))
+            .toList();
     return Scaffold(
       appBar: appBar(widget.title),
       backgroundColor: context.bgcolor,
       body: SizedBox(
         width: context.w,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                      onPressed: () => setState(() => selected.clear()),
-                      child: Txt("Clear", color: context.primaryColor)),
-                  TextButton(
-                      onPressed: () =>
-                          setState(() => selected.addAll(widget.colisData)),
-                      child: Txt("Select All", color: context.primaryColor)),
-                ],
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: widget.colisData
-                        .map((colis) => Row(
-                              children: [
-                                Flexible(child: ColisCard(colis: colis)),
-                                const Gap(15),
-                                checkBox(
-                                    selected.contains(colis),
-                                    '',
-                                    () => setState(() {
-                                          selected.contains(colis)
-                                              ? selected.remove(colis)
-                                              : selected.add(colis);
-                                        }))
-                              ],
-                            ))
-                        .toList(),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (widget.status.contains(ColisStatus.inProgress))
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          onPressed: () => setState(() => selected.clear()),
+                          child: Txt("Clear", color: context.primaryColor)),
+                      TextButton(
+                          onPressed: () => setState(
+                              () => selected.addAll(colis.map((e) => e.id))),
+                          child:
+                              Txt("Select All", color: context.primaryColor)),
+                    ],
+                  ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: colis
+                          .map((colis) => Row(
+                                children: [
+                                  Flexible(child: ColisCard(colis: colis)),
+                                  if (widget.status
+                                      .contains(ColisStatus.inProgress)) ...[
+                                    const Gap(15),
+                                    checkBox(
+                                        selected.contains(colis.id),
+                                        '',
+                                        () => setState(() {
+                                              selected.contains(colis.id)
+                                                  ? selected.remove(colis.id)
+                                                  : selected.add(colis.id);
+                                            }))
+                                  ]
+                                ],
+                              ))
+                          .toList(),
+                    ),
                   ),
                 ),
-              ),
-              gradientButton(function: () {}, text: "Option", w: context.w),
-              const Gap(10),
-            ],
-          ),
-        ),
+                if (widget.status.contains(ColisStatus.inProgress))
+                  gradientButton(
+                      function: () async {
+                        if (selected.isEmpty) return;
+                        await customPopup(
+                            context,
+                            ColisOptions(
+                                colis: colis
+                                    .where((c) => selected.contains(c.id))
+                                    .toList()),
+                            maxWidth: false);
+                      },
+                      text: "Options",
+                      color: selected.isEmpty ? Colors.grey : null,
+                      w: context.w),
+                const Gap(10),
+              ],
+            )),
+      ),
+    );
+  }
+}
+
+class ColisOptions extends StatefulWidget {
+  final List<Colis> colis;
+  const ColisOptions({super.key, required this.colis});
+
+  @override
+  State<ColisOptions> createState() => _ColisOptionsState();
+}
+
+class _ColisOptionsState extends State<ColisOptions> {
+  bool loading = false;
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          gradientButton(
+              function: () async {
+                if (loading) return;
+                setState(() => loading = true);
+                try {
+                  await context.expeditorRead
+                      .generateMagnifest(widget.colis)
+                      .then((value) => context.pop());
+
+                  setState(() => loading = false);
+                } on Exception catch (e) {
+                  log(e.toString());
+                  setState(() => loading = false);
+                }
+              },
+              text: "Generate magnifest",
+              w: 200),
+          // gradientButton(
+          //     function: () async {
+          //       if (loading) return;
+          //       setState(() => loading = true);
+          //       try {
+          //         for (var c in widget.colis) {
+          //           await ColisService.colisCollection
+          //               .doc(c.id)
+          //               .update({'status': ColisStatus.ready.name});
+          //         }
+          //         setState(() => loading = false);
+          //       } on Exception catch (e) {
+          //         log(e.toString());
+          //         setState(() => loading = false);
+          //       }
+          //     },
+          //     text: "Ready for delivery",
+          //     w: 200),
+          if (loading) cLoader()
+        ],
       ),
     );
   }

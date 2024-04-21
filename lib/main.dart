@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jetpack/providers/admin_provider.dart';
+import 'package:jetpack/providers/delivery_provider.dart';
+import 'package:jetpack/providers/expeditor_provider.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
 import 'package:jetpack/providers/theme_notifier.dart';
@@ -22,6 +25,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MenuProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => ExpeditorProvider()),
+        ChangeNotifierProvider(create: (_) => DeliveryProvider()),
       ],
       child: const MyApp(),
     ),

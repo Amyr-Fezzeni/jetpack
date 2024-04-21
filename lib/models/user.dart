@@ -15,6 +15,9 @@ class UserModel {
   double price;
   String matricule;
   DateTime? birthday;
+  String governorate;
+  String city;
+  String region;
   // exrat
   String photo;
   String email;
@@ -51,6 +54,9 @@ class UserModel {
     this.notificationStatus = true,
     this.fcm,
     required this.role,
+    this.governorate = '',
+    this.city='',
+    this.region='',
     this.secondaryphoneNumber = '',
     this.fiscalMatricule = '',
     this.returnPrice = 0,
@@ -81,6 +87,9 @@ class UserModel {
       'notificationStatus': notificationStatus,
       'fcm': fcm,
       'role': role.name,
+      'governorate':governorate,
+      'city':city,
+      'region':region,
       'secondaryphoneNumber': secondaryphoneNumber,
       'fiscalMatricule': fiscalMatricule,
       'returnPrice': returnPrice,
@@ -99,6 +108,9 @@ class UserModel {
           ? map['sector']
           : {"id": '', "name": ""},
       price: map['price'] as double,
+      governorate: map['governorate']??'',
+      city: map['city']??'',
+      region: map['region']??'',
       matricule: map['matricule'] as String,
       birthday: DateTime.fromMillisecondsSinceEpoch(map['birthday'] as int),
       photo: map['photo'] as String,
