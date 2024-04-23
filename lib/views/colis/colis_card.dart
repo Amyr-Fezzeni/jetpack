@@ -49,8 +49,9 @@ class ColisCard extends StatelessWidget {
 Widget colisRunsheetCard(String id) => Builder(
     key: ValueKey(id),
     builder: (context) {
-      Colis colis =
-          context.deliveryWatch.allColis.where((c) => c.id == id).first;
+      final c = context.deliveryWatch.allColis.where((c) => c.id == id);
+      if (c.isEmpty) return const SizedBox.shrink();
+      Colis colis = c.first;
       return Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(

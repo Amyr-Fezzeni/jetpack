@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/models/runsheet.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -280,7 +282,21 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   color: context.primaryColor,
                   size: 20,
                 ),
-                function: () {}),
+                function: () {
+                  final r = context.deliveryRead.runsheetData!;
+                  PdfService.generateRunsheet(RunsheetPdf(
+                      id: r.id,
+                      agenceName:
+                          context.userprovider.currentUser!.agency!['name'],
+                      deliveryCin: context.userprovider.currentUser!.cin,
+                      deliveryName:
+                          context.userprovider.currentUser!.getFullName(),
+                      matricule: context.userprovider.currentUser!.matricule,
+                      date: r.date,
+                      colis: context.deliveryRead.runsheet,
+                      price: r.price,
+                      note: r.note));
+                }),
           ],
         ),
         const Gap(10),

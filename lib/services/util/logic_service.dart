@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math' as math;
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:crossplat_objectid/crossplat_objectid.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'language.dart';
 
 String generateId() {
@@ -51,7 +54,7 @@ double max(List<double> lst) {
 String getDate(DateTime? date, {bool day = true}) {
   return date == null
       ? ""
-      : "${day ? "${date.day > 9 ? '' : '0'}${date.day} / " : ''}${date.month > 9 ? '' : '0'}${date.month} / ${date.year}";
+      : "${day ? "${date.day > 9 ? '' : '0'}${date.day}-" : ''}${date.month > 9 ? '' : '0'}${date.month}-${date.year}";
 }
 
 String getSimpleDate(DateTime? date, {bool day = true}) {
@@ -288,4 +291,17 @@ Future<String?> scanQrcode() async {
     log(e.toString());
     return null;
   }
+}
+
+Future<bool> requestPermission() async {
+  final result = await Permission.manageExternalStorage.request();
+  log(result.toString());
+  if (result.isGranted) return true;
+  final req = await Permission.photos.request();
+  log(req.toString());
+  if (req.isGranted) return true;
+  final req1 = await Permission.mediaLibrary.request();
+  log(req1.toString());
+  if (req1.isGranted) return true;
+  return false;
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:jetpack/models/colis.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class RunSheet {
   final String id;
@@ -9,7 +11,6 @@ class RunSheet {
   String date;
   DateTime? collectionDate;
   List<String> colis;
-
 
   double price;
   String note;
@@ -44,10 +45,14 @@ class RunSheet {
       id: map['id'] as String,
       agenceId: map['agenceId'] as String,
       deliveryId: map['deliveryId'] as String,
-      dateCreated: map['dateCreated'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int) : null,
+      dateCreated: map['dateCreated'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int)
+          : null,
       date: map['date'] as String,
-      collectionDate: map['collectionDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['collectionDate'] as int) : null,
-      colis: List<String>.from(map['colis'] ??[]),
+      collectionDate: map['collectionDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['collectionDate'] as int)
+          : null,
+      colis: List<String>.from(map['colis'] ?? []),
       price: map['price'] as double,
       note: map['note'] as String,
     );
@@ -55,10 +60,34 @@ class RunSheet {
 
   String toJson() => json.encode(toMap());
 
-  factory RunSheet.fromJson(String source) => RunSheet.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory RunSheet.fromJson(String source) =>
+      RunSheet.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
     return 'RunSheet(id: $id, agenceId: $agenceId, deliveryId: $deliveryId, dateCreated: $dateCreated, date: $date, collectionDate: $collectionDate, colis: $colis, price: $price, note: $note)';
   }
+}
+
+class RunsheetPdf {
+  final String id;
+  String agenceName;
+  String deliveryName;
+  String deliveryCin;
+  String matricule;
+  String date;
+  List<Colis> colis;
+  double price;
+  String note;
+  RunsheetPdf({
+    required this.id,
+    required this.agenceName,
+    required this.deliveryName,
+    required this.deliveryCin,
+    required this.matricule,
+    required this.date,
+    required this.colis,
+    required this.price,
+    required this.note,
+  });
 }
