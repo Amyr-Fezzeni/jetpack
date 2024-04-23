@@ -24,22 +24,15 @@ class _StructureHomeScreenState extends State<StructureHomeScreen>
   Widget build(BuildContext context) {
     return (context.currentUser.status == UserStatus.banned)
         ? const BannedScreen()
-        : Scaffold(
-            extendBody: true,
-            drawer: const NavPanel(),
-            backgroundColor: context.bgcolor,
-            body: [
-              if (context.currentUser.role == Role.delivery)
-                const DeliveryHomeScreen(),
-              if (context.currentUser.role == Role.expeditor)
-                const ExpeditorHomeScreen(),
-              if (context.currentUser.role == Role.admin)
-                const AdminHomeScreen(),
-              const ProfileScreen(),
-              const NotificationScreen(),
-              const HomeStatsScreen()
-            ][context.currentPage],
-            bottomNavigationBar: const CustomBottomNavigationBar(),
-          );
+        : [
+            if (context.currentUser.role == Role.delivery)
+              const DeliveryHomeScreen(),
+            if (context.currentUser.role == Role.expeditor)
+              const ExpeditorHomeScreen(),
+            if (context.currentUser.role == Role.admin) const AdminHomeScreen(),
+            const ProfileScreen(),
+            const NotificationScreen(),
+            const HomeStatsScreen()
+          ][context.currentPage];
   }
 }

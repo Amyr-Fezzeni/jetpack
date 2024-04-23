@@ -14,8 +14,10 @@ import 'package:jetpack/services/manifest_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/runsheet_service.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
+import 'package:jetpack/views/widgets/popup.dart';
 
 class DeliveryProvider with ChangeNotifier {
   List<Colis> readyForPickup = [];
@@ -77,14 +79,19 @@ class DeliveryProvider with ChangeNotifier {
     await PdfService.generateDayReport();
   }
 
-  Future<void> scanRunsheet(Colis colis) async {
+  Future<void> scanRunsheet(String colisId) async {
+    BuildContext context = NavigationService.navigatorKey.currentContext!;
+    if (!depot.map((e) => e.id).contains(colisId)) {
+      popup(context,
+          description: txt("Colis Not found or already scanned"),
+          cancel: false);
+      return;
+    }
+    final colis = depot.where((element) => element.id == colisId).first;
     ColisService.colisCollection
         .doc(colis.id)
         .update({'status': ColisStatus.inDelivery.name});
 
-    BuildContext context = NavigationService.navigatorKey.currentContext!;
-    log(DateTime.now().toString());
-    log(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     if (runsheetData == null) {
       runsheetData = RunSheet(
           id: generateBarCodeId(),
@@ -104,11 +111,17 @@ class DeliveryProvider with ChangeNotifier {
           .doc(runsheetData!.id)
           .update(runsheetData!.toMap());
     }
-
-    // await getRunsheetColis(runsheetData!.colis);
   }
 
-  Future<void> scanManifest(Manifest manifest) async {
+  Future<void> scanManifest(String manifestId) async {
+    BuildContext context = NavigationService.navigatorKey.currentContext!;
+    if (!pickup.map((e) => e.id).contains(manifestId)) {
+      popup(context,
+          description: txt("Manifest Not found or already scanned"),
+          cancel: false);
+      return;
+    }
+    final manifest = pickup.where((element) => element.id == manifestId).first;
     await ManifestService.manifestCollection
         .doc(manifest.id)
         .update({"datePicked": DateTime.now().millisecondsSinceEpoch});
@@ -146,6 +159,11 @@ class DeliveryProvider with ChangeNotifier {
         ColisStatus.returnDepot.name,
         ColisStatus.appointment.name
       ].contains(c.status)) {
+        if (c.status == ColisStatus.appointment.name &&
+            (c.appointmentDate == null ||
+                c.appointmentDate?.day != DateTime.now().day)) {
+          continue;
+        }
         runsheet.add(c);
       }
     }
@@ -188,7 +206,10 @@ class DeliveryProvider with ChangeNotifier {
     colisStream = ColisService.colisCollection
         .where('deliveryId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
-        .snapshots();
+        .where('status', whereNotIn: [
+      ColisStatus.delivered.name,
+      ColisStatus.canceled.name
+    ]).snapshots();
     colisStream?.listen((event) {}).onData((data) async {
       filterColis(
           data.docs.map((colisDoc) => Colis.fromMap(colisDoc.data())).toList());

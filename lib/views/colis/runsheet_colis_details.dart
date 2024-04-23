@@ -135,6 +135,12 @@ class _RunsheetColisDetailsState extends State<RunsheetColisDetails> {
                   Flexible(child: Txt(widget.colis.openable ? 'Yes' : "No"))
                 ],
               ),
+              Row(
+                children: [
+                  Txt("Attempt", bold: true, extra: ': '),
+                  Flexible(child: Txt(widget.colis.tentative.toString()))
+                ],
+              ),
               divider(),
               Row(
                 children: [

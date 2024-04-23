@@ -5,6 +5,8 @@ import 'package:jetpack/views/clients/clients_list.dart';
 import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/home/admin_home.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
+import 'package:jetpack/views/widgets/nav_panel_customer.dart';
 
 class ExpeditorHomeScreen extends StatefulWidget {
   const ExpeditorHomeScreen({super.key});
@@ -18,7 +20,10 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      drawer: const NavPanel(),
       backgroundColor: context.bgcolor,
+      bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),

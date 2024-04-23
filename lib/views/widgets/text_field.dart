@@ -31,7 +31,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? leadingIcon;
   const CustomTextField(
       {super.key,
-      required this.hint,
+      this.hint = '',
       required this.controller,
       this.validator,
       this.label,

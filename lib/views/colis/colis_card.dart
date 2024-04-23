@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/colis_service.dart';
-import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -132,8 +131,9 @@ Widget colisRunsheetCard(String id) => Builder(
                           ),
                           child: Text(
                             txt(getText(colis.status)),
-                            style: context.text
-                                .copyWith(fontSize: 14, color: color),
+                            style: context.text.copyWith(
+                              fontSize: 14,
+                            ),
                           )),
                       itemBuilder: (BuildContext c) {
                         return [

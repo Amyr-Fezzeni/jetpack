@@ -1,15 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
 import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/views/widgets/nav_panel_customer.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
 
@@ -31,7 +33,81 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      drawer: const NavPanel(),
       backgroundColor: context.bgcolor,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: context.primaryColor,
+        onPressed: () async {
+          TextEditingController controller = TextEditingController();
+          customPopup(
+              context,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: CustomTextField(
+                                marginH: 0,
+                                marginV: 0,
+                                hint: 'Code',
+                                controller: controller)),
+                        const Gap(5),
+                        gradientButton(
+                            function: () {
+                              final code = controller.text;
+                              if (code.trim().isEmpty) return;
+                              switch (currentFilter) {
+                                case "Runsheet":
+                                  context.deliveryRead.scanRunsheet(code);
+                                  break;
+                                case "Paiement":
+                                  break;
+                                case "Retour":
+                                  break;
+                                default:
+                                  context.deliveryRead.scanManifest(code);
+                                  break;
+                              }
+                              context.pop();
+                            },
+                            text: "Confirm")
+                      ],
+                    ),
+                    gradientButton(
+                        w: double.maxFinite,
+                        function: () async {
+                          final code = await scanQrcode();
+                          if (code == null) return;
+                          switch (currentFilter) {
+                            case "Runsheet":
+                              context.deliveryRead.scanRunsheet(code);
+                              break;
+                            case "Paiement":
+                              break;
+                            case "Retour":
+                              break;
+                            default:
+                              context.deliveryRead.scanManifest(code);
+                          }
+                          context.pop();
+                        },
+                        text: "Scan code")
+                  ],
+                ),
+              ),
+              maxWidth: false);
+        },
+        child: const Icon(
+          Icons.qr_code_scanner_rounded,
+          color: Colors.white,
+          size: 25,
+        ),
+      ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Padding(
@@ -42,14 +118,16 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () => Scaffold.of(context).openDrawer(),
-                      child: Icon(
-                        Icons.menu,
-                        color: context.invertedColor.withOpacity(.7),
-                        size: 30,
-                      ),
-                    ),
+                    Builder(builder: (context) {
+                      return InkWell(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        child: Icon(
+                          Icons.menu,
+                          color: context.invertedColor.withOpacity(.7),
+                          size: 30,
+                        ),
+                      );
+                    }),
                     const Gap(10),
                     logoWidget(size: 100),
                     const Spacer(),
@@ -308,13 +386,8 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                               size: 10, translate: false, bold: true),
                         ],
                       ),
-                      trailing: InkWell(
-                        onTap: () async {
-                          context.deliveryRead.scanManifest(manifest);
-                        },
-                        child: Icon(Icons.qr_code_scanner_rounded,
-                            color: context.iconColor, size: 35),
-                      ),
+                      trailing: Icon(Icons.note_rounded,
+                          color: context.iconColor, size: 35),
                     ),
                   ))
               .toList(),

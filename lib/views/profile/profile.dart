@@ -4,7 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/users/add_user.dart';
+import 'package:jetpack/views/widgets/appbar.dart';
+import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
 import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/views/widgets/nav_panel_customer.dart';
+import 'package:jetpack/views/widgets/text_field.dart';
 // import '../../constants/constants.dart';
 import '../../services/util/language.dart';
 import '../../services/user_service.dart';
@@ -27,12 +31,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      appBar: appBar('Profile', leading: false),
       backgroundColor: context.bgcolor,
-      extendBodyBehindAppBar: false,
+      bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).copyWith(top: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 15).copyWith(top: 10),
           child: Column(
             children: [
               // if (context.currentUser.role == Role.admin)
@@ -65,51 +71,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Txt(context.currentUser.getFullName(), size: 20, bold: true),
               const Gap(30),
-              Row(
-                children: [
-                  Txt("Governorate", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.governorate))
-                ],
-              ),
-              Row(
-                children: [
-                  Txt("City", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.city))
-                ],
-              ),
-              Row(
-                children: [
-                  Txt("Region", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.region))
-                ],
-              ),
-              Row(
-                children: [
-                  Txt("Adress", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.adress))
-                ],
-              ),
-              Row(
-                children: [
-                  Txt("Phone number", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.phoneNumber))
-                ],
-              ),
+
+              CustomTextField(
+                  label: txt("governorate"),
+                  controller: TextEditingController(
+                      text: context.currentUser.governorate)),
+              CustomTextField(
+                  label: txt("City"),
+                  controller:
+                      TextEditingController(text: context.currentUser.city)),
+              CustomTextField(
+                  label: txt("Region"),
+                  controller:
+                      TextEditingController(text: context.currentUser.region)),
+              CustomTextField(
+                  label: txt("Adress"),
+                  controller:
+                      TextEditingController(text: context.currentUser.adress)),
+              CustomTextField(
+                  label: txt("Phone number"),
+                  controller: TextEditingController(
+                      text: context.currentUser.phoneNumber)),
               if (context.currentUser.secondaryphoneNumber.isNotEmpty)
-                Row(
-                  children: [
-                    Txt("secondary phone number", bold: true, extra: ': '),
-                    Flexible(
-                        child: Txt(context.currentUser.secondaryphoneNumber))
-                  ],
-                ),
-              divider(),
-              Row(
-                children: [
-                  Txt("Sector", bold: true, extra: ': '),
-                  Flexible(child: Txt(context.currentUser.sector['name']))
-                ],
-              ),
+                CustomTextField(
+                    label: txt("Secondary phone number"),
+                    controller: TextEditingController(
+                        text: context.currentUser.secondaryphoneNumber)),
+              CustomTextField(
+                  label: txt("Sector"),
+                  controller: TextEditingController(
+                      text: context.currentUser.sector['name'])),
+              const Gap(100)
             ],
           ),
         ),

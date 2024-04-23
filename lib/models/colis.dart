@@ -2,6 +2,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/services/util/navigation_service.dart';
 
 enum ColisStatus {
   inProgress,
@@ -106,7 +108,7 @@ class Colis {
       'sectorId': sectorId,
       'sectorName': sectorName,
       'expeditorName': expeditorName,
-      'appointmentDate':appointmentDate
+      'appointmentDate': appointmentDate
     };
   }
 
@@ -134,7 +136,7 @@ class Colis {
       creationDate: map['creationDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int)
           : null,
-      appointmentDate:map['appointmentDate'] != null
+      appointmentDate: map['appointmentDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['appointmentDate'] as int)
           : null,
       pickupDate: map['pickupDate'] != null
@@ -180,7 +182,7 @@ getColor(String status) {
       return Colors.orange;
 
     default:
-      return Colors.black;
+      return Colors.grey;
   }
 }
 

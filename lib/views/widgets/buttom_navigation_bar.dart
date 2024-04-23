@@ -76,53 +76,57 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   context.read<MenuProvider>().updateCurrentPage(2);
                   HapticFeedback.lightImpact();
                 },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  decoration: context.currentPage != 2
-                      ? null
-                      : BoxDecoration(
-                          color: context.primaryColor.withOpacity(.1),
-                          borderRadius: BorderRadius.circular(smallRadius)),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 35,
-                        width: 35,
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: pngIcon(notificationIcon,
-                                  selected: context.currentPage == 2, size: 20),
-                            ),
-                            if (count > 0)
-                              Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        color: context.primaryColor,
-                                        borderRadius:
-                                            BorderRadius.circular(bigRadius)),
-                                    child: Center(
-                                      child: Txt(
-                                          (count > 99 ? '+99' : count)
-                                              .toString(),
-                                          size: 10,
-                                          color: Colors.white),
-                                    ),
-                                  ))
-                          ],
+                child: Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    decoration: context.currentPage != 2
+                        ? null
+                        : BoxDecoration(
+                            color: context.primaryColor.withOpacity(.1),
+                            borderRadius: BorderRadius.circular(smallRadius)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 35,
+                          width: 35,
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: pngIcon(notificationIcon,
+                                    selected: context.currentPage == 2,
+                                    size: 20),
+                              ),
+                              if (count > 0)
+                                Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          color: context.primaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(bigRadius)),
+                                      child: Center(
+                                        child: Txt(
+                                            (count > 99 ? '+99' : count)
+                                                .toString(),
+                                            size: 10,
+                                            color: Colors.white),
+                                      ),
+                                    ))
+                            ],
+                          ),
                         ),
-                      ),
-                      if (context.currentPage == 2) ...[
-                        const Gap(5),
-                        Txt("Notifications")
-                      ]
-                    ],
+                        if (context.currentPage == 2) ...[
+                          const Gap(5),
+                          Txt("Notifications"),
+                          const Gap(5)
+                        ]
+                      ],
+                    ),
                   ),
                 ),
               );

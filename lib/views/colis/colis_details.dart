@@ -1,5 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
@@ -22,15 +23,23 @@ class ColisDetails extends StatelessWidget {
         const Gap(40),
         Center(
           child: InkWell(
-            onTap: context.role == Role.admin
-                ? () {
-                    context.adminRead.scanDepot(colis);
-                  }
-                : context.role == Role.delivery
-                    ? () {
-                        context.deliveryRead.scanRunsheet(colis);
-                      }
-                    : null,
+            onTap: () {
+              final data = ClipboardData(text: colis.id);
+              Clipboard.setData(data);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Code copied."),
+              ));
+            },
+
+            //  context.role == Role.admin
+            //     ? () {
+            //         context.adminRead.scanDepot(colis);
+            //       }
+            //     : context.role == Role.delivery
+            //         ? () {
+            //             context.deliveryRead.scanRunsheet(colis);
+            //           }
+            //         : null,
             child: SizedBox(
               height: 100,
               width: 200,
