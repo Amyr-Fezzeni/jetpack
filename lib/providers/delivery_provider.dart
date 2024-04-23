@@ -20,6 +20,7 @@ import 'package:jetpack/services/util/navigation_service.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 
 class DeliveryProvider with ChangeNotifier {
+  List<Colis> allColis = [];
   List<Colis> readyForPickup = [];
   List<Manifest> pickup = [];
   List<Colis> depot = [];
@@ -33,21 +34,24 @@ class DeliveryProvider with ChangeNotifier {
 
   Future<void> generateDayReport() async {
     final doc = await RunsheetService.deliveryPaimentCollection
-        .where('endDate', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
+        // .where('endDate', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
+        .where('userId',
+            isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
+        .where('isPaid', isEqualTo: false)
         .get();
     late DeliveryPayment payment;
 
     if (doc.docs.isNotEmpty) {
       payment = DeliveryPayment.fromMap(doc.docs.first.data());
     } else {
-      final date = getFirstDayOfWeek(DateTime.now());
-      log(date.toString());
       payment = DeliveryPayment(
           id: generateId(),
+          userId: NavigationService.navigatorKey.currentContext!.userId,
+          isPaid: false,
           nbDelivered: 0,
           nbPickup: 0,
-          startTime: date,
-          endTime: date.add(const Duration(days: 7)));
+          startTime: getFirstDayOfWeek(DateTime.now()),
+          endTime: getLastDayOfWeek(DateTime.now()));
       await RunsheetService.deliveryPaimentCollection
           .doc(payment.id)
           .set(payment.toMap());
@@ -67,7 +71,13 @@ class DeliveryProvider with ChangeNotifier {
         }
         ColisService.colisCollection.doc(colis.id).update(colis.toMap());
       }
-      if (colis.status == ColisStatus.appointment.name) {}
+      if (colis.status == ColisStatus.appointment.name) {
+        if (colis.appointmentDate != null) {
+          colis.status = ColisStatus.returnDepot.name;
+          colis.tentative += 1;
+          ColisService.colisCollection.doc(colis.id).update(colis.toMap());
+        }
+      }
     }
     runsheetData!.collectionDate = DateTime.now();
     await RunsheetService.runsheetCollection
@@ -142,7 +152,7 @@ class DeliveryProvider with ChangeNotifier {
     readyForPickup.clear();
     depot.clear();
     runsheet.clear();
-
+    allColis = colis;
     log('colis: ${colis.map((e) => e.status).join(', ')}');
     for (var c in colis) {
       if (c.status == ColisStatus.ready.name) {
@@ -151,21 +161,25 @@ class DeliveryProvider with ChangeNotifier {
       if (c.status == ColisStatus.depot.name) {
         depot.add(c);
       }
-      if ([
-        ColisStatus.inDelivery.name,
-        ColisStatus.confirmed.name,
-        ColisStatus.delivered.name,
-        ColisStatus.canceled.name,
-        ColisStatus.returnDepot.name,
-        ColisStatus.appointment.name
-      ].contains(c.status)) {
-        if (c.status == ColisStatus.appointment.name &&
-            (c.appointmentDate == null ||
-                c.appointmentDate?.day != DateTime.now().day)) {
-          continue;
-        }
-        runsheet.add(c);
+      log(runsheetData.toString());
+      if (runsheetData != null) {
+        if (runsheetData!.colis.contains(c.id)) runsheet.add(c);
       }
+      // if ([
+      //   ColisStatus.inDelivery.name,
+      //   ColisStatus.confirmed.name,
+      //   ColisStatus.delivered.name,
+      //   ColisStatus.canceled.name,
+      //   ColisStatus.returnDepot.name,
+      //   ColisStatus.appointment.name
+      // ].contains(c.status)) {
+      //   // if (c.status == ColisStatus.appointment.name &&
+      //   //     (c.appointmentDate == null ||
+      //   //         c.appointmentDate?.day != DateTime.now().day)) {
+      //   //   continue;
+      //   // }
+      //   runsheet.add(c);
+      // }
     }
   }
 
@@ -202,21 +216,21 @@ class DeliveryProvider with ChangeNotifier {
   startColisStream() async {
     if (colisStream != null) return;
     await setSector();
-
+    startManifestStream();
+    startRunsheetStream();
     colisStream = ColisService.colisCollection
         .where('deliveryId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
-        .where('status', whereNotIn: [
-      ColisStatus.delivered.name,
-      ColisStatus.canceled.name
-    ]).snapshots();
+        //     .where('status', whereNotIn: [
+        //   ColisStatus.delivered.name,
+        //   ColisStatus.canceled.name
+        // ])
+        .snapshots();
     colisStream?.listen((event) {}).onData((data) async {
       filterColis(
           data.docs.map((colisDoc) => Colis.fromMap(colisDoc.data())).toList());
       notifyListeners();
     });
-    startManifestStream();
-    startRunsheetStream();
   }
 
   stopColisStream() {
@@ -261,13 +275,18 @@ class DeliveryProvider with ChangeNotifier {
     runsheetStream = RunsheetService.runsheetCollection
         .where('deliveryId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
-        // .where('date', isEqualTo: DateFormat('yyyy-MM-dd').format(DateTime.now()))
-        .where('collectonDate', isNull: true)
+        .where('date',
+            isEqualTo: DateFormat('yyyy-MM-dd').format(DateTime.now()))
+        // .where('collectonDate', isEqualTo: null)
         .snapshots();
     runsheetStream?.listen((event) {}).onData((data) async {
       log('runsheet: ${data.docs.length}');
       if (data.docs.isNotEmpty) {
-        runsheetData = RunSheet.fromMap(data.docs.first.data());
+        runsheetData = RunSheet.fromMap(data.docs.last.data());
+        if (runsheetData!.date !=
+            DateFormat('yyyy-MM-dd').format(DateTime.now())) {
+          runsheetData = null;
+        }
         notifyListeners();
       } else {
         runsheetData = null;

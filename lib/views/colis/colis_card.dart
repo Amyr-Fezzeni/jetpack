@@ -50,7 +50,7 @@ Widget colisRunsheetCard(String id) => Builder(
     key: ValueKey(id),
     builder: (context) {
       Colis colis =
-          context.deliveryWatch.runsheet.where((c) => c.id == id).first;
+          context.deliveryWatch.allColis.where((c) => c.id == id).first;
       return Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
@@ -148,14 +148,14 @@ Widget colisRunsheetCard(String id) => Builder(
                                     if (colis.status == status.name) {
                                       return;
                                     }
-                                    colis.status = status.name;
-                                    if (colis.status ==
-                                        ColisStatus.appointment.name) {
+
+                                    if (status == ColisStatus.appointment) {
                                       final date = await datePopup(
                                           day: true, minDate: DateTime.now());
                                       if (date == null) return;
                                       colis.appointmentDate = date;
                                     }
+                                    colis.status = status.name;
                                     if (colis.status ==
                                         ColisStatus.delivered.name) {
                                       colis.deliveryDate = DateTime.now();

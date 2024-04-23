@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/views/profile/payment_history.dart';
 import 'package:jetpack/views/users/add_user.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
@@ -38,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).copyWith(top: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 0).copyWith(top: 10),
           child: Column(
             children: [
               // if (context.currentUser.role == Role.admin)
@@ -52,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         role: context.userprovider.currentUser!.role,
                         user: context.userprovider.currentUser))),
               ),
-              const Gap(40),
+              const Gap(10),
               Center(
                 child: profileIcon(
                   size: 150,
@@ -70,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Txt(context.currentUser.getFullName(), size: 20, bold: true),
-              const Gap(30),
+              const Gap(20),
 
               CustomTextField(
                   label: txt("governorate"),

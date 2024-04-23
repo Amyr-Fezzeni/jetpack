@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/views/agency/agency_list.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/views/payment/delivery_payment_screen.dart';
 import 'package:jetpack/views/sector/sector_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/default_screen.dart';
@@ -62,6 +63,11 @@ class NavPanel extends StatelessWidget {
                     title: txt('Sector'),
                     icon: Icons.location_on,
                     screen: const SectorListScreen()),
+              if ([Role.delivery].contains(context.currentUser.role))
+                buildMenuTile(
+                    title: txt('Payment'),
+                    icon: Icons.payments_outlined,
+                    screen: const DeliveryPaymentHistoryScreen()),
               buildMenuTile(
                   title: txt('Settings'),
                   icon: Icons.settings,

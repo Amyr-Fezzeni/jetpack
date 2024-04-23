@@ -33,6 +33,7 @@ const personIcon = "assets/images/profile.png";
 const settingsIcon = "assets/images/settings.png";
 const filterIcon = "assets/images/filter.png";
 const adminIcon = "assets/images/admin_icon.png";
+const payoutIcon = "assets/images/payout.png";
 
 const supportedImges = ['jpg', 'jpeg', 'webp', 'gif', 'png'];
 const supportedVideos = ['mp4', 'mov', 'webm', 'ogm', 'ogv'];

@@ -54,8 +54,11 @@ String getDate(DateTime? date, {bool day = true}) {
       : "${day ? "${date.day > 9 ? '' : '0'}${date.day} / " : ''}${date.month > 9 ? '' : '0'}${date.month} / ${date.year}";
 }
 
-String simpleDate(DateTime? date) =>
-    date == null ? "" : "${getFullMonth(date.month)}, ${date.year}";
+String getSimpleDate(DateTime? date, {bool day = true}) {
+  return date == null
+      ? ""
+      : "${day ? "${date.day > 9 ? '' : '0'}${date.day} " : ''}${getMonth(date.month)}";
+}
 
 String getTime(DateTime? date) {
   return date == null
@@ -166,7 +169,7 @@ String getFullMonth(int weekDay) {
 }
 
 DateTime getFirstDayOfWeek(DateTime date) {
-  DateTime week = date;
+  DateTime week = DateTime(date.year, date.month, date.day, 10);
   switch (date.weekday) {
     case 1:
       week = date;
@@ -197,6 +200,12 @@ DateTime getFirstDayOfWeek(DateTime date) {
       break;
   }
 
+  return week;
+}
+
+DateTime getLastDayOfWeek(DateTime date) {
+  final d = date.add(const Duration(days: 7));
+  DateTime week = DateTime(d.year, d.month, d.day, 9);
   return week;
 }
 

@@ -181,61 +181,61 @@ class _RunsheetColisDetailsState extends State<RunsheetColisDetails> {
                         text: "Save")
                   ],
                 ),
-                const Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Builder(builder: (context) {
-                      Color color = getColor(widget.colis.status);
+                // const Gap(10),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.end,
+                //   children: [
+                //     Builder(builder: (context) {
+                //       Color color = getColor(widget.colis.status);
 
-                      return PopupMenuButton(
-                        onSelected: (value) {},
-                        color: context.bgcolor,
-                        child: Container(
-                            height: 35,
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: color.withOpacity(.2),
-                              border: Border.all(color: color),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            child: Center(
-                              child: Text(
-                                txt(getText(widget.colis.status)),
-                                style: context.text
-                                    .copyWith(fontSize: 14, color: color),
-                              ),
-                            )),
-                        itemBuilder: (BuildContext c) {
-                          return [
-                            ColisStatus.confirmed,
-                            ColisStatus.delivered,
-                            ColisStatus.returnDepot,
-                            ColisStatus.canceled
-                          ]
-                              .map((ColisStatus status) => PopupMenuItem(
-                                    onTap: () async {
-                                      if (widget.colis.status == status.name) {
-                                        return;
-                                      }
-                                      ColisService.colisCollection
-                                          .doc(widget.colis.id)
-                                          .update({'status': status.name}).then(
-                                              (value) => context.pop());
-                                    },
-                                    value: status.name,
-                                    child: Text(
-                                      getText(status.name),
-                                      style: context.theme.text18,
-                                    ),
-                                  ))
-                              .toList();
-                        },
-                      );
-                    })
-                  ],
-                ),
+                //       return PopupMenuButton(
+                //         onSelected: (value) {},
+                //         color: context.bgcolor,
+                //         child: Container(
+                //             height: 35,
+                //             padding: const EdgeInsets.all(5),
+                //             decoration: BoxDecoration(
+                //               color: color.withOpacity(.2),
+                //               border: Border.all(color: color),
+                //               borderRadius:
+                //                   const BorderRadius.all(Radius.circular(5.0)),
+                //             ),
+                //             child: Center(
+                //               child: Text(
+                //                 txt(getText(widget.colis.status)),
+                //                 style: context.text
+                //                     .copyWith(fontSize: 14, color: color),
+                //               ),
+                //             )),
+                //         itemBuilder: (BuildContext c) {
+                //           return [
+                //             ColisStatus.confirmed,
+                //             ColisStatus.delivered,
+                //             ColisStatus.returnDepot,
+                //             ColisStatus.canceled
+                //           ]
+                //               .map((ColisStatus status) => PopupMenuItem(
+                //                     onTap: () async {
+                //                       if (widget.colis.status == status.name) {
+                //                         return;
+                //                       }
+                //                       ColisService.colisCollection
+                //                           .doc(widget.colis.id)
+                //                           .update({'status': status.name}).then(
+                //                               (value) => context.pop());
+                //                     },
+                //                     value: status.name,
+                //                     child: Text(
+                //                       getText(status.name),
+                //                       style: context.theme.text18,
+                //                     ),
+                //                   ))
+                //               .toList();
+                //         },
+                //       );
+                //     })
+                //   ],
+                // ),
               ],
             ),
           ),

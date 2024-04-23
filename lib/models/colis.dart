@@ -108,7 +108,7 @@ class Colis {
       'sectorId': sectorId,
       'sectorName': sectorName,
       'expeditorName': expeditorName,
-      'appointmentDate': appointmentDate
+      'appointmentDate': appointmentDate?.millisecondsSinceEpoch
     };
   }
 
