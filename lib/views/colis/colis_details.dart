@@ -163,7 +163,7 @@ class ColisDetails extends StatelessWidget {
                     Txt("Delivery", bold: true, extra: ': '),
                     Expanded(child: Txt(colis.deliveryName)),
                     const Spacer(),
-                    phoneWidget('', id: colis.deliveryId)
+                    phoneWidgetId('', id: colis.deliveryId)
                   ],
                 ),
             ],

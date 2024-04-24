@@ -6,11 +6,13 @@ import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
+import 'package:jetpack/views/widgets/text_field.dart';
 
 class ColisList extends StatefulWidget {
   final String title;
@@ -36,6 +38,69 @@ class _ColisListState extends State<ColisList> {
     return Scaffold(
       appBar: appBar(widget.title),
       backgroundColor: context.bgcolor,
+      floatingActionButton: !widget.status.contains(ColisStatus.pickup)
+          ? null
+          : FloatingActionButton(
+              backgroundColor: context.primaryColor,
+              onPressed: () async {
+                TextEditingController controller = TextEditingController();
+
+                customPopup(
+                    context,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: CustomTextField(
+                                      marginH: 0,
+                                      marginV: 0,
+                                      hint: 'Code',
+                                      controller: controller)),
+                              const Gap(5),
+                              gradientButton(
+                                  function: () {
+                                    final code = controller.text;
+                                    if (code.trim().isEmpty) return;
+                                    context.adminRead.scanDepot(code);
+                                    context.pop();
+                                  },
+                                  text: "Confirm")
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(child: divider()),
+                              Text(
+                                'Or',
+                                style: context.theme.text18,
+                              ),
+                              Expanded(child: divider())
+                            ],
+                          ),
+                          gradientButton(
+                              w: double.maxFinite,
+                              function: () async {
+                                final code = await scanQrcode();
+                                if (code == null) return;
+                                context.adminRead.scanDepot(code);
+                                context.pop();
+                              },
+                              text: "Scan code")
+                        ],
+                      ),
+                    ),
+                    maxWidth: false);
+              },
+              child: const Icon(
+                Icons.qr_code_scanner_rounded,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
       body: SizedBox(
         width: context.w,
         child: Padding(

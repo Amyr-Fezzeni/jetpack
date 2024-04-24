@@ -181,7 +181,6 @@ Widget borderButton(
     Widget? trailing,
     bool bold = false,
     double border = 2,
-   
     double? w}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(radius),
@@ -317,19 +316,19 @@ Widget checkBox(bool value, String title, Function() function,
       ),
     );
 
-Widget phoneWidget(String phone, {required String id}) =>
+Widget phoneWidgetId(String phone, {required String id, double size = 30}) =>
     Builder(builder: (context) {
       return InkWell(
         onTap: () {},
         child: Container(
-          height: 40,
-          width: 100,
+          height: size,
+          width: size * 2,
           decoration: BoxDecoration(
               boxShadow: defaultShadow,
               color: Colors.green,
               borderRadius: BorderRadius.circular(smallRadius)),
-          child: const Center(
-              child: Icon(Icons.phone, color: Colors.white, size: 30)),
+          child:
+              Center(child: Icon(Icons.phone, color: Colors.white, size: size)),
         ),
       );
     });

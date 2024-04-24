@@ -68,21 +68,62 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
                     late DeliveryPayment payment;
                     payment = DeliveryPayment.fromMap(doc.data());
                     bool currentWeek = DateTime.now().isBefore(payment.endTime);
-                    return Column(
-                      children: [
-                        Txt(currentWeek ? "Current Week" : "Privious Payments",
-                            bold: true),
-                        Txt("From ${getSimpleDate(payment.startTime)} to ${getSimpleDate(payment.endTime)} "),
-                        Txt("Colis delivered: ${payment.nbDelivered}"),
-                        Txt("Manifest picked: ${payment.nbPickup}"),
-                        Txt("${(payment.nbDelivered * context.currentUser.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
-                            color: payment.isPaid ? Colors.green : Colors.red,
-                            bold: true),
-                        Txt(payment.isPaid ? "Paid" : "Not paid",
-                            color: payment.isPaid ? Colors.green : Colors.red,
-                            bold: true),
-                        divider(bottom: 10, top: 10)
-                      ],
+                    return Card(
+                      child: Card(
+                        elevation: 0,
+                        margin: const EdgeInsets.all(0),
+                        color: payment.isPaid
+                            ? Colors.green.withOpacity(.25)
+                            : Colors.red.withOpacity(.15),
+                        surfaceTintColor:
+                            payment.isPaid ? Colors.green : Colors.red,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (currentWeek)
+                                        Txt("Current Week", bold: true),
+                                      Txt("From ${getSimpleDate(payment.startTime)} to ${getSimpleDate(payment.endTime)} ",
+                                          bold: true),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Icon(
+                                    payment.isPaid ? Icons.check : Icons.close,
+                                    color: payment.isPaid
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                  // Txt(payment.isPaid ? "Paid" : "Not paid",
+                                  //     color: payment.isPaid
+                                  //         ? Colors.green
+                                  //         : Colors.red,
+                                  //     bold: true),
+                                ],
+                              ),
+
+                              Txt("Colis delivered: ${payment.nbDelivered}"),
+                              Txt("Manifest picked: ${payment.nbPickup}"),
+                              Txt("${(payment.nbDelivered * context.currentUser.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
+                                  color: payment.isPaid
+                                      ? Colors.green
+                                      : Colors.red,
+                                  bold: true),
+
+                              // divider(bottom: 10, top: 10)
+                            ],
+                          ),
+                        ),
+                      ),
                     );
                   }),
               ],

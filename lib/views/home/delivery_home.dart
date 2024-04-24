@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
@@ -79,6 +82,16 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                             text: "Confirm")
                       ],
                     ),
+                    Row(
+                      children: [
+                        Expanded(child: divider()),
+                        Text(
+                          'Or',
+                          style: context.theme.text18,
+                        ),
+                        Expanded(child: divider())
+                      ],
+                    ),
                     gradientButton(
                         w: double.maxFinite,
                         function: () async {
@@ -111,7 +124,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        // physics: const NeverScrollableScrollPhysics(),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
@@ -217,7 +230,8 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                         return const SizedBox.shrink();
                     }
                   }
-                })
+                }),
+                const Gap(100)
               ],
             )),
       ),
@@ -402,8 +416,29 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                               size: 10, translate: false, bold: true),
                         ],
                       ),
-                      trailing: Icon(Icons.note_rounded,
-                          color: context.iconColor, size: 35),
+                      trailing: SizedBox(
+                        height: 60,
+                        width: 60,
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                final data = ClipboardData(text: manifest.id);
+                                Clipboard.setData(data);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("Code copied."),
+                                ));
+                              },
+                              child: Icon(Icons.copy,
+                                  color: context.iconColor, size: 25),
+                            ),
+                            Center(
+                                child: phoneWidget(manifest.phoneNumber, 1,
+                                    size: 25))
+                          ],
+                        ),
+                      ),
                     ),
                   ))
               .toList(),

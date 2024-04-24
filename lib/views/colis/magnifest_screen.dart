@@ -115,7 +115,7 @@ Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
                         children: [
                             Expanded(child: Txt(data.data!.name, bold: true)),
                             const Spacer(),
-                            phoneWidget('', id: data.data!.delivery['id'])
+                            phoneWidgetId('', id: data.data!.delivery['id'])
                           ])
                     : const SizedBox())
           ],

@@ -42,7 +42,7 @@ class DeliveryProvider with ChangeNotifier {
     late DeliveryPayment payment;
 
     if (doc.docs.isNotEmpty) {
-      payment = DeliveryPayment.fromMap(doc.docs.first.data());
+      payment = DeliveryPayment.fromMap(doc.docs.last.data());
     } else {
       payment = DeliveryPayment(
           id: generateId(),
@@ -132,6 +132,29 @@ class DeliveryProvider with ChangeNotifier {
       return;
     }
     final manifest = pickup.where((element) => element.id == manifestId).first;
+    final doc = await RunsheetService.deliveryPaimentCollection
+        // .where('endDate', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
+        .where('userId',
+            isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
+        .where('isPaid', isEqualTo: false)
+        .get();
+    late DeliveryPayment payment;
+
+    if (doc.docs.isNotEmpty) {
+      payment = DeliveryPayment.fromMap(doc.docs.last.data());
+    } else {
+      payment = DeliveryPayment(
+          id: generateId(),
+          userId: NavigationService.navigatorKey.currentContext!.userId,
+          isPaid: false,
+          nbDelivered: 0,
+          nbPickup: 0,
+          startTime: getFirstDayOfWeek(DateTime.now()),
+          endTime: getLastDayOfWeek(DateTime.now()));
+      await RunsheetService.deliveryPaimentCollection
+          .doc(payment.id)
+          .set(payment.toMap());
+    }
     await ManifestService.manifestCollection
         .doc(manifest.id)
         .update({"datePicked": DateTime.now().millisecondsSinceEpoch});
@@ -141,6 +164,10 @@ class DeliveryProvider with ChangeNotifier {
         "pickupDate": DateTime.now().millisecondsSinceEpoch
       });
     }
+    payment.nbPickup += 1;
+    await RunsheetService.deliveryPaimentCollection
+        .doc(payment.id)
+        .update(payment.toMap());
   }
 
   setSector() async {
@@ -277,7 +304,7 @@ class DeliveryProvider with ChangeNotifier {
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
         .where('date',
             isEqualTo: DateFormat('yyyy-MM-dd').format(DateTime.now()))
-        // .where('collectonDate', isEqualTo: null)
+        .where('collectonDate', isNull: true)
         .snapshots();
     runsheetStream?.listen((event) {}).onData((data) async {
       log('runsheet: ${data.docs.length}');

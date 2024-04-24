@@ -183,11 +183,14 @@ Widget colisRunsheetCard(String id) => Builder(
       );
     });
 
-Widget phoneWidget(String phoneNumber, int index) => InkWell(
-      onTap: () => launchUrl(Uri(scheme: 'tel', path: phoneNumber)),
+Widget phoneWidget(String phoneNumber, int index, {double size = 50}) =>
+    InkWell(
+      onTap: () => launchUrl(
+        Uri(scheme: 'tel', path: phoneNumber),
+      ),
       child: Container(
-        height: 50,
-        width: 50,
+        height: size,
+        width: size,
         margin: const EdgeInsets.only(left: 10),
         decoration: BoxDecoration(
             boxShadow: defaultShadow,
@@ -195,20 +198,21 @@ Widget phoneWidget(String phoneNumber, int index) => InkWell(
             color: Colors.green),
         child: Stack(
           children: [
-            const Center(
-                child: Icon(Icons.phone, color: Colors.white, size: 25)),
+            Center(
+                child: Icon(Icons.phone, color: Colors.white, size: size / 2)),
             Positioned(
                 top: 0,
                 right: 0,
                 child: Container(
-                  height: 20,
-                  width: 20,
+                  height: size / 2,
+                  width: size / 2,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: defaultShadow,
                       borderRadius: BorderRadius.circular(bigRadius)),
-                  child:
-                      Center(child: Txt(index.toString(), color: Colors.black)),
+                  child: Center(
+                      child: Txt(index.toString(),
+                          color: Colors.black, size: size / 3)),
                 ))
           ],
         ),

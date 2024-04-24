@@ -6,9 +6,10 @@ import 'package:jetpack/services/colis_service.dart';
 class AdminProvider with ChangeNotifier {
   List<Colis> allColis = [];
 
-  scanDepot(Colis colis) async {
+  scanDepot(String colisId) async {
+    // test colis
     await ColisService.colisCollection
-        .doc(colis.id)
+        .doc(colisId)
         .update({"status": ColisStatus.depot.name});
   }
 
