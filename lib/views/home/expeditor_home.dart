@@ -33,14 +33,16 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () => Scaffold.of(context).openDrawer(),
-                      child: Icon(
-                        Icons.menu,
-                        color: context.invertedColor.withOpacity(.7),
-                        size: 30,
-                      ),
-                    ),
+                    Builder(builder: (context) {
+                      return InkWell(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        child: Icon(
+                          Icons.menu,
+                          color: context.invertedColor.withOpacity(.7),
+                          size: 30,
+                        ),
+                      );
+                    }),
                     const Gap(10),
                     logoWidget(size: 100),
                     const Spacer(),
