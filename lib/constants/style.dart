@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 const lightPanelColor = Color.fromARGB(255, 55, 72, 144);
 const darkPanelColor = Color.fromARGB(255, 16, 21, 51);
 
@@ -22,6 +21,8 @@ final defaultShadow = [
       color: Colors.black.withOpacity(.3),
       blurRadius: 4)
 ];
+final defaultSmallRadius = BorderRadius.circular(smallRadius);
+final defaultBigRadius = BorderRadius.circular(bigRadius);
 
 const double smallRadius = 8;
 const double bigRadius = 20;

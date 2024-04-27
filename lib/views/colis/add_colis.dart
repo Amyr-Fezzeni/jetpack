@@ -81,6 +81,7 @@ class _AddColisState extends State<AddColis> {
             status: ColisStatus.inProgress.name,
             clientId: '',
             expeditorId: context.userprovider.currentUser!.id,
+            expeditorPhone:context.userprovider.currentUser!.phoneNumber,
             expeditorName: context.userprovider.currentUser!.getFullName());
 
     comment.text = colis.phone1;

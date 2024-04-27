@@ -2,15 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/colis_service.dart';
+import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/navigation_service.dart';
+import 'package:jetpack/views/widgets/popup.dart';
 
 class AdminProvider with ChangeNotifier {
   List<Colis> allColis = [];
 
   scanDepot(String colisId) async {
-    // test colis
-    await ColisService.colisCollection
-        .doc(colisId)
-        .update({"status": ColisStatus.depot.name});
+    try {
+      Colis colis = allColis.where((c) => c.id == colisId).first;
+      if (colis.status != ColisStatus.pickup.name) {
+        popup(NavigationService.navigatorKey.currentContext!,
+            description: txt('Colis already scanned before'));
+        return;
+      }
+      await ColisService.colisCollection
+          .doc(colisId)
+          .update({"status": ColisStatus.depot.name});
+    } on Exception {
+      popup(NavigationService.navigatorKey.currentContext!,
+          description: txt('Colis not found'));
+      return;
+    }
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? colisStream;

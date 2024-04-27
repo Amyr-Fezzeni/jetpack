@@ -44,6 +44,7 @@ class Colis {
   String status; // In progress, at the depot, final return
   String expeditorId;
   String expeditorName;
+  String expeditorPhone;
   String deliveryId;
   String deliveryName;
   String sectorId;
@@ -61,6 +62,7 @@ class Colis {
       required this.phone2,
       this.numberOfItems = 1,
       required this.expeditorName,
+      required this.expeditorPhone,
       this.tentative = 1,
       this.price = 0,
       this.isFragile = true,
@@ -92,6 +94,7 @@ class Colis {
       'deliveryComment': deliveryComment,
       'phone2': phone2,
       'numberOfItems': numberOfItems,
+      'expeditorPhone': expeditorPhone,
       'price': price,
       'isFragile': isFragile,
       'exchange': exchange,
@@ -129,6 +132,7 @@ class Colis {
       openable: map['openable'] ?? false,
       exchange: map['exchange'] as bool,
       comment: map['comment'] as String,
+      expeditorPhone: map['expeditorPhone'] ?? '',
       deliveryComment: map['deliveryComment'] ?? '',
       tentative: map['tentative'] ?? 1,
       sectorId: map['sectorId'] ?? '',
