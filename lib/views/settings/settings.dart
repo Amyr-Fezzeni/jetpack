@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jetpack/models/app_settings/theme.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/views/settings/contact%20info/contact_info.dart';
-import 'package:jetpack/views/settings/password%20&%20security/password_security.dart';
+// import 'package:jetpack/views/settings/contact%20info/contact_info.dart';
+// import 'package:jetpack/views/settings/password%20&%20security/password_security.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/default_screen.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -26,16 +26,16 @@ class SettingsScreen extends StatelessWidget {
             children: [
               Txt('User settings', color: context.primaryColor),
               divider(bottom: 10),
-              buildMenuTile(
-                  title: 'Contact info',
-                  icon: Icons.contact_page_outlined,
-                  screen: const EditProfileScreen()),
-              Txt('Profile settings', color: context.primaryColor),
-              divider(bottom: 10),
-              buildMenuTile(
-                  title: 'Password & security',
-                  icon: Icons.lock_outline_rounded,
-                  screen: const PasswordSecurityScreen()),
+              // buildMenuTile(
+              //     title: 'Contact info',
+              //     icon: Icons.contact_page_outlined,
+              //     screen: const EditProfileScreen()),
+              // Txt('Profile settings', color: context.primaryColor),
+              // divider(bottom: 10),
+              // buildMenuTile(
+              //     title: 'Password & security',
+              //     icon: Icons.lock_outline_rounded,
+              //     screen: const PasswordSecurityScreen()),
               buildMenuTile(
                   title: 'Privacy preferences',
                   icon: Icons.privacy_tip_outlined,

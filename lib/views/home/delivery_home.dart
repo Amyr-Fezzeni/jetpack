@@ -1,13 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/runsheet.dart';
+import 'package:jetpack/models/user.dart';
+import 'package:jetpack/services/colis_service.dart';
+import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
+import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -259,8 +263,19 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                     color: context.bgcolor,
                     child: ListTile(
                       title: Txt(colis.name, bold: true),
-                      subtitle: Txt(colis.id,
-                          size: 10, color: context.primaryColor, bold: true),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Txt(colis.id,
+                              size: 10,
+                              color: context.primaryColor,
+                              bold: true),
+                          if (colis.appointmentDate != null) ...[
+                            Txt('Appointment',
+                                extra: ": ${getDate(colis.appointmentDate)}")
+                          ]
+                        ],
+                      ),
                       trailing: InkWell(
                         onTap: () =>
                             customPopup(context, ColisDetails(colis: colis)),
@@ -285,6 +300,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   size: 20,
                 ),
                 function: () {
+                  if (context.deliveryRead.runsheetData == null) return;
                   context.deliveryRead.generateDayReport();
                 }),
             borderButton(
@@ -297,6 +313,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   size: 20,
                 ),
                 function: () {
+                  if (context.deliveryRead.runsheetData == null) return;
                   final r = context.deliveryRead.runsheetData!;
                   PdfService.generateRunsheet(RunsheetPdf(
                       id: r.id,
@@ -329,64 +346,207 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
   }
 
   Widget paimentWidget() {
-    return Card(
-      color: context.bgcolor,
-      child: InkWell(
-        onTap: () => context.showPopUpScreen(DraggableScrollableSheet(
-            initialChildSize: .5,
-            builder: (context, scroll) => Container(
-                  color: context.bgcolor,
-                ))),
-        child: ListTile(
-          title: Txt(""),
-          subtitle: Txt("", size: 10, color: context.iconColor),
+    return Column(
+      children: [
+        if (context.deliveryWatch.payments.isNotEmpty)
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(smallRadius),
+                  border:
+                      Border.all(color: context.invertedColor.withOpacity(.2))),
+              child: Center(
+                child: Txt(
+                    "you have ${context.deliveryWatch.payments.length} payment to pickup"),
+              )),
+        Column(
+          children: context.deliveryWatch.payments
+              .map((payment) => Card(
+                    color: context.bgcolor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Txt(payment.expeditorName, bold: true),
+                                    Txt([payment.region, payment.adress]
+                                        .join(', ')),
+                                    Txt('Total price',
+                                        color: context.iconColor,
+                                        extra: ": ${payment.totalprice}TND"),
+                                    Txt('Net price',
+                                        color: context.iconColor,
+                                        extra: ": ${payment.price}TND"),
+                                    Txt(getDate(payment.date)),
+                                  ]),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    phoneWidget(payment.expeditorPhoneNumber, 1,
+                                        size: 35),
+                                    const Gap(10),
+                                    InkWell(
+                                      onTap: () async {
+                                        PdfService.generateExpeditorPayment(
+                                            payment,
+                                            await ColisService.getColis(
+                                                payment.colis));
+                                      },
+                                      child: Icon(Icons.picture_as_pdf_rounded,
+                                          color:
+                                              context.iconColor.withOpacity(.6),
+                                          size: 35),
+                                    ),
+                                  ])
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5, bottom: 5),
+                          child: borderButton(
+                              text: "Done",
+                              textColor: context.primaryColor,
+                              function: () async {
+                                popup(context,
+                                    description:
+                                        'Are you sure you want to close this payment?',
+                                    confirmFunction: () {
+                                  PaymentService.expeditorPaimentCollection
+                                      .doc(payment.id)
+                                      .update({'recived': true});
+                                });
+                              },
+                              radius: smallRadius,
+                              opacity: .5),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
         ),
-      ),
+      ],
     );
   }
 
   Widget returnWidget() {
-    return Card(
-      color: context.bgcolor,
-      child: InkWell(
-        onTap: () => context.showPopUpScreen(DraggableScrollableSheet(
-            initialChildSize: .5,
-            builder: (context, scroll) => Container(
-                  color: context.bgcolor,
-                ))),
-        child: ListTile(
-          title: Txt(""),
-          subtitle: Txt("", size: 10, color: context.iconColor),
+    return Column(
+      children: [
+        if (context.deliveryWatch.returnExpeditor.isNotEmpty)
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(smallRadius),
+                  border:
+                      Border.all(color: context.invertedColor.withOpacity(.2))),
+              child: Center(
+                child: Txt(
+                    "you have ${context.deliveryWatch.returnExpeditor.length} colis return to pickup"),
+              )),
+        Column(
+          children: context.deliveryWatch.returnExpeditor
+              .map((colis) => FutureBuilder(
+                  future: UserService.getUserById(colis.expeditorId),
+                  builder: (context, snapshot) {
+                    return snapshot.connectionState == ConnectionState.done &&
+                            snapshot.data != null
+                        ? Builder(builder: (context) {
+                            UserModel user = snapshot.data!;
+                            return Card(
+                              color: context.bgcolor,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Txt(user.getFullName(),
+                                                  bold: true),
+                                              SizedBox(
+                                                width: context.w * .6,
+                                                child: Txt([
+                                                  user.governorate,
+                                                  user.region,
+                                                  user.adress
+                                                ].join(', ')),
+                                              ),
+                                              Txt("${colis.price.toStringAsFixed(2)} Dt",
+                                                  size: 10,
+                                                  color: context.iconColor),
+                                            ]),
+                                        Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              InkWell(
+                                                onTap: () => customPopup(
+                                                    context,
+                                                    ColisDetails(colis: colis)),
+                                                child: Icon(Icons.notes_rounded,
+                                                    color: context.iconColor,
+                                                    size: 35),
+                                              ),
+                                              const Gap(10),
+                                              phoneWidget(user.phoneNumber, 1,
+                                                  size: 35),
+                                            ])
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 5, bottom: 5),
+                                    child: borderButton(
+                                        text: "Done",
+                                        textColor: context.primaryColor,
+                                        function: () async {
+                                          popup(context,
+                                              description:
+                                                  'Are you sure you want to close this colis?',
+                                              confirmFunction: () {
+                                            ColisService.colisCollection
+                                                .doc(colis.id)
+                                                .update({
+                                              'status':
+                                                  ColisStatus.closedReturn.name
+                                            });
+                                          });
+                                        },
+                                        radius: smallRadius,
+                                        opacity: .5),
+                                  ),
+                                ],
+                              ),
+                            );
+                          })
+                        : const SizedBox.shrink();
+                  }))
+              .toList(),
         ),
-      ),
+      ],
     );
   }
 
   Widget pickupWidget() {
     return Column(
       children: [
-        // Align(
-        //   alignment: Alignment.center,
-        //   child: InkWell(
-        //     onTap: () async {
-        //       String? barcode = await scanQrcode();
-        //       log(barcode.toString());
-
-        //       popup(context, description: barcode.toString(), cancel: false);
-        //     },
-        //     child: Container(
-        //       height: 45,
-        //       width: 45,
-        //       margin: const EdgeInsets.only(top: 10, bottom: 10),
-        //       decoration: BoxDecoration(
-        //           boxShadow: defaultShadow,
-        //           borderRadius: BorderRadius.circular(smallRadius),
-        //           color: context.bgcolor),
-        //       child: Icon(Icons.qr_code_scanner_rounded,
-        //           color: context.primaryColor, size: 35),
-        //     ),
-        //   ),
-        // ),
         if (context.deliveryWatch.pickup.isNotEmpty)
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -447,3 +607,5 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 }
+//  onTap: () => PdfService.generateColis(colis),
+

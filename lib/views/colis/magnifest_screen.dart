@@ -3,12 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/manifest.dart';
 import 'package:jetpack/models/sector.dart';
 import 'package:jetpack/services/agency_service.dart';
+import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/manifest_service.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 
@@ -67,6 +71,7 @@ class _ManifestScreenState extends State<ManifestScreen> {
 Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
       return Container(
         padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.only(bottom: 10),
         width: double.maxFinite,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(smallRadius),
@@ -79,7 +84,16 @@ Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
               children: [
                 const Spacer(),
                 InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    final colisDocs = await ColisService.colisCollection.get();
+
+                    PdfService.generateMagnifest(
+                        manifest,
+                        colisDocs.docs
+                            .where((doc) => manifest.colis.contains(doc.id))
+                            .map((e) => Colis.fromMap(e.data()))
+                            .toList());
+                  },
                   child: Icon(
                     Icons.download_for_offline_rounded,
                     color: context.primaryColor,
@@ -101,6 +115,7 @@ Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
               ),
             ),
             const Gap(10),
+            Txt(getDate(manifest.dateCreated), bold: true, translate: false),
             Txt('Colis: (${manifest.colis.length})', bold: true),
             Txt('Total price',
                 extra: ': ${manifest.totalPrice.toStringAsFixed(2)} TND',

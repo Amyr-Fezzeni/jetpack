@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/delivery_paiment.dart';
+import 'package:jetpack/models/expeditor_payment.dart';
 import 'package:jetpack/models/manifest.dart';
 import 'package:jetpack/models/runsheet.dart';
 import 'package:jetpack/models/sector.dart';
 import 'package:jetpack/services/agency_service.dart';
 import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/manifest_service.dart';
+import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/runsheet_service.dart';
 import 'package:jetpack/services/util/ext.dart';
@@ -23,7 +27,9 @@ class DeliveryProvider with ChangeNotifier {
   List<Colis> allColis = [];
   List<Colis> readyForPickup = [];
   List<Manifest> pickup = [];
+  List<ExpeditorPayment> payments = [];
   List<Colis> depot = [];
+  List<Colis> returnExpeditor = [];
   List<Colis> runsheet = [];
   Sector? sector;
   RunSheet? runsheetData;
@@ -33,16 +39,17 @@ class DeliveryProvider with ChangeNotifier {
   }
 
   Future<void> generateDayReport() async {
-    final doc = await RunsheetService.deliveryPaimentCollection
+    final doc = await PaymentService.deliveryPaimentCollection
         // .where('endDate', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
         .where('userId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
         .where('isPaid', isEqualTo: false)
         .get();
     late DeliveryPayment payment;
-
-    if (doc.docs.isNotEmpty) {
-      payment = DeliveryPayment.fromMap(doc.docs.last.data());
+    final docs =
+        doc.docs.map((e) => DeliveryPayment.fromMap(e.data())).toList();
+    if (docs.where((p) => p.endTime.isAfter(DateTime.now())).isNotEmpty) {
+      payment = docs.where((p) => p.endTime.isAfter(DateTime.now())).last;
     } else {
       payment = DeliveryPayment(
           id: generateId(),
@@ -51,11 +58,17 @@ class DeliveryProvider with ChangeNotifier {
           nbDelivered: 0,
           nbPickup: 0,
           startTime: getFirstDayOfWeek(DateTime.now()),
-          endTime: getLastDayOfWeek(DateTime.now()));
-      await RunsheetService.deliveryPaimentCollection
+          endTime: getLastDayOfWeek(getFirstDayOfWeek(DateTime.now())));
+
+      await PaymentService.deliveryPaimentCollection
           .doc(payment.id)
           .set(payment.toMap());
     }
+    // log(payment.toString());
+    // log(getFirstDayOfWeek(DateTime(2024, 4, 23))
+    //     .millisecondsSinceEpoch
+    //     .toString());
+    // log(getLastDayOfWeek(payment.startTime).millisecondsSinceEpoch.toString());
     for (var colis in runsheet) {
       if (colis.status == ColisStatus.delivered.name) {
         payment.nbDelivered += 1;
@@ -83,10 +96,20 @@ class DeliveryProvider with ChangeNotifier {
     await RunsheetService.runsheetCollection
         .doc(runsheetData!.id)
         .update({'collectionDate': DateTime.now().millisecondsSinceEpoch});
-    await RunsheetService.deliveryPaimentCollection
+    await PaymentService.deliveryPaimentCollection
         .doc(payment.id)
         .update(payment.toMap());
-    await PdfService.generateDayReport();
+    BuildContext context = NavigationService.navigatorKey.currentContext!;
+    await PdfService.generateDayReport(RunsheetPdf(
+        id: runsheetData!.id,
+        agenceName: context.userprovider.currentUser!.agency!['name'],
+        deliveryCin: context.userprovider.currentUser!.cin,
+        deliveryName: context.userprovider.currentUser!.getFullName(),
+        matricule: context.userprovider.currentUser!.matricule,
+        date: runsheetData!.date,
+        colis: runsheet,
+        price: runsheetData!.price,
+        note: runsheetData!.note));
   }
 
   Future<void> scanRunsheet(String colisId) async {
@@ -132,7 +155,7 @@ class DeliveryProvider with ChangeNotifier {
       return;
     }
     final manifest = pickup.where((element) => element.id == manifestId).first;
-    final doc = await RunsheetService.deliveryPaimentCollection
+    final doc = await PaymentService.deliveryPaimentCollection
         // .where('endDate', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
         .where('userId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
@@ -151,7 +174,7 @@ class DeliveryProvider with ChangeNotifier {
           nbPickup: 0,
           startTime: getFirstDayOfWeek(DateTime.now()),
           endTime: getLastDayOfWeek(DateTime.now()));
-      await RunsheetService.deliveryPaimentCollection
+      await PaymentService.deliveryPaimentCollection
           .doc(payment.id)
           .set(payment.toMap());
     }
@@ -165,7 +188,7 @@ class DeliveryProvider with ChangeNotifier {
       });
     }
     payment.nbPickup += 1;
-    await RunsheetService.deliveryPaimentCollection
+    await PaymentService.deliveryPaimentCollection
         .doc(payment.id)
         .update(payment.toMap());
   }
@@ -179,6 +202,7 @@ class DeliveryProvider with ChangeNotifier {
     readyForPickup.clear();
     depot.clear();
     runsheet.clear();
+    returnExpeditor.clear();
     allColis = colis;
     log('colis: ${colis.map((e) => e.status).join(', ')}');
     for (var c in colis) {
@@ -187,6 +211,15 @@ class DeliveryProvider with ChangeNotifier {
       }
       if (c.status == ColisStatus.depot.name) {
         depot.add(c);
+      }
+      if (c.status == ColisStatus.returnExpeditor.name) {
+        returnExpeditor.add(c);
+      }
+      if (c.status == ColisStatus.appointment.name) {
+        if (c.appointmentDate!.isBefore(DateTime.now()) ||
+            (c.appointmentDate!.day == DateTime.now().day)) {
+          depot.add(c);
+        }
       }
       log(runsheetData.toString());
       if (runsheetData != null) {
@@ -245,13 +278,11 @@ class DeliveryProvider with ChangeNotifier {
     await setSector();
     startManifestStream();
     startRunsheetStream();
+    startPaymentStream();
     colisStream = ColisService.colisCollection
         .where('deliveryId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
-        //     .where('status', whereNotIn: [
-        //   ColisStatus.delivered.name,
-        //   ColisStatus.canceled.name
-        // ])
+        .where('status', isNotEqualTo: ColisStatus.closed.name)
         .snapshots();
     colisStream?.listen((event) {}).onData((data) async {
       filterColis(
@@ -304,7 +335,7 @@ class DeliveryProvider with ChangeNotifier {
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
         .where('date',
             isEqualTo: DateFormat('yyyy-MM-dd').format(DateTime.now()))
-        .where('collectonDate', isNull: true)
+        // .where('collectonDate', isNull: true)
         .snapshots();
     runsheetStream?.listen((event) {}).onData((data) async {
       log('runsheet: ${data.docs.length}');
@@ -326,5 +357,30 @@ class DeliveryProvider with ChangeNotifier {
     runsheetStream?.listen((event) {}).cancel();
     runsheetStream = null;
     runsheetData = null;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? paymentStream;
+
+  startPaymentStream() async {
+    if (paymentStream != null) return;
+
+    paymentStream = PaymentService.expeditorPaimentCollection
+        .where('deliveryId',
+            isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
+        .where('recived', isEqualTo: false)
+        .snapshots();
+    paymentStream?.listen((event) {}).onData((data) async {
+      payments =
+          data.docs.map((e) => ExpeditorPayment.fromMap(e.data())).toList();
+
+      notifyListeners();
+    });
+  }
+
+  stopPaymentStream() {
+    if (paymentStream == null) return;
+    paymentStream?.listen((event) {}).cancel();
+    paymentStream = null;
+    payments = [];
   }
 }

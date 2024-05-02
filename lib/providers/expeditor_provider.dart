@@ -8,6 +8,7 @@ import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/manifest.dart';
 import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/manifest_service.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
@@ -59,8 +60,9 @@ class ExpeditorProvider with ChangeNotifier {
           dateCreated: DateTime.now(),
           colis: colis.map((e) => e.id).toList(),
           totalPrice: colis.map((e) => e.price).reduce((a, b) => a + b));
-
+      
       final value = await ManifestService.createMagnifest(magnifest);
+      await PdfService.generateMagnifest(magnifest, colis);
       if (value == 'true') {
         for (var c in colis) {
           await ColisService.colisCollection

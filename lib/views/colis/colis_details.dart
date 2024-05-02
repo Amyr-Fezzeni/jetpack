@@ -5,8 +5,10 @@ import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 
@@ -30,16 +32,6 @@ class ColisDetails extends StatelessWidget {
                 content: Text("Code copied."),
               ));
             },
-
-            //  context.role == Role.admin
-            //     ? () {
-            //         context.adminRead.scanDepot(colis);
-            //       }
-            //     : context.role == Role.delivery
-            //         ? () {
-            //             context.deliveryRead.scanRunsheet(colis);
-            //           }
-            //         : null,
             child: SizedBox(
               height: 100,
               width: 200,
@@ -165,6 +157,79 @@ class ColisDetails extends StatelessWidget {
                     const Spacer(),
                     phoneWidgetId('', id: colis.deliveryId)
                   ],
+                ),
+              if ([Role.admin.name, Role.expeditor.name]
+                  .contains(context.currentUser.role.name))
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Builder(builder: (context) {
+                        Color color = getColor(colis.status);
+
+                        return PopupMenuButton(
+                          onSelected: (value) {},
+                          color: context.bgcolor,
+                          child: Container(
+                              height: 35,
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: color.withOpacity(.2),
+                                border: Border.all(color: color),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(5.0)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  txt(getText(colis.status)),
+                                  style: context.text
+                                      .copyWith(fontSize: 14, color: color),
+                                ),
+                              )),
+                          itemBuilder: (BuildContext c) {
+                            return [
+                              ColisStatus.returnDepot,
+                              ColisStatus.canceled
+                            ]
+                                .map((ColisStatus status) => PopupMenuItem(
+                                      onTap: () async {
+                                        if (colis.status ==
+                                            ColisStatus.delivered.name) return;
+                                        if (colis.status == status.name) {
+                                          return;
+                                        }
+                                        ColisService.colisCollection
+                                            .doc(colis.id)
+                                            .update({
+                                          'status': status.name
+                                        }).then((value) => context.pop());
+                                      },
+                                      value: status.name,
+                                      child: Text(
+                                        getText(status.name),
+                                        style: context.theme.text18,
+                                      ),
+                                    ))
+                                .toList();
+                          },
+                        );
+                      }),
+                      const Gap(10),
+                      if (colis.status == ColisStatus.appointment.name)
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            height: 35,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: context.invertedColor.withOpacity(.2)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Txt(getDate(colis.appointmentDate)))
+                    ],
+                  ),
                 ),
             ],
           ),

@@ -69,6 +69,7 @@ class UserProvider with ChangeNotifier {
 
   // login & signup
   Future<void> logOut(context) async {
+    DataPrefrences.removeAccount(accountName: currentUser!.getFullName());
     await removeData();
     NavigationService.navigatorKey.currentContext!.read<MenuProvider>().init();
     Navigator.of(context).pushAndRemoveUntil(
@@ -95,6 +96,8 @@ class UserProvider with ChangeNotifier {
       if (saveLogin) {
         DataPrefrences.setLogin(email);
         DataPrefrences.setPassword(generateMD5(password));
+        DataPrefrences.saveAccount(
+            email: email, password: password, accountName: user.getFullName());
       }
       await UserService.saveFcm(user.id);
       if (currentUser!.role == Role.admin) {
@@ -128,6 +131,7 @@ class UserProvider with ChangeNotifier {
       NavigationService.navigatorKey.currentContext!
           .read<NotificationProvider>()
           .startNotificationsListen();
+
       if (currentUser!.role == Role.admin) {
         NavigationService.navigatorKey.currentContext!.adminRead
             .startColisStream();
@@ -188,37 +192,5 @@ class UserProvider with ChangeNotifier {
     bool result = await UserService.changePhoneNumber(currentUser!, phone);
     // updateUser();
     return result;
-  }
-
-  changeName(BuildContext context, String name, String lastName) async {
-    currentUser!.firstName = name;
-    currentUser!.lastName = lastName;
-
-    bool result = await UserService.changeName(currentUser!);
-    if (result) {
-      await popup(context, cancel: false, description: "${txt(nameSuccess)}.");
-    } else {
-      await popup(context, cancel: false, description: "${txt(defaultError)}.");
-    }
-    Navigator.pop(context);
-    // updateUser();
-  }
-
-  changeEmail(BuildContext context, String email) async {
-    currentUser!.email = email;
-    final validator = emailValidator(email);
-    if (validator != null) {
-      popup(context, cancel: false, description: validator);
-      return;
-    }
-    bool result = await UserService.changeEmail(currentUser!, email);
-    if (result) {
-      await popup(context, cancel: false, description: "${txt(emailSuccess)}.");
-      Navigator.pop(context);
-    } else {
-      await popup(context, cancel: false, description: "${txt(emailError)}.");
-    }
-
-    // updateUser();
   }
 }

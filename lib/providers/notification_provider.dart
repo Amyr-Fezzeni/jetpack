@@ -56,4 +56,6 @@ class NotificationProvider with ChangeNotifier {
     notificationStream?.listen((event) {}).cancel();
     notificationStream = null;
   }
+
+  sendNotification({required String userFrom, required String userTo, required String message}) async {}
 }

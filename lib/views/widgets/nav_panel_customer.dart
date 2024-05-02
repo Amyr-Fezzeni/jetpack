@@ -1,9 +1,16 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/models/expeditor_payment.dart';
+import 'package:jetpack/services/shared_data.dart';
 import 'package:jetpack/views/agency/agency_list.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/views/auth/login.dart';
 import 'package:jetpack/views/payment/delivery_payment_screen.dart';
 import 'package:jetpack/views/sector/sector_list.dart';
+import 'package:jetpack/views/users/expeditor_tracking.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/default_screen.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -68,6 +75,11 @@ class NavPanel extends StatelessWidget {
                     title: txt('Payment'),
                     icon: Icons.payments_outlined,
                     screen: const DeliveryPaymentHistoryScreen()),
+              if ([Role.expeditor].contains(context.currentUser.role))
+                buildMenuTile(
+                    title: txt('Payment'),
+                    icon: Icons.payments_outlined,
+                    screen: ExpeditorTrackingScreen(user: context.currentUser)),
               buildMenuTile(
                   title: txt('Settings'),
                   icon: Icons.settings,
@@ -77,6 +89,7 @@ class NavPanel extends StatelessWidget {
                   icon: Icons.contact_support_outlined,
                   screen: const DefaultScreen(
                       title: 'Helps & support', leading: true)),
+              const Accounts(),
               const Spacer(),
               Builder(builder: (context) {
                 return InkWell(
@@ -113,6 +126,100 @@ class NavPanel extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Accounts extends StatefulWidget {
+  const Accounts({super.key});
+
+  @override
+  State<Accounts> createState() => _AccountsState();
+}
+
+class _AccountsState extends State<Accounts> {
+  bool expand = false;
+  late List<String> accounts;
+  @override
+  void initState() {
+    super.initState();
+    accounts = DataPrefrences.getAccounts();
+    log(accounts.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Card(
+          color: context.bgcolor,
+          child: InkWell(
+            onTap: () => setState(() => expand = !expand),
+            child: Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.people,
+                    color: context.iconColor,
+                    size: 20,
+                  ),
+                  const Gap(5),
+                  Txt('Accounts'),
+                  const Spacer(),
+                  Icon(
+                    expand
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: context.iconColor,
+                    size: 25,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (expand) ...[
+          ...accounts.map((e) => Container(
+                margin: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(.1),
+                    borderRadius: defaultSmallRadius),
+                child: InkWell(
+                  onTap: () async {
+                    final account = DataPrefrences.getAccount(accountName: e);
+                    if (account != null && account.isNotEmpty) {
+                      context.userprovider.login(
+                          context, account.first, account.last,
+                          saveLogin: true);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      profileIcon(size: 25),
+                      const Gap(5),
+                      Txt(e, bold: true),
+                      const Spacer(),
+                      deleteButton(function: () async {
+                        DataPrefrences.removeAccount(accountName: e)
+                            .then((value) => setState(() {
+                                  accounts = DataPrefrences.getAccounts();
+                                }));
+                      })
+                    ],
+                  ),
+                ),
+              )),
+          borderButton(
+              text: "Add acount",
+              function: () => context.moveTo(const LoginScreen()),
+              textColor: context.primaryColor,
+              opacity: 0)
+        ]
+      ],
     );
   }
 }

@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -132,15 +135,30 @@ class _ColisListState extends State<ColisList> {
                                   Flexible(child: ColisCard(colis: colis)),
                                   if (widget.status
                                       .contains(ColisStatus.inProgress)) ...[
-                                    const Gap(15),
-                                    checkBox(
-                                        selected.contains(colis.id),
-                                        '',
-                                        () => setState(() {
-                                              selected.contains(colis.id)
-                                                  ? selected.remove(colis.id)
-                                                  : selected.add(colis.id);
-                                            }))
+                                    const Gap(10),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () =>
+                                              PdfService.generateColis(colis),
+                                          child: Icon(
+                                            Icons.download,
+                                            color: context.iconColor,
+                                            size: 35,
+                                          ),
+                                        ),
+                                        const Gap(10),
+                                        checkBox(
+                                            selected.contains(colis.id),
+                                            '',
+                                            () => setState(() {
+                                                  selected.contains(colis.id)
+                                                      ? selected
+                                                          .remove(colis.id)
+                                                      : selected.add(colis.id);
+                                                })),
+                                      ],
+                                    )
                                   ]
                                 ],
                               ))
@@ -148,10 +166,10 @@ class _ColisListState extends State<ColisList> {
                     ),
                   ),
                 ),
-                if (widget.status.contains(ColisStatus.inProgress))
+                if (widget.status.contains(ColisStatus.inProgress) &&
+                    selected.isNotEmpty)
                   gradientButton(
                       function: () async {
-                        if (selected.isEmpty) return;
                         await customPopup(
                             context,
                             ColisOptions(
@@ -204,24 +222,6 @@ class _ColisOptionsState extends State<ColisOptions> {
               },
               text: "Generate magnifest",
               w: 200),
-          // gradientButton(
-          //     function: () async {
-          //       if (loading) return;
-          //       setState(() => loading = true);
-          //       try {
-          //         for (var c in widget.colis) {
-          //           await ColisService.colisCollection
-          //               .doc(c.id)
-          //               .update({'status': ColisStatus.ready.name});
-          //         }
-          //         setState(() => loading = false);
-          //       } on Exception catch (e) {
-          //         log(e.toString());
-          //         setState(() => loading = false);
-          //       }
-          //     },
-          //     text: "Ready for delivery",
-          //     w: 200),
           if (loading) cLoader()
         ],
       ),

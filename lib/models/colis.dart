@@ -1,9 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:jetpack/services/util/ext.dart';
-import 'package:jetpack/services/util/navigation_service.dart';
 
 enum ColisStatus {
   inProgress,
@@ -16,7 +15,10 @@ enum ColisStatus {
   appointment,
   canceled,
   returnDepot,
-  closed
+  returnConfirmed,
+  returnExpeditor,
+  closed,
+  closedReturn
 }
 
 class Colis {
@@ -191,6 +193,8 @@ getColor(String status) {
 }
 
 getText(String status) {
+  log(ColisStatus.values.toString());
+
   switch (status) {
     case "confirmed":
       return 'Client confirmed';
@@ -199,10 +203,37 @@ getText(String status) {
     case "returnDepot":
       return 'Client not availble';
     case "canceled":
-      return 'Client canceled';
+      return 'Colis canceled';
     case "appointment":
       return 'Appointment';
+    case "depot":
+      return 'At depot';
+    case "returnExpeditor":
+      return 'Retour expeditor';
+    case "inProgress":
+      return 'in progress';
+    case "ready":
+      return 'ready for pickup';
+    case "pickup":
+      return 'pickup';
+    case "closedReturn":
+      return 'Annuler';
+    case "closed":
+      return 'closed';
     default:
       return 'In delivery';
   }
 }
+// ColisStatus.inProgress, 
+// ColisStatus.ready, 
+// ColisStatus.pickup, 
+// ColisStatus.depot,
+//  ColisStatus.inDelivery, 
+//  ColisStatus.confirmed, 
+//  ColisStatus.delivered, 
+//  ColisStatus.appointment, 
+//  ColisStatus.canceled, 
+//  ColisStatus.returnDepot, 
+//  ColisStatus.returnExpeditor, 
+//  ColisStatus.closed, 
+//  ColisStatus.closedReturn

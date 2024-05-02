@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/services/colis_service.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -152,7 +153,10 @@ Widget colisRunsheetCard(String id) => Builder(
 
                                     if (status == ColisStatus.appointment) {
                                       final date = await datePopup(
-                                          day: true, minDate: DateTime.now());
+                                          day: true,
+                                          minDate: DateTime.now(),
+                                          maxDate: DateTime.now()
+                                              .add(const Duration(days: 7)));
                                       if (date == null) return;
                                       colis.appointmentDate = date;
                                     }

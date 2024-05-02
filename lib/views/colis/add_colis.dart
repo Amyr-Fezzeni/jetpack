@@ -80,8 +80,9 @@ class _AddColisState extends State<AddColis> {
             comment: '',
             status: ColisStatus.inProgress.name,
             clientId: '',
+            creationDate: DateTime.now(),
             expeditorId: context.userprovider.currentUser!.id,
-            expeditorPhone:context.userprovider.currentUser!.phoneNumber,
+            expeditorPhone: context.userprovider.currentUser!.phoneNumber,
             expeditorName: context.userprovider.currentUser!.getFullName());
 
     comment.text = colis.phone1;
@@ -217,147 +218,7 @@ class _AddColisState extends State<AddColis> {
                     ],
                   ),
                 ),
-                // Container(
-                //   height: 50,
-                //   margin: const EdgeInsets.symmetric(horizontal: 15)
-                //       .copyWith(bottom: 15),
-                //   padding: const EdgeInsets.symmetric(horizontal: 15),
-                //   decoration: BoxDecoration(
-                //     color: context.invertedColor.withOpacity(.05),
-                //     borderRadius: BorderRadius.circular(smallRadius),
-                //   ),
-                //   child: InkWell(
-                //     onTap: () async {
-                //       final data = await pickClient();
-                //       if (data != null) {
-                //         setState(() {
-                //           colis.name = "${data.firstName} ${data.lastName}";
-                //           colis.address = data.adress;
-                //           colis.city = data.city;
-                //           colis.governorate = data.governorate;
-                //           colis.phone1 = data.phoneNumber;
-                //           colis.phone2 = data.secondaryPhoneNumber;
-                //           colis.clientId = data.id;
-                //         });
-                //       }
-                //     },
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         Builder(builder: (context) {
-                //           return Txt(
-                //               colis.clientId.isEmpty
-                //                   ? 'Select client'
-                //                   : colis.name,
-                //               bold: colis.clientId.isNotEmpty,
-                //               color: context.invertedColor.withOpacity(
-                //                   colis.clientId.isEmpty ? .4 : 1));
-                //         }),
-                //         const Spacer(),
-                //         Icon(
-                //           Icons.keyboard_arrow_right_sharp,
-                //           color: context.iconColor,
-                //           size: 25,
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
 
-                // if (colis.clientId.isNotEmpty)
-                //   Container(
-                //     margin: const EdgeInsets.symmetric(horizontal: 15)
-                //         .copyWith(bottom: 15),
-                //     padding: const EdgeInsets.symmetric(
-                //         horizontal: 15, vertical: 10),
-                //     decoration: BoxDecoration(
-                //       color: context.invertedColor.withOpacity(.05),
-                //       borderRadius: BorderRadius.circular(smallRadius),
-                //     ),
-                //     child: Column(
-                //       children: [
-                //         Row(
-                //           children: [
-                //             Txt("Client Name", bold: true, extra: ': '),
-                //             Flexible(child: Txt(colis.name))
-                //           ],
-                //         ),
-                //         Row(
-                //           children: [
-                //             Txt("Adress", bold: true, extra: ': '),
-                //             Flexible(child: Txt(colis.address))
-                //           ],
-                //         ),
-                //         Row(
-                //           children: [
-                //             Txt("Governorate", bold: true, extra: ': '),
-                //             Flexible(child: Txt(colis.governorate))
-                //           ],
-                //         ),
-                //         Row(
-                //           children: [
-                //             Txt("City", bold: true, extra: ': '),
-                //             Flexible(child: Txt(colis.city))
-                //           ],
-                //         ),
-                //         Row(
-                //           children: [
-                //             Txt("Phone number", bold: true, extra: ': '),
-                //             Flexible(child: Txt(colis.phone1))
-                //           ],
-                //         ),
-                //         if (colis.phone2.isNotEmpty)
-                //           Row(
-                //             children: [
-                //               Txt("secondary phone number",
-                //                   bold: true, extra: ': '),
-                //               Flexible(child: Txt(colis.phone2))
-                //             ],
-                //           ),
-                //       ],
-                //     ),
-                //   ),
-                // Container(
-                //   height: 50,
-                //   margin: const EdgeInsets.symmetric(horizontal: 15)
-                //       .copyWith(bottom: 15),
-                //   padding: const EdgeInsets.symmetric(horizontal: 15),
-                //   decoration: BoxDecoration(
-                //     color: context.invertedColor.withOpacity(.05),
-                //     borderRadius: BorderRadius.circular(smallRadius),
-                //   ),
-                //   child: InkWell(
-                //     onTap: () async {
-                //       final data = await pickDelivery();
-                //       if (data != null) {
-                //         setState(() {
-                //           colis.deliveryName = data.getFullName();
-                //           colis.deliveryId = data.id;
-                //         });
-                //       }
-                //     },
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         Builder(builder: (context) {
-                //           return Txt(
-                //               colis.deliveryId.isEmpty
-                //                   ? 'Delivery'
-                //                   : colis.deliveryName,
-                //               bold: colis.deliveryId.isNotEmpty,
-                //               color: context.invertedColor.withOpacity(
-                //                   colis.deliveryId.isEmpty ? .4 : 1));
-                //         }),
-                //         const Spacer(),
-                //         Icon(
-                //           Icons.keyboard_arrow_right_sharp,
-                //           color: context.iconColor,
-                //           size: 25,
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
                 Row(
                   children: [
                     Expanded(
@@ -669,29 +530,7 @@ class _AddColisState extends State<AddColis> {
                   ),
                 ),
                 const Gap(20),
-                // if (widget.colis != null)
-                //   Padding(
-                //     padding: const EdgeInsets.symmetric(horizontal: 15)
-                //         .copyWith(bottom: 20),
-                //     child: Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Txt("Status", bold: true),
-                //         const Gap(10),
-                //         Wrap(
-                //           spacing: 10,
-                //           runSpacing: 10,
-                //           children: [
-                //             ...ColisStatus.values.map((status) => checkBox(
-                //                 colis.status == status.name,
-                //                 txt(status.name),
-                //                 () => setState(
-                //                     () => colis.status = status.name))),
-                //           ],
-                //         ),
-                //       ],
-                //     ),
-                //   ),
+
                 context.userprovider.isLoading
                     ? Center(
                         child: Container(
@@ -742,6 +581,7 @@ class _AddColisState extends State<AddColis> {
                               }
 
                               if (widget.colis != null) {
+                                colis.creationDate = DateTime.now();
                                 await ColisService.colisCollection
                                     .doc(colis.id)
                                     .update(colis.toMap());

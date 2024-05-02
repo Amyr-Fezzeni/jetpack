@@ -61,20 +61,6 @@ class UserService {
     }
   }
 
-  static Future<bool> uploadUserBannere(String imagePath) async {
-    try {
-      await userCollection
-          .doc(NavigationService.navigatorKey.currentContext!
-              .read<UserProvider>()
-              .currentUser!
-              .id)
-          .update({"banner": imagePath});
-      return true;
-    } on Exception {
-      return false;
-    }
-  }
-
   static Future<bool> checkExistingUser(String email) async {
     final snapshot =
         await userCollection.where('email', isEqualTo: email).limit(1).get();
@@ -122,30 +108,6 @@ class UserService {
   static Future<bool> changePassword(String userId, String pass) async {
     try {
       await userCollection.doc(userId).update({"password": pass});
-      return true;
-    } on Exception {
-      return false;
-    }
-  }
-
-  static Future<bool> changeName(UserModel user) async {
-    try {
-      await userCollection.doc(user.id).update({
-        "firstName": user.firstName,
-        "lastName": user.lastName,
-      });
-      return true;
-    } on Exception {
-      return false;
-    }
-  }
-
-  static Future<bool> changeEmail(UserModel user, String email) async {
-    try {
-      if (await checkExistingUser(email)) return false;
-      await userCollection.doc(user.id).update({
-        "email": email,
-      });
       return true;
     } on Exception {
       return false;

@@ -180,7 +180,7 @@ Widget borderButton(
     double radius = bigRadius,
     Widget? trailing,
     bool bold = false,
-    double border = 2,
+    double border = 1,
     double? w}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(radius),
@@ -297,20 +297,22 @@ Widget checkBox(bool value, String title, Function() function,
               },
             ),
           ),
-          const Gap(10),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Txt(title),
-                if (description != null)
-                  Txt(description,
-                      color: NavigationService
-                          .navigatorKey.currentContext!.invertedColor
-                          .withOpacity(.7)),
-              ],
+          if (title.isNotEmpty) ...[
+            const Gap(10),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Txt(title),
+                  if (description != null)
+                    Txt(description,
+                        color: NavigationService
+                            .navigatorKey.currentContext!.invertedColor
+                            .withOpacity(.7)),
+                ],
+              ),
             ),
-          ),
+          ],
           const Gap(5)
         ],
       ),

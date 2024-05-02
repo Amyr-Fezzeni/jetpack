@@ -22,6 +22,7 @@ const deleteIcon = 'assets/icons/svg/delete.svg';
 const closeIcon = "assets/icons/svg/img_close.svg";
 //png icons
 const homeIcon = "assets/images/home.png";
+const fragileIcon = "assets/images/fragile.png";
 const tasksIcon = "assets/images/tasks.png";
 const searchIcon = "assets/images/search.png";
 const logoutIcon = "assets/images/logout.png";

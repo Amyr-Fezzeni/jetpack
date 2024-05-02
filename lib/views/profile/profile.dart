@@ -1,15 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/ext.dart';
-import 'package:jetpack/views/profile/payment_history.dart';
 import 'package:jetpack/views/users/add_user.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
-import 'package:jetpack/views/widgets/loader.dart';
-import 'package:jetpack/views/widgets/nav_panel_customer.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
 // import '../../constants/constants.dart';
 import '../../services/util/language.dart';

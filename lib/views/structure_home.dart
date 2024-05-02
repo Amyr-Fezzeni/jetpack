@@ -8,8 +8,6 @@ import 'package:jetpack/views/home/expeditor_home.dart';
 import 'package:jetpack/views/notifications/notifications.dart';
 import 'package:jetpack/views/profile/profile.dart';
 import 'package:jetpack/views/statistics/dashboard.dart';
-import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
-import 'package:jetpack/views/widgets/nav_panel_customer.dart';
 
 class StructureHomeScreen extends StatefulWidget {
   const StructureHomeScreen({super.key});

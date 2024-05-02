@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/models/delivery_paiment.dart';
-import 'package:jetpack/services/runsheet_service.dart';
+import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
@@ -24,11 +24,11 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
   void initState() {
     super.initState();
     log(context.userId);
-    function = RunsheetService.deliveryPaimentCollection
+    function = PaymentService.deliveryPaimentCollection
         .where('userId', isEqualTo: context.userId)
         // .where('isPaid', isEqualTo: false)
         .snapshots();
-    RunsheetService.deliveryPaimentCollection
+    PaymentService.deliveryPaimentCollection
         .where('userId', isEqualTo: context.userId)
         .where('endTime', isGreaterThan: DateTime.now().millisecondsSinceEpoch)
         // .where('isPaid', isEqualTo: false)
@@ -44,7 +44,7 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
             startTime: getFirstDayOfWeek(DateTime.now()),
             endTime:
                 getLastDayOfWeek(DateTime.now()).add(const Duration(days: 7)));
-        RunsheetService.deliveryPaimentCollection.doc(p.id).set(p.toMap());
+        PaymentService.deliveryPaimentCollection.doc(p.id).set(p.toMap());
       }
     });
   }

@@ -1,8 +1,16 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/colis.dart';
+import 'package:jetpack/models/expeditor_payment.dart';
+import 'package:jetpack/models/user.dart';
+import 'package:jetpack/services/agency_service.dart';
 import 'package:jetpack/services/colis_service.dart';
+import 'package:jetpack/services/payment_service.dart';
+import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 
@@ -25,6 +33,58 @@ class AdminProvider with ChangeNotifier {
           description: txt('Colis not found'));
       return;
     }
+  }
+
+  generateExpeditorPayment(List<Colis> colis, UserModel expeditor) async {
+    double totalPrice =
+        colis.where((e) => e.status == ColisStatus.delivered.name).isEmpty
+            ? 0
+            : colis
+                .where((e) => e.status == ColisStatus.delivered.name)
+                .map((e) => e.price)
+                .reduce((a, b) => a + b);
+    double deliveryPrice =
+        (colis.where((e) => e.status == ColisStatus.delivered.name).isEmpty
+                    ? 0
+                    : colis
+                        .where((e) => e.status == ColisStatus.delivered.name)
+                        .length) *
+                6 +
+            (colis.where((e) => e.status == ColisStatus.canceled.name).isEmpty
+                    ? 0
+                    : colis
+                        .where((e) => e.status == ColisStatus.canceled.name)
+                        .length) *
+                4;
+
+    final sector = await SectorService.getSector(expeditor.region);
+
+    final p = ExpeditorPayment(
+        id: generateId(),
+        colis: colis.map((e) => e.id).toList(),
+        expeditorId: expeditor.id,
+        expeditorName: expeditor.getFullName(),
+        expeditorPhoneNumber: expeditor.phoneNumber,
+        region: expeditor.region,
+        adress: expeditor.adress,
+        date: DateTime.now(),
+        deliveryId: sector != null ? sector.delivery['id'] : '',
+        deliveryName: sector != null ? sector.delivery['name'] : '',
+        price: totalPrice - deliveryPrice,
+        totalprice: totalPrice,
+        deliveryPrice: deliveryPrice,
+        recived: false);
+
+    await PaymentService.addExpeditorPaiment(p);
+    PdfService.generateExpeditorPayment(p, colis);
+    for (var c in colis) {
+      await ColisService.colisCollection.doc(c.id).update({
+        'status': c.status == ColisStatus.canceled.name
+            ? "returnExpeditor"
+            : ColisStatus.closed.name
+      });
+    }
+    log(p.toString());
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? colisStream;

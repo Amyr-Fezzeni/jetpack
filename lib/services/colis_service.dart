@@ -24,4 +24,21 @@ class ColisService {
     }
     return "true";
   }
+
+  static Future<List<Colis>> getColis(List<String> colis) async {
+    try {
+      if (colis.length > 9) {
+        final docs = await colisCollection.get();
+        return docs.docs
+            .where((element) => colis.contains(element.id))
+            .map((e) => Colis.fromMap(e.data()))
+            .toList();
+      } else {
+        final docs = await colisCollection.where('id', whereIn: colis).get();
+        return docs.docs.map((e) => Colis.fromMap(e.data())).toList();
+      }
+    } on Exception {
+      return [];
+    }
+  }
 }

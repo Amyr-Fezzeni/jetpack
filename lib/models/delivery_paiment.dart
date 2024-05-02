@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class DeliveryPayment {
@@ -32,7 +33,7 @@ class DeliveryPayment {
   }
 
   factory DeliveryPayment.fromMap(Map<String, dynamic> map) {
-    return DeliveryPayment(
+    final p = DeliveryPayment(
       id: map['id'] as String,
       userId: map['userId'] as String,
       isPaid: map['isPaid'] as bool,
@@ -41,10 +42,17 @@ class DeliveryPayment {
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime'] as int),
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime'] as int),
     );
+    log(p.toString());
+    return p;
   }
 
   String toJson() => json.encode(toMap());
 
   factory DeliveryPayment.fromJson(String source) =>
       DeliveryPayment.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'DeliveryPayment(id: $id, userId: $userId, isPaid: $isPaid, nbDelivered: $nbDelivered, nbPickup: $nbPickup, startTime: $startTime, endTime: $endTime)';
+  }
 }

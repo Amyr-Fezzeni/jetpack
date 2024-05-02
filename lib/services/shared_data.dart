@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:jetpack/models/app_settings/theme.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataPrefrences {
@@ -36,14 +39,38 @@ class DataPrefrences {
         'french': LanguageModel.french
       }[_preferences.getString('language') ?? "french"] ??
       LanguageModel.french;
+  static Future<void> saveAccount(
+      {required String email,
+      required String password,
+      required String accountName}) async {
+    log("$accountName: ${getAccount(accountName: accountName)}");
+    await addAccount(accountName: accountName);
+    await _preferences.setStringList(accountName, [email, password]);
+    log("$accountName: ${getAccount(accountName: accountName)}");
+  }
 
-  static Future<void> setPrivecy(bool value) async =>
-      await _preferences.setBool("privecy", value);
+  static List<String>? getAccount({required String accountName}) {
+    return _preferences.getStringList(accountName);
+  }
 
-  static bool getPrivecy() => _preferences.getBool('privecy') ?? false;
+  static Future<void> removeAccount({required String accountName}) async {
+    List<String> accounts = getAccounts();
+    if (!accounts.contains(accountName)) return;
+    accounts.remove(accountName);
+    await _preferences.setStringList("accounts", accounts);
+    await _preferences.setStringList(accountName, []);
+  }
 
-  static Future<void> setTerms(bool value) async =>
-      await _preferences.setBool("terms", value);
+  static Future<void> addAccount({required String accountName}) async {
+    List<String> accounts = getAccounts();
+    if (accounts.contains(accountName)) return;
+    log(accounts.toString());
+    accounts.add(accountName);
+    log(accounts.toString());
+    await _preferences.setStringList("accounts", accounts);
+  }
 
-  static bool getTerms() => _preferences.getBool('terms') ?? false;
+  static List<String> getAccounts() {
+    return _preferences.getStringList('accounts') ?? [];
+  }
 }
