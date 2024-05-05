@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:jetpack/models/app_settings/theme.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/services/util/logic_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataPrefrences {

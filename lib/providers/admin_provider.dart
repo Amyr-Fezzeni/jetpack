@@ -36,26 +36,17 @@ class AdminProvider with ChangeNotifier {
   }
 
   generateExpeditorPayment(List<Colis> colis, UserModel expeditor) async {
-    double totalPrice =
-        colis.where((e) => e.status == ColisStatus.delivered.name).isEmpty
-            ? 0
-            : colis
-                .where((e) => e.status == ColisStatus.delivered.name)
-                .map((e) => e.price)
-                .reduce((a, b) => a + b);
-    double deliveryPrice =
-        (colis.where((e) => e.status == ColisStatus.delivered.name).isEmpty
-                    ? 0
-                    : colis
-                        .where((e) => e.status == ColisStatus.delivered.name)
-                        .length) *
-                6 +
-            (colis.where((e) => e.status == ColisStatus.canceled.name).isEmpty
-                    ? 0
-                    : colis
-                        .where((e) => e.status == ColisStatus.canceled.name)
-                        .length) *
-                4;
+    double totalPrice = 0;
+    double deliveryPrice = 0;
+
+    for (var c in colis) {
+      if (c.status == ColisStatus.delivered.name) {
+        totalPrice += c.price;
+        deliveryPrice += expeditor.price;
+      } else {
+        deliveryPrice += expeditor.returnPrice;
+      }
+    }
 
     final sector = await SectorService.getSector(expeditor.region);
 

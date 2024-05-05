@@ -1,14 +1,18 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/delivery_paiment.dart';
 import 'package:jetpack/models/expeditor_payment.dart';
 import 'package:jetpack/models/manifest.dart';
+import 'package:jetpack/models/return_colis.dart';
 import 'package:jetpack/models/runsheet.dart';
 import 'package:jetpack/models/sector.dart';
 import 'package:jetpack/services/agency_service.dart';
@@ -17,11 +21,13 @@ import 'package:jetpack/services/manifest_service.dart';
 import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/runsheet_service.dart';
+import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
 import 'package:jetpack/views/widgets/popup.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DeliveryProvider with ChangeNotifier {
   List<Colis> allColis = [];
@@ -30,13 +36,10 @@ class DeliveryProvider with ChangeNotifier {
   List<ExpeditorPayment> payments = [];
   List<Colis> depot = [];
   List<Colis> returnExpeditor = [];
+  List<ReturnColis> returnColis = [];
   List<Colis> runsheet = [];
   Sector? sector;
   RunSheet? runsheetData;
-
-  Future<void> scanDepot() async {
-    runsheet.where((colis) => !colis.exchange).length;
-  }
 
   Future<void> generateDayReport() async {
     final doc = await PaymentService.deliveryPaimentCollection
@@ -75,9 +78,7 @@ class DeliveryProvider with ChangeNotifier {
       }
       if (colis.status == ColisStatus.canceled.name) {}
       if (colis.status == ColisStatus.returnDepot.name) {
-        colis.status = ColisStatus.depot.name;
-        colis.tentative += 1;
-        if (colis.tentative > 3) {
+        if (colis.tentative >= 3) {
           colis.status = ColisStatus.canceled.name;
         } else {
           colis.status = ColisStatus.depot.name;
@@ -121,9 +122,10 @@ class DeliveryProvider with ChangeNotifier {
       return;
     }
     final colis = depot.where((element) => element.id == colisId).first;
-    ColisService.colisCollection
-        .doc(colis.id)
-        .update({'status': ColisStatus.inDelivery.name});
+    colis.tentative += 1;
+    colis.status = ColisStatus.inDelivery.name;
+    colis.pickupDate = DateTime.now();
+    ColisService.colisCollection.doc(colis.id).update(colis.toMap());
 
     if (runsheetData == null) {
       runsheetData = RunSheet(
@@ -209,10 +211,11 @@ class DeliveryProvider with ChangeNotifier {
       if (c.status == ColisStatus.ready.name) {
         readyForPickup.add(c);
       }
-      if (c.status == ColisStatus.depot.name) {
+      if ([ColisStatus.depot.name].contains(c.status)) {
         depot.add(c);
       }
-      if (c.status == ColisStatus.returnExpeditor.name) {
+      if ([ColisStatus.returnExpeditor.name, ColisStatus.returnConfirmed.name]
+          .contains(c.status)) {
         returnExpeditor.add(c);
       }
       if (c.status == ColisStatus.appointment.name) {
@@ -276,9 +279,11 @@ class DeliveryProvider with ChangeNotifier {
   startColisStream() async {
     if (colisStream != null) return;
     await setSector();
+    listenLocation();
     startManifestStream();
     startRunsheetStream();
     startPaymentStream();
+    startReturnColisStream();
     colisStream = ColisService.colisCollection
         .where('deliveryId',
             isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
@@ -292,8 +297,10 @@ class DeliveryProvider with ChangeNotifier {
   }
 
   stopColisStream() {
+    locationListening = false;
     stopManifestStream();
     stopRunsheetStream();
+    stopReturnColisStream();
     if (colisStream == null) return;
     colisStream?.listen((event) {}).cancel();
     colisStream = null;
@@ -382,5 +389,116 @@ class DeliveryProvider with ChangeNotifier {
     paymentStream?.listen((event) {}).cancel();
     paymentStream = null;
     payments = [];
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? returnColisStream;
+
+  startReturnColisStream() async {
+    if (returnColisStream != null) return;
+
+    returnColisStream = FirebaseFirestore.instance
+        .collection('return colis')
+        .where('isClosed', isEqualTo: false)
+        .where('region', whereIn: sector!.regions)
+        .snapshots();
+    returnColisStream?.listen((event) {}).onData((data) async {
+      returnColis =
+          data.docs.map((e) => ReturnColis.fromMap(e.data())).toList();
+
+      notifyListeners();
+    });
+  }
+
+  stopReturnColisStream() {
+    if (returnColisStream == null) return;
+    returnColisStream?.listen((event) {}).cancel();
+    returnColisStream = null;
+    returnColis.clear();
+  }
+
+  LatLng? lastCurrentLocation;
+  LatLng? currentLocation;
+  bool locationListening = false;
+  Future<void> listenLocation() async {
+    // log('listenLocation()');
+    if (locationListening) return;
+    locationListening = true;
+    if (NavigationService
+            .navigatorKey.currentContext!.userprovider.currentUser ==
+        null) return;
+
+    Timer.periodic(const Duration(seconds: 10), (timer) async {
+      BuildContext context = NavigationService.navigatorKey.currentContext!;
+      if (context.userprovider.currentUser == null) {
+        timer.cancel();
+        locationListening = false;
+        await UserService.userCollection.doc(context.userId).update({
+          'location': null,
+        });
+        return;
+      }
+      final data = await requestLocationPermition();
+      if (!data) return;
+      final loc = await Geolocator.getCurrentPosition();
+
+      // log(loc.toString());
+      if (LatLng(loc.latitude, loc.longitude) == currentLocation) {
+        // log('same location');
+        return;
+      }
+      if (lastCurrentLocation == null) {
+        if (currentLocation == null) {
+          currentLocation = LatLng(loc.latitude, loc.longitude);
+          updateCurrentLocation();
+        } else {
+          lastCurrentLocation = currentLocation;
+          currentLocation = LatLng(loc.latitude, loc.longitude);
+          updateCurrentLocation();
+        }
+      } else {
+        lastCurrentLocation = currentLocation;
+        currentLocation = LatLng(loc.latitude, loc.longitude);
+        updateCurrentLocation();
+      }
+    });
+  }
+
+  updateCurrentLocation() async {
+    log('location: $currentLocation');
+    if (currentLocation == null) return;
+    await UserService.userCollection
+        .doc(NavigationService.navigatorKey.currentContext!.userId)
+        .update({
+      'location':
+          GeoPoint(currentLocation!.latitude, currentLocation!.longitude),
+      'lastUpdateLocation': DateTime.now().millisecondsSinceEpoch
+    });
+  }
+
+  Future<bool> requestLocationPermition() async {
+    await Geolocator.requestPermission();
+    //log((await Geolocator.checkPermission()).toString());
+    // Position pos = await Geolocator.getCurrentPosition();
+    // //log((await location.requestPermission()).toString());
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (serviceEnabled) {
+      // log("serviceEnabled: $serviceEnabled");
+      return true;
+    }
+    if (!serviceEnabled) {
+      openAppSettings();
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+    // log("permission: $permission");
+    return permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always;
   }
 }

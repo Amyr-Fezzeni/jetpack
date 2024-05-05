@@ -324,47 +324,47 @@ class _AddUserState extends State<AddUser> {
                     ),
                   ),
                   const Gap(5),
-                  if ([Role.delivery, Role.expeditor].contains(user.role))
-                    Container(
-                      height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 15)
-                          .copyWith(bottom: 15),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: context.invertedColor.withOpacity(.05),
-                        borderRadius: BorderRadius.circular(smallRadius),
-                      ),
-                      child: InkWell(
-                        onTap: () async {
-                          final data = await pickAgency();
-                          if (data != null) {
-                            setState(() {
-                              user.agency = {"id": data.id, "name": data.name};
-                            });
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Builder(builder: (context) {
-                              bool agencyEmpty = user.agency == null ||
-                                  user.agency!['id'] == '';
-                              return Txt(
-                                  agencyEmpty ? 'Agency' : user.agency!['name'],
-                                  bold: !agencyEmpty,
-                                  color: context.invertedColor
-                                      .withOpacity(agencyEmpty ? .4 : 1));
-                            }),
-                            const Spacer(),
-                            Icon(
-                              Icons.keyboard_arrow_right_sharp,
-                              color: context.iconColor,
-                              size: 25,
-                            )
-                          ],
-                        ),
+                  // if ([Role.delivery, Role.expeditor].contains(user.role))
+                  Container(
+                    height: 50,
+                    margin: const EdgeInsets.symmetric(horizontal: 15)
+                        .copyWith(bottom: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: context.invertedColor.withOpacity(.05),
+                      borderRadius: BorderRadius.circular(smallRadius),
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        final data = await pickAgency();
+                        if (data != null) {
+                          setState(() {
+                            user.agency = {"id": data.id, "name": data.name};
+                          });
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Builder(builder: (context) {
+                            bool agencyEmpty =
+                                user.agency == null || user.agency!['id'] == '';
+                            return Txt(
+                                agencyEmpty ? 'Agency' : user.agency!['name'],
+                                bold: !agencyEmpty,
+                                color: context.invertedColor
+                                    .withOpacity(agencyEmpty ? .4 : 1));
+                          }),
+                          const Spacer(),
+                          Icon(
+                            Icons.keyboard_arrow_right_sharp,
+                            color: context.iconColor,
+                            size: 25,
+                          )
+                        ],
                       ),
                     ),
+                  ),
                   // if ([Role.delivery].contains(user.role))
 
                   ...[
@@ -562,7 +562,7 @@ class _AddUserState extends State<AddUser> {
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                         color:darkRed,
+                        color: darkRed,
                         function: () async {
                           await UserService.userCollection
                               .doc(user.id)

@@ -8,7 +8,6 @@ class Manifest {
   String expeditorId;
   String expeditorName;
   String fiscalMatricule;
-
   String governorate;
   String city;
   String region;
@@ -63,16 +62,20 @@ class Manifest {
       city: map['city'] as String,
       region: map['region'] as String,
       adress: map['adress'] as String,
-      dateCreated: DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int),
-      datePicked: map['datePicked'] != null ? DateTime.fromMillisecondsSinceEpoch(map['datePicked'] as int) : null,
-      colis: List<String>.from((map['colis'] ??[])),
+      dateCreated:
+          DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int),
+      datePicked: map['datePicked'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['datePicked'] as int)
+          : null,
+      colis: List<String>.from((map['colis'] ?? [])),
       totalPrice: map['totalPrice'] as double,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Manifest.fromJson(String source) => Manifest.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Manifest.fromJson(String source) =>
+      Manifest.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

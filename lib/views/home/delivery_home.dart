@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
@@ -17,6 +17,7 @@ import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
+import 'package:jetpack/views/home/widgets/end_of_day_widget.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
 import 'package:jetpack/views/widgets/loader.dart';
@@ -301,6 +302,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                 ),
                 function: () {
                   if (context.deliveryRead.runsheetData == null) return;
+                  customPopup(context, const DeliveryEndOfDayWidget());
                   context.deliveryRead.generateDayReport();
                 }),
             borderButton(
@@ -452,7 +454,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                     "you have ${context.deliveryWatch.returnExpeditor.length} colis return to pickup"),
               )),
         Column(
-          children: context.deliveryWatch.returnExpeditor
+          children: context.deliveryWatch.returnColis
               .map((colis) => FutureBuilder(
                   future: UserService.getUserById(colis.expeditorId),
                   builder: (context, snapshot) {
@@ -487,32 +489,107 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                                   user.adress
                                                 ].join(', ')),
                                               ),
-                                              Txt("${colis.price.toStringAsFixed(2)} Dt",
-                                                  size: 10,
+                                              Txt("${colis.colis.length} colis",
+                                                  // size: 10,
                                                   color: context.iconColor),
                                             ]),
-                                        Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              InkWell(
-                                                onTap: () => customPopup(
-                                                    context,
-                                                    ColisDetails(colis: colis)),
-                                                child: Icon(Icons.notes_rounded,
-                                                    color: context.iconColor,
-                                                    size: 35),
-                                              ),
-                                              const Gap(10),
-                                              phoneWidget(user.phoneNumber, 1,
-                                                  size: 35),
-                                            ])
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            phoneWidget(user.phoneNumber, 1,
+                                                size: 35),
+                                            const Gap(10),
+                                            Row(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () => customPopup(
+                                                      context,
+                                                      Flexible(
+                                                          child:
+                                                              SingleChildScrollView(
+                                                        child: Column(
+                                                          children: colis.colis
+                                                              .map(
+                                                                  (colis) =>
+                                                                      Card(
+                                                                        color: context
+                                                                            .theme
+                                                                            .bgColor,
+                                                                        child:
+                                                                            Card(
+                                                                          elevation:
+                                                                              0,
+                                                                          color: colis.status == ColisStatus.closed.name
+                                                                              ? Colors.green.withOpacity(.2)
+                                                                              : Colors.red.withOpacity(.2),
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(8.0),
+                                                                            child:
+                                                                                Column(
+                                                                              children: [
+                                                                                Row(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Expanded(
+                                                                                      child: InkWell(
+                                                                                        onTap: () => customPopup(context, ColisDetails(colis: colis)),
+                                                                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                          Text(colis.id,
+                                                                                              style: context.theme.text18.copyWith(
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              )),
+                                                                                          Text(colis.name,
+                                                                                              style: context.theme.text18.copyWith(
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              )),
+                                                                                          Text('${colis.price}TND', style: context.theme.text18),
+                                                                                          if (colis.exchange) Text('EXCHANGE', style: context.theme.text18),
+                                                                                          if (colis.address.isNotEmpty) Text(colis.address, style: context.theme.text18),
+                                                                                        ]),
+                                                                                      ),
+                                                                                    ),
+                                                                                    // phoneWidget(colis.phone1, 1),
+                                                                                    // if (colis.phone2.isNotEmpty) phoneWidget(colis.phone2, 2),
+                                                                                  ],
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ))
+                                                              .toList(),
+                                                        ),
+                                                      )),
+                                                      maxWidth: false),
+                                                  child: Icon(
+                                                      Icons.notes_outlined,
+                                                      color: context.iconColor,
+                                                      size: 35),
+                                                ),
+                                                const Gap(10),
+                                                InkWell(
+                                                  onTap: () => PdfService
+                                                      .generateReturnColis(
+                                                          colis),
+                                                  child: Icon(
+                                                      Icons
+                                                          .picture_as_pdf_outlined,
+                                                      color: context.iconColor,
+                                                      size: 35),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        right: 5, bottom: 5),
+                                        right: 5, bottom: 5, top: 10),
                                     child: borderButton(
                                         text: "Done",
                                         textColor: context.primaryColor,
@@ -521,12 +598,18 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                               description:
                                                   'Are you sure you want to close this colis?',
                                               confirmFunction: () {
-                                            ColisService.colisCollection
-                                                .doc(colis.id)
-                                                .update({
-                                              'status':
-                                                  ColisStatus.closedReturn.name
-                                            });
+                                            for (var c in colis.colis) {
+                                              ColisService.colisCollection
+                                                  .doc(c.id)
+                                                  .update({
+                                                'status': ColisStatus
+                                                    .closedReturn.name
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .collection('return colis')
+                                                  .doc(colis.id)
+                                                  .update({'status': true});
+                                            }
                                           });
                                         },
                                         radius: smallRadius,

@@ -52,7 +52,7 @@ class UserProvider with ChangeNotifier {
 
   Future<void> removeData() async {
     await UserService.removeFcm(currentUser!.id);
-    await UserService.connectStatus(true);
+    // await UserService.connectStatus(true);
     NavigationService.navigatorKey.currentContext!.notificationProvider
         .removeNotificationStream();
     NavigationService.navigatorKey.currentContext!.expeditorRead
@@ -112,9 +112,9 @@ class UserProvider with ChangeNotifier {
         NavigationService.navigatorKey.currentContext!.deliveryRead
             .startColisStream();
       }
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const StructureHomeScreen()),
-          (Route<dynamic> route) => false);
+      NavigationService.navigatorKey.currentContext!
+          .moveToAndRemoveHistory(const StructureHomeScreen());
+
     } else {
       popup(context, cancel: false, description: txt(loginError2));
     }

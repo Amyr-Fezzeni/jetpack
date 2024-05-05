@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jetpack/models/colis.dart';
 // import 'package:jetpack/models/enum_classes.dart';
@@ -38,6 +40,20 @@ class ColisService {
         return docs.docs.map((e) => Colis.fromMap(e.data())).toList();
       }
     } on Exception {
+      return [];
+    }
+  }
+
+  static Future<List<Colis>> getColisFromStatus(
+      {required List<String> status}) async {
+    try {
+      final docs = await colisCollection.where('status', whereIn: status).get();
+      log(docs.docs.length.toStringAsFixed(20));
+      final colis = docs.docs.map((e) => Colis.fromMap(e.data())).toList();
+      log('colis: $colis');
+      return colis;
+    } on Exception catch (e) {
+      log(e.toString());
       return [];
     }
   }

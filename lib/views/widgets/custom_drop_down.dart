@@ -326,8 +326,8 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
                             Navigator.pop(context);
                           },
                           child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
                               child: Center(child: Txt(e, bold: true))),
                         ),
                         divider()

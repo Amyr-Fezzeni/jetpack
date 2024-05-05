@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/models/user.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/views/google%20map/delivery_tracking.dart';
 import 'package:jetpack/views/users/add_user.dart';
 import 'package:jetpack/views/users/delivery_payment_admin.dart';
 import 'package:jetpack/views/users/expeditor_tracking.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/popup.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserCard extends StatelessWidget {
   final UserModel user;
@@ -74,9 +78,30 @@ class DeliveryCard extends StatelessWidget {
                 child: Icon(Icons.edit_note_sharp,
                     color: context.iconColor, size: 25),
               ),
+              const Gap(5),
               InkWell(
                 onTap: () => context.moveTo(DeliveryPaymentAdmin(user: user)),
                 child: Icon(Icons.payments_outlined,
+                    color: context.iconColor, size: 25),
+              ),
+              const Gap(5),
+              InkWell(
+                onTap: () async {
+                  if (user.location == null) {
+                    popup(context,
+                        description: "This user doesn't share location",
+                        cancel: false);
+                    return;
+                  }
+                  // customPopup(
+                  //         context, DeliveryTrackingMap(delivery: user));
+                  final location = user.location!;
+                  var uri = Uri.parse(
+                      "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}");
+
+                  await launchUrl(uri);
+                },
+                child: Icon(Icons.location_on_outlined,
                     color: context.iconColor, size: 25),
               ),
             ],
@@ -124,7 +149,8 @@ class ExpeditorCard extends StatelessWidget {
                     color: context.iconColor, size: 25),
               ),
               InkWell(
-                onTap: () => context.moveTo(ExpeditorTrackingScreen(user: user)),
+                onTap: () =>
+                    context.moveTo(ExpeditorTrackingScreen(user: user)),
                 child: Icon(Icons.payments_outlined,
                     color: context.iconColor, size: 25),
               ),

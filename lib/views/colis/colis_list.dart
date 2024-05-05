@@ -140,7 +140,7 @@ class _ColisListState extends State<ColisList> {
                                       children: [
                                         InkWell(
                                           onTap: () =>
-                                              PdfService.generateColis(colis),
+                                              PdfService.generateColis([colis]),
                                           child: Icon(
                                             Icons.download,
                                             color: context.iconColor,
@@ -221,6 +221,22 @@ class _ColisOptionsState extends State<ColisOptions> {
                 }
               },
               text: "Generate magnifest",
+              w: 200),
+          gradientButton(
+              function: () async {
+                if (loading) return;
+                setState(() => loading = true);
+                try {
+                  await PdfService.generateColis([
+                    ...widget.colis,
+                  ]);
+                  setState(() => loading = false);
+                } on Exception catch (e) {
+                  log(e.toString());
+                  setState(() => loading = false);
+                }
+              },
+              text: "Generate pdf",
               w: 200),
           if (loading) cLoader()
         ],

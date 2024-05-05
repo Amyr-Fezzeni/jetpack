@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/enum_classes.dart';
-import 'package:jetpack/models/expeditor_payment.dart';
 import 'package:jetpack/services/shared_data.dart';
 import 'package:jetpack/views/agency/agency_list.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/auth/login.dart';
 import 'package:jetpack/views/payment/delivery_payment_screen.dart';
+import 'package:jetpack/views/report/report_screen.dart';
 import 'package:jetpack/views/sector/sector_list.dart';
+import 'package:jetpack/views/splash%20screen/splash_screen.dart';
 import 'package:jetpack/views/users/expeditor_tracking.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/default_screen.dart';
@@ -87,8 +88,7 @@ class NavPanel extends StatelessWidget {
               buildMenuTile(
                   title: txt('Help & Support'),
                   icon: Icons.contact_support_outlined,
-                  screen: const DefaultScreen(
-                      title: 'Helps & support', leading: true)),
+                  screen: const ReportScreen()),
               const Accounts(),
               const Spacer(),
               Builder(builder: (context) {
@@ -192,9 +192,11 @@ class _AccountsState extends State<Accounts> {
                   onTap: () async {
                     final account = DataPrefrences.getAccount(accountName: e);
                     if (account != null && account.isNotEmpty) {
-                      context.userprovider.login(
-                          context, account.first, account.last,
-                          saveLogin: true);
+                      context.moveTo(const SplashScreen());
+                      context.userprovider.removeData().then((value) => context
+                          .userprovider
+                          .login(context, account.first, account.last,
+                              saveLogin: true));
                     }
                   },
                   child: Row(

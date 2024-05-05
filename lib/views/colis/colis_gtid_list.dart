@@ -7,7 +7,11 @@ import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/colis/add_colis.dart';
 import 'package:jetpack/views/colis/colis_list.dart';
+import 'package:jetpack/views/colis/confirmed_return.dart';
 import 'package:jetpack/views/colis/magnifest_screen.dart';
+import 'package:jetpack/views/colis/retrun_colis_admin.dart';
+import 'package:jetpack/views/colis/retrun_colis_expeditor.dart';
+import 'package:jetpack/views/home/admin_home.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 
 class ColisGridList extends StatefulWidget {
@@ -133,9 +137,38 @@ class _ColisGridListState extends State<ColisGridList> {
                           [ColisStatus.inDelivery, ColisStatus.confirmed]),
                       gridData("Delivered", colis, [ColisStatus.delivered]),
                       gridData("Appointment", colis, [ColisStatus.appointment]),
+                      if (context.role == Role.expeditor)
+                        gridData(
+                            "Colis canceled",
+                            colis,
+                            [
+                              ColisStatus.canceled,
+                              ColisStatus.returnConfirmed,
+                              ColisStatus.returnExpeditor,
+                            ],
+                            screen: const ReturnColisExpeditor()),
+                      if (context.role == Role.admin)
+                        gridData(
+                            "Colis canceled",
+                            colis,
+                            [
+                              ColisStatus.canceled,
+                              ColisStatus.returnConfirmed,
+                              ColisStatus.returnExpeditor,
+                            ],
+                            screen: const ReturnColisAdmin()),
+                      if (context.role == Role.admin)
+                        gridData(
+                            "Confirmed return",
+                            colis,
+                            [
+                              ColisStatus.returnConfirmed,
+                            ],
+                            screen: const ConfirmedReturnScreen()),
                     ],
                   ),
-                )
+                ),
+                const Gap(50)
               ],
             ),
           ),
@@ -144,14 +177,15 @@ class _ColisGridListState extends State<ColisGridList> {
     );
   }
 
-  Widget gridData(String title, List<Colis> colis, List<ColisStatus> status) =>
+  Widget gridData(String title, List<Colis> colis, List<ColisStatus> status,
+          {Widget? screen}) =>
       Builder(builder: (context) {
         return SizedBox(
           width: context.w * .5 - 30,
           height: context.w * .5 - 30,
           child: InkWell(
-            onTap: () =>
-                context.moveTo(ColisList(title: title, status: status)),
+            onTap: () => context
+                .moveTo(screen ?? ColisList(title: title, status: status)),
             child: Card(
               color: context.bgcolor,
               child: Column(
@@ -198,7 +232,10 @@ class _ColisGridListState extends State<ColisGridList> {
                     ),
                   ),
                   const Gap(10),
-                  Txt(title, bold: true)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Txt(title, bold: true, center: true),
+                  )
                 ],
               ),
             ),

@@ -16,6 +16,17 @@ class AgencyService {
     }
     return "true";
   }
+  static Future<Agency?> getAgency(String city) async {
+    try {
+      final docs =
+          await agencyCollection.where('citys', arrayContains: city).get();
+      return docs.docs.isEmpty
+          ? null
+          : Agency.fromMap(docs.docs.first.data());
+    } on Exception {
+      return null;
+    }
+  }
 }
 
 class SectorService {

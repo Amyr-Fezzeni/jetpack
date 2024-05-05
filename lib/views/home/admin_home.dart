@@ -7,6 +7,8 @@ import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
 import 'package:jetpack/views/colis/colis_gtid_list.dart';
+import 'package:jetpack/views/colis/retrun_colis_admin.dart';
+import 'package:jetpack/views/users/admin_payments_tracking.dart';
 import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
@@ -36,18 +38,16 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Builder(
-                      builder: (context) {
-                        return InkWell(
-                          onTap: () => Scaffold.of(context).openDrawer(),
-                          child: Icon(
-                            Icons.menu,
-                            color: context.invertedColor.withOpacity(.7),
-                            size: 30,
-                          ),
-                        );
-                      }
-                    ),
+                    Builder(builder: (context) {
+                      return InkWell(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        child: Icon(
+                          Icons.menu,
+                          color: context.invertedColor.withOpacity(.7),
+                          size: 30,
+                        ),
+                      );
+                    }),
                     const Gap(10),
                     logoWidget(size: 100),
                     const Spacer(),
@@ -69,6 +69,8 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         const ColisGridList()),
                     card(Icons.people_rounded, 'Client',
                         const ClientListScreen()),
+                    card(Icons.attach_money_rounded, 'Payments',
+                        const AdminTrackingScreen()),
                   ],
                 ),
                 const Gap(80)

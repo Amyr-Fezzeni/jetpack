@@ -49,9 +49,9 @@ class _ManifestScreenState extends State<ManifestScreen> {
               builder: (context, data) {
                 if (data.connectionState == ConnectionState.active &&
                     data.data != null) {
-                  manifests = data.data!.docs
+                  manifests = sortDateTimeList(data.data!.docs
                       .map((e) => Manifest.fromMap(e.data()))
-                      .toList();
+                      .toList());
                 }
                 return SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -66,6 +66,11 @@ class _ManifestScreenState extends State<ManifestScreen> {
       ),
     );
   }
+}
+
+List<Manifest> sortDateTimeList(List<Manifest> dateTimeList) {
+  dateTimeList.sort((a, b) => b.dateCreated.compareTo(a.dateCreated));
+  return dateTimeList;
 }
 
 Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
@@ -120,19 +125,20 @@ Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
             Txt('Total price',
                 extra: ': ${manifest.totalPrice.toStringAsFixed(2)} TND',
                 bold: true),
-            FutureBuilder<Sector?>(
-                future: SectorService.getSector(manifest.region),
-                builder: (context, data) => data.connectionState ==
-                            ConnectionState.done &&
-                        data.data != null
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            Expanded(child: Txt(data.data!.name, bold: true)),
-                            const Spacer(),
-                            phoneWidgetId('', id: data.data!.delivery['id'])
-                          ])
-                    : const SizedBox())
+            if (manifest.datePicked == null)
+              FutureBuilder<Sector?>(
+                  future: SectorService.getSector(manifest.region),
+                  builder: (context, data) => data.connectionState ==
+                              ConnectionState.done &&
+                          data.data != null
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              Expanded(child: Txt(data.data!.name, bold: true)),
+                              const Spacer(),
+                              phoneWidgetId('', id: data.data!.delivery['id'])
+                            ])
+                      : const SizedBox())
           ],
         ),
       );

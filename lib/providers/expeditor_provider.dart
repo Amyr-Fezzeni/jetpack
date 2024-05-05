@@ -60,7 +60,7 @@ class ExpeditorProvider with ChangeNotifier {
           dateCreated: DateTime.now(),
           colis: colis.map((e) => e.id).toList(),
           totalPrice: colis.map((e) => e.price).reduce((a, b) => a + b));
-      
+
       final value = await ManifestService.createMagnifest(magnifest);
       await PdfService.generateMagnifest(magnifest, colis);
       if (value == 'true') {

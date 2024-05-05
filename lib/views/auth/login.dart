@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         : gradientButton(
                             text: txt("Login"),
                             w: double.infinity,
-                             color:context.primaryColor,
+                            color: context.primaryColor,
                             function: () async {
                               final validateEmail =
                                   emailValidator(emailController.text);
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     description: validatePassword);
                                 return;
                               }
-
+                              // await context.userprovider.removeData();
                               context.userprovider.login(
                                   context,
                                   emailController.text.trim(),

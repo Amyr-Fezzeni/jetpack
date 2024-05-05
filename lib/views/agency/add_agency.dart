@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
+import 'package:jetpack/constants/tunis_data.dart';
 import 'package:jetpack/models/agency.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/agency_service.dart';
@@ -11,6 +12,8 @@ import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
+import 'package:jetpack/views/widgets/custom_drop_down.dart';
+import 'package:jetpack/views/widgets/data%20picker/pick_admin.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:jetpack/views/widgets/text_field.dart';
@@ -26,7 +29,6 @@ class AddAgency extends StatefulWidget {
 class _AddAgencyState extends State<AddAgency> {
   final formkey = GlobalKey<FormState>();
   TextEditingController name = TextEditingController();
-  TextEditingController lead = TextEditingController();
   TextEditingController adress = TextEditingController();
   TextEditingController employee = TextEditingController();
 
@@ -49,10 +51,12 @@ class _AddAgencyState extends State<AddAgency> {
             name: '',
             adress: '',
             agencyLead: '',
+            adminId: '',
             employeesNumber: 0,
+            governorate: '',
+            citys: [],
             deliveryMen: []);
     name.text = agency.name;
-    lead.text = agency.agencyLead;
     adress.text = agency.adress;
     employee.text = agency.employeesNumber.toString();
   }
@@ -82,16 +86,91 @@ class _AddAgencyState extends State<AddAgency> {
                       validator: nameValidator,
                       keybordType: TextInputType.name,
                       submitted: submitted),
+                  Container(
+                    height: 50,
+                    margin: const EdgeInsets.symmetric(horizontal: 15)
+                        .copyWith(bottom: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: context.invertedColor.withOpacity(.05),
+                      borderRadius: BorderRadius.circular(smallRadius),
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        final data = await pickAdmin();
+                        if (data != null) {
+                          setState(() {
+                            agency.adminId = data.id;
+                            agency.agencyLead = data.getFullName();
+                          });
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Builder(builder: (context) {
+                            return Txt(
+                                agency.agencyLead.isEmpty
+                                    ? 'Agency admin'
+                                    : agency.agencyLead,
+                                bold: agency.agencyLead.isNotEmpty,
+                                color: context.invertedColor.withOpacity(
+                                    agency.agencyLead.isEmpty ? .4 : 1));
+                          }),
+                          const Spacer(),
+                          Icon(
+                            Icons.keyboard_arrow_right_sharp,
+                            color: context.iconColor,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                   CustomTextField(
-                      hint: txt("Agency lead"),
-                      controller: lead,
-                      keybordType: TextInputType.name,
-                      submitted: submitted),
-                  CustomTextField(
-                      hint: txt("Agency adress"),
+                      hint: txt("Address"),
                       controller: adress,
                       keybordType: TextInputType.text,
                       submitted: submitted),
+                  ...[
+                    SimpleDropDown(
+                      selectedValue: agency.governorate,
+                      hint: "Governorate",
+                      onChanged: (governorate) =>
+                          setState(() => agency.governorate = governorate),
+                      values: tunisData.keys.toList(),
+                    ),
+                    if (agency.governorate.isNotEmpty)
+                      SimpleDropDown(
+                        selectedValue: '',
+                        hint: "City",
+                        onChanged: (city) {
+                          agency.citys.contains(city)
+                              ? null
+                              : setState(() => agency.citys.add(city));
+                        },
+                        values: tunisData[agency.governorate]!.keys.toList(),
+                      ),
+                  ],
+                  ...agency.citys.map((e) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: Txt(e, bold: true)),
+                                const Spacer(),
+                                deleteButton(
+                                    function: () =>
+                                        setState(() => agency.citys.remove(e)))
+                              ],
+                            ),
+                            divider()
+                          ],
+                        ),
+                      )),
+                  const Gap(20),
                   CustomTextField(
                       hint: txt("0"),
                       label: txt("Employee"),
@@ -130,7 +209,6 @@ class _AddAgencyState extends State<AddAgency> {
 
                               if (validateInfo()) {
                                 agency.name = name.text;
-                                agency.agencyLead = lead.text;
                                 agency.adress = adress.text;
                                 agency.employeesNumber =
                                     int.parse(employee.text);
@@ -161,7 +239,7 @@ class _AddAgencyState extends State<AddAgency> {
                       child: gradientButton(
                         text: txt("Delete"),
                         w: context.w - 30,
-                        color:darkRed,
+                        color: darkRed,
                         function: () async {
                           await AgencyService.agencyCollection
                               .doc(agency.id)

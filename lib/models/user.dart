@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 
@@ -33,6 +35,10 @@ class UserModel {
   String secondaryphoneNumber;
   String fiscalMatricule;
   double returnPrice;
+  //
+  LatLng? location;
+  DateTime? lastUpdateLocation;
+
   UserModel({
     required this.id,
     required this.firstName,
@@ -45,6 +51,8 @@ class UserModel {
     this.matricule = '',
     this.birthday,
     this.photo = '',
+    this.location,
+    this.lastUpdateLocation,
     required this.email,
     required this.password,
     required this.gender,
@@ -55,8 +63,8 @@ class UserModel {
     this.fcm,
     required this.role,
     this.governorate = '',
-    this.city='',
-    this.region='',
+    this.city = '',
+    this.region = '',
     this.secondaryphoneNumber = '',
     this.fiscalMatricule = '',
     this.returnPrice = 0,
@@ -87,16 +95,21 @@ class UserModel {
       'notificationStatus': notificationStatus,
       'fcm': fcm,
       'role': role.name,
-      'governorate':governorate,
-      'city':city,
-      'region':region,
+      'governorate': governorate,
+      'city': city,
+      'region': region,
       'secondaryphoneNumber': secondaryphoneNumber,
       'fiscalMatricule': fiscalMatricule,
       'returnPrice': returnPrice,
+      'location': location == null
+          ? null
+          : GeoPoint(location!.latitude, location!.longitude),
+      'lastUpdateLocation': lastUpdateLocation?.millisecondsSinceEpoch,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    GeoPoint? gPoint = map['location'];
     return UserModel(
       id: map['id'] as String,
       firstName: map['firstName'] as String,
@@ -108,9 +121,9 @@ class UserModel {
           ? map['sector']
           : {"id": '', "name": ""},
       price: map['price'] as double,
-      governorate: map['governorate']??'',
-      city: map['city']??'',
-      region: map['region']??'',
+      governorate: map['governorate'] ?? '',
+      city: map['city'] ?? '',
+      region: map['region'] ?? '',
       matricule: map['matricule'] as String,
       birthday: DateTime.fromMillisecondsSinceEpoch(map['birthday'] as int),
       photo: map['photo'] as String,
@@ -127,6 +140,12 @@ class UserModel {
       secondaryphoneNumber: map['secondaryphoneNumber'] as String,
       fiscalMatricule: map['fiscalMatricule'] as String,
       returnPrice: map['returnPrice'] as double,
+      location:
+          gPoint != null ? LatLng(gPoint.latitude, gPoint.longitude) : null,
+      lastUpdateLocation: map['lastUpdateLocation'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              map['lastUpdateLocation'] as int)
+          : null,
     );
   }
 

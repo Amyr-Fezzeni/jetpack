@@ -30,8 +30,11 @@ class Colis {
   String region;
   String address;
   String phone1;
-  String phone2; // Optional
-  //String designation; // Default delivery, pickup, exchange
+  String phone2;
+
+  String agenceId;
+  String agenceName;
+
   int numberOfItems;
   double price;
   bool isFragile;
@@ -39,7 +42,7 @@ class Colis {
   bool openable;
   String comment;
   String deliveryComment;
-  DateTime? creationDate;
+  DateTime creationDate;
   DateTime? pickupDate;
   DateTime? appointmentDate;
   DateTime? deliveryDate;
@@ -71,11 +74,13 @@ class Colis {
       this.exchange = false,
       required this.comment,
       this.deliveryComment = '',
-      this.creationDate,
+      required this.creationDate,
       this.pickupDate,
       this.deliveryDate,
       required this.status,
       required this.expeditorId,
+      required this.agenceId,
+      required this.agenceName,
       this.deliveryId = '',
       this.deliveryName = '',
       this.sectorId = '',
@@ -102,7 +107,7 @@ class Colis {
       'exchange': exchange,
       'comment': comment,
       'tentative': tentative,
-      'creationDate': creationDate?.millisecondsSinceEpoch,
+      'creationDate': creationDate.millisecondsSinceEpoch,
       'pickupDate': pickupDate?.millisecondsSinceEpoch,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
       'status': status,
@@ -113,50 +118,52 @@ class Colis {
       'sectorId': sectorId,
       'sectorName': sectorName,
       'expeditorName': expeditorName,
-      'appointmentDate': appointmentDate?.millisecondsSinceEpoch
+      'appointmentDate': appointmentDate?.millisecondsSinceEpoch,
+      'agenceId': agenceId,
+      'agenceName': agenceName
     };
   }
 
   factory Colis.fromMap(Map<String, dynamic> map) {
     return Colis(
-      id: map['id'] as String,
-      clientId: map['clientId'] as String,
-      name: map['name'] as String,
-      governorate: map['governorate'] as String,
-      city: map['city'] as String,
-      region: map['region'] ?? '',
-      address: map['address'] as String,
-      phone1: map['phone1'] as String,
-      phone2: map['phone2'] as String,
-      numberOfItems: map['numberOfItems'] as int,
-      price: map['price'] as double,
-      isFragile: map['isFragile'] as bool,
-      openable: map['openable'] ?? false,
-      exchange: map['exchange'] as bool,
-      comment: map['comment'] as String,
-      expeditorPhone: map['expeditorPhone'] ?? '',
-      deliveryComment: map['deliveryComment'] ?? '',
-      tentative: map['tentative'] ?? 1,
-      sectorId: map['sectorId'] ?? '',
-      sectorName: map['sectorName'] ?? '',
-      creationDate: map['creationDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int)
-          : null,
-      appointmentDate: map['appointmentDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['appointmentDate'] as int)
-          : null,
-      pickupDate: map['pickupDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['pickupDate'] as int)
-          : null,
-      deliveryDate: map['deliveryDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
-          : null,
-      status: map['status'] as String,
-      expeditorId: map['expeditorId'] as String,
-      expeditorName: map['expeditorName'] ?? '',
-      deliveryId: map['deliveryId'] as String,
-      deliveryName: map['deliveryName'] as String,
-    );
+        id: map['id'] as String,
+        clientId: map['clientId'] as String,
+        name: map['name'] as String,
+        governorate: map['governorate'] as String,
+        city: map['city'] as String,
+        region: map['region'] ?? '',
+        address: map['address'] as String,
+        phone1: map['phone1'] as String,
+        phone2: map['phone2'] as String,
+        numberOfItems: map['numberOfItems'] as int,
+        price: map['price'] as double,
+        isFragile: map['isFragile'] as bool,
+        openable: map['openable'] ?? false,
+        exchange: map['exchange'] as bool,
+        comment: map['comment'] as String,
+        expeditorPhone: map['expeditorPhone'] ?? '',
+        deliveryComment: map['deliveryComment'] ?? '',
+        tentative: map['tentative'] ?? 1,
+        sectorId: map['sectorId'] ?? '',
+        sectorName: map['sectorName'] ?? '',
+        creationDate:
+            DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int),
+        appointmentDate: map['appointmentDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(map['appointmentDate'] as int)
+            : null,
+        pickupDate: map['pickupDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(map['pickupDate'] as int)
+            : null,
+        deliveryDate: map['deliveryDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
+            : null,
+        status: map['status'] as String,
+        expeditorId: map['expeditorId'] as String,
+        expeditorName: map['expeditorName'] ?? '',
+        deliveryId: map['deliveryId'] as String,
+        deliveryName: map['deliveryName'] as String,
+        agenceId: map['agenceId'] ?? '',
+        agenceName: map['agenceName'] ?? '');
   }
 
   String toJson() => json.encode(toMap());
@@ -218,8 +225,12 @@ getText(String status) {
       return 'pickup';
     case "closedReturn":
       return 'Annuler';
+
+    case "returnConfirmed":
+      return 'Confirmed return';
     case "closed":
       return 'closed';
+
     default:
       return 'In delivery';
   }

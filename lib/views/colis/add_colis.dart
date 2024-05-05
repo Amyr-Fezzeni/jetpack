@@ -80,6 +80,8 @@ class _AddColisState extends State<AddColis> {
             comment: '',
             status: ColisStatus.inProgress.name,
             clientId: '',
+            agenceId: '',
+            agenceName: '',
             creationDate: DateTime.now(),
             expeditorId: context.userprovider.currentUser!.id,
             expeditorPhone: context.userprovider.currentUser!.phoneNumber,
@@ -553,6 +555,13 @@ class _AddColisState extends State<AddColis> {
                             });
 
                             if (validateInfo()) {
+                              final agency =
+                                  await AgencyService.getAgency(colis.city);
+                              log(agency.toString());
+                              if (agency != null) {
+                                colis.agenceId = agency.id;
+                                colis.agenceName = agency.name;
+                              }
                               //client
                               client.firstName = firstNameController.text;
                               client.lastName = lastNameController.text;
@@ -581,7 +590,6 @@ class _AddColisState extends State<AddColis> {
                               }
 
                               if (widget.colis != null) {
-                                colis.creationDate = DateTime.now();
                                 await ColisService.colisCollection
                                     .doc(colis.id)
                                     .update(colis.toMap());

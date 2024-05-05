@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/validators.dart';
 import 'package:jetpack/views/auth/forget_password_screen.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';

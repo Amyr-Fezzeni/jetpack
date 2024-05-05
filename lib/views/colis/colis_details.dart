@@ -148,7 +148,14 @@ class ColisDetails extends StatelessWidget {
                 ],
               ),
               if ([Role.admin.name, Role.expeditor.name]
-                  .contains(context.currentUser.role.name))
+                      .contains(context.currentUser.role.name) &&
+                  [
+                    ColisStatus.pickup.name,
+                    ColisStatus.inDelivery.name,
+                    ColisStatus.canceled.name,
+                    ColisStatus.appointment.name,
+                    ColisStatus.returnDepot.name,
+                  ].contains(colis.status))
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -159,7 +166,12 @@ class ColisDetails extends StatelessWidget {
                   ],
                 ),
               if ([Role.admin.name, Role.expeditor.name]
-                  .contains(context.currentUser.role.name))
+                      .contains(context.currentUser.role.name) &&
+                  ![
+                    ColisStatus.canceled.name,
+                    ColisStatus.returnConfirmed.name,
+                    ColisStatus.returnExpeditor.name
+                  ].contains(colis.status))
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Row(
