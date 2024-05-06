@@ -93,13 +93,12 @@ class DeliveryCard extends StatelessWidget {
                         cancel: false);
                     return;
                   }
-                  // customPopup(
-                  //         context, DeliveryTrackingMap(delivery: user));
-                  final location = user.location!;
-                  var uri = Uri.parse(
-                      "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}");
+                  customPopup(context, DeliveryTrackingMap(delivery: user));
+                  // final location = user.location!;
+                  // var uri = Uri.parse(
+                  //     "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}");
 
-                  await launchUrl(uri);
+                  // await launchUrl(uri);
                 },
                 child: Icon(Icons.location_on_outlined,
                     color: context.iconColor, size: 25),

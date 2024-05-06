@@ -132,41 +132,5 @@ Widget pngIcon(String url,
 
 
 
- Widget card() => Builder(
-   builder: (context) {
-     return SizedBox(
-              // height: 100,
-              width: 120,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 100,
-                    width: 120,
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(smallRadius),
-                        color: Colors.grey),
-                  ),
-                  Txt("Title", bold: true),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time_outlined,
-                          size: 12, color: context.invertedColor.withOpacity(.7)),
-                      const Gap(5),
-                      Txt('Now',
-                          size: 10, color: context.invertedColor.withOpacity(.7)),
-                      const Gap(10),
-                      const Icon(Icons.star, size: 15, color: Colors.orange),
-                      const Gap(5),
-                      Txt('5.0',
-                          size: 10, color: context.invertedColor.withOpacity(.7)),
-                    ],
-                  )
-                ],
-              ),
-            );
-   }
- );
+
     

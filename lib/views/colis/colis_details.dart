@@ -9,6 +9,8 @@ import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
+import 'package:jetpack/views/colis/add_colis.dart';
+import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 
@@ -22,7 +24,15 @@ class ColisDetails extends StatelessWidget {
     return SingleChildScrollView(
         child: Column(
       children: [
-        const Gap(40),
+        [Role.admin, Role.expeditor].contains(context.currentUser.role)
+            ? Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                    onTap: () => context.moveTo(AddColis(colis: colis)),
+                    child: Icon(Icons.edit_note,
+                        color: context.iconColor, size: 30)),
+              )
+            : const Gap(40),
         Center(
           child: InkWell(
             onTap: () {
@@ -45,6 +55,29 @@ class ColisDetails extends StatelessWidget {
           ),
         ),
         const Gap(20),
+        if ([Role.delivery, Role.admin].contains(context.currentUser.role))
+          Container(
+            margin:
+                const EdgeInsets.symmetric(horizontal: 15).copyWith(bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              color: context.invertedColor.withOpacity(.05),
+              borderRadius: BorderRadius.circular(smallRadius),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Txt("Expeditor Name", bold: true, extra: ': '),
+                    Flexible(child: Txt(colis.expeditorName))
+                  ],
+                ),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: phoneWidget(colis.expeditorPhone, 1, size: 30))
+              ],
+            ),
+          ),
         Container(
           margin:
               const EdgeInsets.symmetric(horizontal: 15).copyWith(bottom: 15),

@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/enum_classes.dart';
+import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
+import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/colis/colis_gtid_list.dart';
 import 'package:jetpack/views/colis/retrun_colis_admin.dart';
 import 'package:jetpack/views/users/admin_payments_tracking.dart';
 import 'package:jetpack/views/users/users_list.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
+import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/nav_panel_customer.dart';
+import 'package:jetpack/views/widgets/popup.dart';
+import 'package:jetpack/views/widgets/text_field.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -28,6 +34,74 @@ class _HomeScreenState extends State<AdminHomeScreen> {
       extendBody: true,
       drawer: const NavPanel(),
       backgroundColor: context.bgcolor,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: context.primaryColor,
+        onPressed: () async {
+          TextEditingController controller = TextEditingController();
+          customPopup(
+              context,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: CustomTextField(
+                                marginH: 0,
+                                marginV: 0,
+                                hint: 'Code',
+                                controller: controller)),
+                        const Gap(5),
+                        gradientButton(
+                            function: () async {
+                              final code = controller.text;
+                              if (code.trim().isEmpty) return;
+                              final colis = await ColisService.getColis([code]);
+                              if (colis.isNotEmpty) {
+                                await customPopup(
+                                    context, ColisDetails(colis: colis.first));
+                              }
+                              context.pop();
+                            },
+                            text: "Confirm")
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: divider()),
+                        Text(
+                          'Or',
+                          style: context.theme.text18,
+                        ),
+                        Expanded(child: divider())
+                      ],
+                    ),
+                    gradientButton(
+                        w: double.maxFinite,
+                        function: () async {
+                          final code = await scanQrcode();
+                          if (code == null) return;
+                          final colis = await ColisService.getColis([code]);
+                          if (colis.isNotEmpty) {
+                            await customPopup(
+                                context, ColisDetails(colis: colis.first));
+                          }
+                          context.pop();
+                        },
+                        text: "Scan code")
+                  ],
+                ),
+              ),
+              maxWidth: false);
+        },
+        child: const Icon(
+          Icons.qr_code_scanner_rounded,
+          color: Colors.white,
+          size: 25,
+        ),
+      ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
         child: Padding(
