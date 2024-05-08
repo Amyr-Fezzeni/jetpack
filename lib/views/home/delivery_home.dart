@@ -451,7 +451,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                       Border.all(color: context.invertedColor.withOpacity(.2))),
               child: Center(
                 child: Txt(
-                    "you have ${context.deliveryWatch.returnExpeditor.length} colis return to pickup"),
+                    "you have ${context.deliveryWatch.returnColis.length} colis return to pickup"),
               )),
         Column(
           children: context.deliveryWatch.returnColis
@@ -608,7 +608,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                               FirebaseFirestore.instance
                                                   .collection('return colis')
                                                   .doc(colis.id)
-                                                  .update({'status': true});
+                                                  .update({'isClosed': true});
                                             }
                                           });
                                         },
