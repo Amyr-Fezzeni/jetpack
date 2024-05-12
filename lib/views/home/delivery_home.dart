@@ -9,6 +9,7 @@ import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/runsheet.dart';
 import 'package:jetpack/models/user.dart';
 import 'package:jetpack/services/colis_service.dart';
+import 'package:jetpack/services/day_report.dart';
 import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/user_service.dart';
@@ -300,8 +301,15 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   color: context.invertedColor.withOpacity(.6),
                   size: 20,
                 ),
-                function: () {
+                function: () async {
                   if (context.deliveryRead.runsheetData == null) return;
+                  await DayReportService.getDayReport(
+                      context.deliveryRead.runsheetData!,
+                      context.userprovider.currentUser!,
+                      context.deliveryRead.allColis
+                          .where((c) => context.deliveryRead.runsheetData!.colis
+                              .contains(c.id))
+                          .toList());
                   customPopup(context, const DeliveryEndOfDayWidget());
                   context.deliveryRead.generateDayReport();
                 }),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:jetpack/models/agency.dart';
 import 'package:jetpack/models/client.dart';
@@ -116,15 +118,17 @@ class Statistics with ChangeNotifier {
 // delivery extra
   getLastDeliveryPayment(UserModel user) {
     final data = deliveryPayments.where((p) => p.userId == user.id);
+    // log(data.toString());
     return data.isEmpty
         ? '0.000 TND'
-        : '${(data.last.nbDelivered * user.price + data.last.nbPickup * user.returnPrice).toStringAsFixed(3)} TND';
+        : '${((data.last.nbDelivered * user.price) + (data.last.nbPickup * 2)).toStringAsFixed(3)} TND';
   }
 
   List<Map<String, dynamic>> runsheetColisDelivery(UserModel user) {
     final data = runsheets
         .where((p) => p.deliveryId == user.id && sameWeek(p.dateCreated!));
     if (data.isEmpty) return [];
+    log('runsheet: ${data.length}');
     List<Map<String, dynamic>> lst = [];
     for (var d in data) {
       Map<String, dynamic> dayData = {
@@ -146,6 +150,7 @@ class Statistics with ChangeNotifier {
       }
       lst.add(dayData);
     }
+    log('lst: ${lst.length}');
     return lst;
   }
 
@@ -180,7 +185,7 @@ class Statistics with ChangeNotifier {
     };
   }
 
-  Map<String, dynamic> colisDay(UserModel user) {
+  List<Map<String, dynamic>> colisDay(UserModel user) {
     final data = manifests
         .where((m) => m.expeditorId == user.id && sameWeek(m.dateCreated))
         .toList();
@@ -192,7 +197,9 @@ class Statistics with ChangeNotifier {
       }
       weekData[getDate(manifest.dateCreated)] = manifest.colis.length;
     }
-    return {};
+    return weekData.keys
+        .map((key) => {'day': key, 'data': weekData[key]})
+        .toList();
   }
 
   List<Map<String, dynamic>> ratringClients(UserModel user) {
@@ -204,27 +211,26 @@ class Statistics with ChangeNotifier {
         .toList();
     Map<String, Map<String, dynamic>> bestUsers = {};
     for (var c in data) {
+      bool delivered = c.status == ColisStatus.closed.name;
       if (bestUsers.keys.contains(c.clientId)) {
-        bestUsers[c.clientId]!['delivered'] +=
-            c.status == ColisStatus.closed.name ? 1 : 0;
-        bestUsers[c.clientId]!['delivered'] -=
-            c.status == ColisStatus.closedReturn.name ? 1 : 0;
-        bestUsers[c.clientId]!['delivered'] +=
-            (c.status == ColisStatus.closed.name ? 1 : 0) -
-                (c.status == ColisStatus.closedReturn.name ? 1 : 0);
+        bestUsers[c.clientId]!['delivered'] += delivered ? 1 : 0;
+        bestUsers[c.clientId]!['canceled'] += !delivered ? 1 : 0;
+        // delivered
+        //     ? bestUsers[c.clientId]!['count'] += 1
+        //     : bestUsers[c.clientId]!['count'] -= 1;
       } else {
         bestUsers[c.clientId] = {
           "name": c.name,
           "id": c.clientId,
           "delivered": c.status == ColisStatus.closed.name ? 1 : 0,
           "canceled": c.status == ColisStatus.closedReturn.name ? 1 : 0,
-          "count": (c.status == ColisStatus.closed.name ? 1 : 0) -
-              (c.status == ColisStatus.closedReturn.name ? 1 : 0),
+          // "count": (c.status == ColisStatus.closed.name ? 1 : 0) -
+          //     (c.status == ColisStatus.closedReturn.name ? 1 : 0),
         };
       }
     }
     List<Map<String, dynamic>> users = bestUsers.values.toList();
-    users.sort((a, b) => (a['count'] as int).compareTo((b['count'] as int)));
+
     return users;
   }
 
@@ -246,7 +252,7 @@ class Statistics with ChangeNotifier {
   //   return users;
   // }
 
-  List<Map<String, dynamic>> ratringDelivery(UserModel user) {
+  List<Map<String, dynamic>> ratringAdmin() {
     final data = colis
         .where((c) => c.deliveryDate != null && sameWeek(c.deliveryDate))
         .where((m) => [
@@ -260,14 +266,93 @@ class Statistics with ChangeNotifier {
     Map<String, Map<String, dynamic>> lstAgency = {};
     Map<String, Map<String, dynamic>> lstSector = {};
     Map<String, Map<String, dynamic>> lstColis = {};
-    for (var c in data) {
-      if ([
-        ColisStatus.delivered.name,
-        ColisStatus.closed.name,
-      ].contains(c.status)) {
-        
-
-      } else {}
+    for (var c in data.where((e) => [
+          ColisStatus.delivered.name,
+          ColisStatus.closed.name,
+        ].contains(e.status))) {
+      if (lstExpeditor.keys.contains(c.expeditorId)) {
+        lstExpeditor[c.expeditorId]!['delivered'] += 1;
+      } else {
+        lstExpeditor[c.expeditorId] = {
+          'id': c.expeditorId,
+          'name': c.expeditorName,
+          'delivered': 1,
+          'canceled': 0
+        };
+      }
+      if (lstAgency.keys.contains(c.agenceId)) {
+        lstAgency[c.agenceId]!['delivered'] += 1;
+      } else {
+        lstAgency[c.agenceId] = {
+          'id': c.agenceId,
+          'name': c.agenceName,
+          'delivered': 1,
+          'canceled': 0
+        };
+      }
+      if (lstSector.keys.contains(c.sectorId)) {
+        lstSector[c.sectorId]!['delivered'] += 1;
+      } else {
+        lstSector[c.sectorId] = {
+          'id': c.sectorId,
+          'name': c.sectorName,
+          'delivered': 1,
+          'canceled': 0
+        };
+      }
+      if (lstColis.keys.contains(getDate(c.deliveryDate))) {
+        lstColis[getDate(c.deliveryDate)]!['delivered'] += 1;
+      } else {
+        lstColis[getDate(c.deliveryDate)] = {
+          'date': getDate(c.deliveryDate),
+          'delivered': 1,
+          'canceled': 0
+        };
+      }
+    }
+    for (var c in data.where((e) => [
+          ColisStatus.closedReturn.name,
+          ColisStatus.returnConfirmed.name
+        ].contains(e.status))) {
+      if (lstExpeditor.keys.contains(c.expeditorId)) {
+        lstExpeditor[c.expeditorId]!['canceled'] += 1;
+      } else {
+        lstExpeditor[c.expeditorId] = {
+          'id': c.expeditorId,
+          'name': c.expeditorName,
+          'delivered': 0,
+          'canceled': 1
+        };
+      }
+      if (lstAgency.keys.contains(c.agenceId)) {
+        lstAgency[c.agenceId]!['canceled'] += 1;
+      } else {
+        lstAgency[c.agenceId] = {
+          'id': c.agenceId,
+          'name': c.agenceName,
+          'delivered': 0,
+          'canceled': 1
+        };
+      }
+      if (lstSector.keys.contains(c.sectorId)) {
+        lstSector[c.sectorId]!['canceled'] += 1;
+      } else {
+        lstSector[c.sectorId] = {
+          'id': c.sectorId,
+          'name': c.sectorName,
+          'delivered': 0,
+          'canceled': 1
+        };
+      }
+      if (lstColis.keys.contains(getDate(c.deliveryDate))) {
+        lstColis[getDate(c.deliveryDate)]!['canceled'] += 1;
+      } else {
+        lstColis[getDate(c.deliveryDate)] = {
+          'date': getDate(c.deliveryDate),
+          'delivered': 0,
+          'canceled': 1
+        };
+      }
     }
     // List<Map<String, dynamic>> users = bestUsers.values.toList();
     // users.sort((a, b) => (a['count'] as int).compareTo((b['count'] as int)));

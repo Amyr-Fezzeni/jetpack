@@ -41,3 +41,15 @@ const pink = Color.fromARGB(212, 223, 0, 0);
 const red = Color.fromARGB(213, 180, 7, 65);
 const darkRed = Color.fromARGB(255, 159, 11, 0);
 Color darkGray = const Color.fromARGB(255, 53, 53, 53);
+
+const palette = [
+  Color.fromRGBO(75, 135, 185, 1),
+  Color.fromRGBO(246, 114, 128, 1),
+  Color.fromRGBO(248, 177, 149, 1),
+  Color.fromRGBO(116, 180, 155, 1),
+  Color.fromRGBO(0, 168, 181, 1),
+  Color.fromRGBO(73, 76, 162, 1),
+  Color.fromRGBO(255, 205, 96, 1),
+  Color.fromRGBO(255, 240, 219, 1),
+  Color.fromRGBO(238, 238, 238, 1)
+];

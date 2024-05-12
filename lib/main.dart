@@ -5,6 +5,7 @@ import 'package:jetpack/providers/delivery_provider.dart';
 import 'package:jetpack/providers/expeditor_provider.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
+import 'package:jetpack/providers/statistics.dart';
 import 'package:jetpack/providers/theme_notifier.dart';
 import 'package:jetpack/providers/user_provider.dart';
 import 'package:jetpack/services/shared_data.dart';
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => ExpeditorProvider()),
         ChangeNotifierProvider(create: (_) => DeliveryProvider()),
+        ChangeNotifierProvider(create: (_) => Statistics()),
       ],
       child: const MyApp(),
     ),

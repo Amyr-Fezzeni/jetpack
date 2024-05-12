@@ -17,7 +17,11 @@ class HomeStatsScreen extends StatefulWidget {
 }
 
 class _HomeStatsScreenState extends State<HomeStatsScreen> {
-  int filter = 1;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,11 +31,13 @@ class _HomeStatsScreenState extends State<HomeStatsScreen> {
       body: SizedBox(
         height: double.infinity,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               if (context.role == Role.admin) const AdminStat(),
               if (context.role == Role.expeditor) const ExpeditorStat(),
-              if (context.role == Role.delivery) const DeliveryStat()
+              if (context.role == Role.delivery) const DeliveryStat(),
+              const Gap(100)
             ],
           ),
         ),

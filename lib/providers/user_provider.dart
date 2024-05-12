@@ -114,7 +114,6 @@ class UserProvider with ChangeNotifier {
       }
       NavigationService.navigatorKey.currentContext!
           .moveToAndRemoveHistory(const StructureHomeScreen());
-
     } else {
       popup(context, cancel: false, description: txt(loginError2));
     }
@@ -144,6 +143,8 @@ class UserProvider with ChangeNotifier {
         NavigationService.navigatorKey.currentContext!.deliveryRead
             .startColisStream();
       }
+      NavigationService.navigatorKey.currentContext!.statRead
+          .init(userId: user.id, role: user.role);
       UserService.saveFcm(user.id);
       UserService.connectStatus(true);
       Navigator.of(NavigationService.navigatorKey.currentContext!)
