@@ -6,6 +6,7 @@ import 'package:jetpack/providers/delivery_provider.dart';
 import 'package:jetpack/providers/expeditor_provider.dart';
 import 'package:jetpack/providers/menu_provider.dart';
 import 'package:jetpack/providers/notification_provider.dart';
+import 'package:jetpack/providers/statistics.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/page_transitions.dart';
 import 'package:provider/provider.dart';
@@ -73,4 +74,8 @@ extension ContextExt on BuildContext {
 
   ExpeditorProvider get expeditorRead => read<ExpeditorProvider>();
   ExpeditorProvider get expeditorWatch => watch<ExpeditorProvider>();
+
+  
+  Statistics get statRead => read<Statistics>();
+  Statistics get statWatch => watch<Statistics>();
 }
