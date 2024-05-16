@@ -23,7 +23,8 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
       Column(
         children: [
           const Gap(10),
-          Txt('Total revenue this week', color: palette[5], size: 16, bold: true),
+          Txt('Total revenue this week',
+              color: palette[5], size: 16, bold: true),
           Txt(
             context.statRead
                 .getLastExpeditorPayment(context.userprovider.currentUser!)
@@ -37,7 +38,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
       ),
       const Gap(20),
       Builder(builder: (context) {
-        Map<String, dynamic> data =
+        List<Map<String, dynamic>> data =
             context.statRead.colisExpeditor(context.userprovider.currentUser!);
         log('colis total: $data');
 
@@ -53,7 +54,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(color: palette.first, width: 3)),
                   child: Center(
-                      child: Txt(data['delivered']['count'].toString(),
+                      child: Txt(data.first['count'].toString(),
                           translate: false, color: palette.first)),
                 ),
                 const Gap(10),
@@ -69,13 +70,39 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(color: palette[1], width: 3)),
                   child: Center(
-                      child: Txt(data['canceled']['count'].toString(),
+                      child: Txt(data.last['count'].toString(),
                           translate: false, color: palette[1])),
                 ),
                 const Gap(10),
                 Txt('Colis canceled', translate: false, color: palette[1]),
               ],
             ),
+          ],
+        );
+      }),
+      const Gap(20),
+      Builder(builder: (context) {
+        final data =
+            context.statRead.colisExpeditor(context.userprovider.currentUser!);
+       
+        return SfCircularChart(
+          palette: palette,
+          title: ChartTitle(text: "", textStyle: context.text),
+          legend: Legend(
+              isVisible: true,
+              overflowMode: LegendItemOverflowMode.scroll,
+              textStyle: context.text),
+          tooltipBehavior: TooltipBehavior(enable: true, elevation: 5),
+          series: <CircularSeries>[
+            DoughnutSeries<Map<String, dynamic>, String>(
+                dataSource: data,
+                xValueMapper: (Map<String, dynamic> data, _) => data['type'],
+                yValueMapper: (Map<String, dynamic> data, _) => data['price'],
+                enableTooltip: true,
+                // maximumValue: 700,
+                dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    textStyle: context.text.copyWith(color: Colors.white)))
           ],
         );
       }),

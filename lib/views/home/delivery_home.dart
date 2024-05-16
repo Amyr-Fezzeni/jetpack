@@ -611,7 +611,9 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                                   .doc(c.id)
                                                   .update({
                                                 'status': ColisStatus
-                                                    .closedReturn.name
+                                                    .closedReturn.name,
+                                                'deliveryDate': DateTime.now()
+                                                    .millisecondsSinceEpoch
                                               });
                                               FirebaseFirestore.instance
                                                   .collection('return colis')

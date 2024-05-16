@@ -3,10 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/style.dart';
-import 'package:jetpack/providers/statistics.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/views/widgets/loader.dart';
+import 'package:jetpack/services/util/logic_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DeliveryStat extends StatefulWidget {
@@ -41,7 +40,8 @@ class _DeliveryStatState extends State<DeliveryStat> {
       Builder(builder: (context) {
         List<Map<String, dynamic>> data = context.statRead
             .runsheetColisDelivery(context.userprovider.currentUser!);
-
+        data.sort((a, b) => stringToDateReversed(a['date'])
+            .compareTo(stringToDateReversed(b['date'])));
         log('colis per day: $data');
         return SfCartesianChart(
           palette: palette,
@@ -49,13 +49,13 @@ class _DeliveryStatState extends State<DeliveryStat> {
           legend: Legend(isVisible: true, textStyle: context.text),
           series: [
             StackedColumnSeries(
-                dataSource: data.reversed.toList(),
+                dataSource: data,
                 xValueMapper: (final d, _) =>
-                    (d['date'] as String).split('-').take(2).join('/'),
+                    (d['date'] as String).split('-').skip(1).take(2).join('/'),
                 yValueMapper: (final d, _) => d['delivered'],
                 name: txt('Colis per day')),
             StackedColumnSeries(
-                dataSource: data.reversed.toList(),
+                dataSource: data,
                 xValueMapper: (final d, _) =>
                     (d['date'] as String).split('-').skip(1).take(2).join('/'),
                 yValueMapper: (final d, _) => d['canceled'],

@@ -28,12 +28,21 @@ class Statistics with ChangeNotifier {
   List<Client> clients = [];
   List<RunSheet> runsheets = [];
   List<Manifest> manifests = [];
-  bool sameWeek(DateTime? date) {
+
+  bool sameWeek(DateTime? date, Role role) {
     return true;
+    // return date == null
+    //     ? false
+    //     : role == Role.delivery
+    //         ? isSameWeekStartingMonday(date)
+    //         : isSameWeekAsWednesday(date);
   }
 
   bool sameMonth(DateTime? date) {
-    return true;
+    return date == null
+        ? false
+        : date.month == DateTime.now().month &&
+            date.year == DateTime.now().year;
   }
 
   bool sameDay(DateTime first, DateTime second) {
@@ -125,8 +134,8 @@ class Statistics with ChangeNotifier {
   }
 
   List<Map<String, dynamic>> runsheetColisDelivery(UserModel user) {
-    final data = runsheets
-        .where((p) => p.deliveryId == user.id && sameWeek(p.dateCreated!));
+    final data = runsheets.where(
+        (p) => p.deliveryId == user.id && sameWeek(p.dateCreated!, user.role));
     if (data.isEmpty) return [];
     log('runsheet: ${data.length}');
     List<Map<String, dynamic>> lst = [];
@@ -162,12 +171,12 @@ class Statistics with ChangeNotifier {
         : '${(data.last.price - data.last.deliveryPrice).toStringAsFixed(3)} TND';
   }
 
-  Map<String, dynamic> colisExpeditor(UserModel user) {
-    final data = colis
-        .where((p) => p.expeditorId == user.id && sameWeek(p.deliveryDate));
+  List<Map<String, dynamic>> colisExpeditor(UserModel user) {
+    final data = colis.where((p) => p.expeditorId == user.id);
     int delivered = 0;
     double deliveredPrice = 0;
     int canceled = 0;
+    double canceledPrice = 0;
     for (var c in data) {
       if ([ColisStatus.delivered.name, ColisStatus.closed.name]
           .contains(c.status)) {
@@ -177,17 +186,19 @@ class Statistics with ChangeNotifier {
       if ([ColisStatus.returnConfirmed.name, ColisStatus.closedReturn.name]
           .contains(c.status)) {
         canceled += 1;
+        canceledPrice += c.price - user.price;
       }
     }
-    return {
-      "delivered": {"count": delivered, "price": deliveredPrice},
-      "canceled": {"count": canceled, "price": canceled * user.returnPrice}
-    };
+    return [
+      {"type": "delivered", "count": delivered, "price": deliveredPrice},
+      {"type": "canceled", "count": canceled, "price": canceledPrice}
+    ];
   }
 
   List<Map<String, dynamic>> colisDay(UserModel user) {
     final data = manifests
-        .where((m) => m.expeditorId == user.id && sameWeek(m.dateCreated))
+        .where((m) =>
+            m.expeditorId == user.id && sameWeek(m.dateCreated, user.role))
         .toList();
     Map<String, dynamic> weekData = {};
     for (var manifest in data) {
@@ -252,9 +263,9 @@ class Statistics with ChangeNotifier {
   //   return users;
   // }
 
-  List<Map<String, dynamic>> ratringAdmin() {
+  Map<String, Map<String, Map<String, dynamic>>> ratringAdmin() {
     final data = colis
-        .where((c) => c.deliveryDate != null && sameWeek(c.deliveryDate))
+        .where((c) => c.deliveryDate != null && sameMonth(c.deliveryDate))
         .where((m) => [
               ColisStatus.delivered.name,
               ColisStatus.closed.name,
@@ -266,10 +277,14 @@ class Statistics with ChangeNotifier {
     Map<String, Map<String, dynamic>> lstAgency = {};
     Map<String, Map<String, dynamic>> lstSector = {};
     Map<String, Map<String, dynamic>> lstColis = {};
-    for (var c in data.where((e) => [
-          ColisStatus.delivered.name,
-          ColisStatus.closed.name,
-        ].contains(e.status))) {
+    // log(data.length.toString());
+    for (var c in data
+        .where((e) => [
+              ColisStatus.delivered.name,
+              ColisStatus.closed.name,
+            ].contains(e.status))
+        .toList()
+        .reversed) {
       if (lstExpeditor.keys.contains(c.expeditorId)) {
         lstExpeditor[c.expeditorId]!['delivered'] += 1;
       } else {
@@ -300,6 +315,7 @@ class Statistics with ChangeNotifier {
           'canceled': 0
         };
       }
+      // log(lstColis.toString());
       if (lstColis.keys.contains(getDate(c.deliveryDate))) {
         lstColis[getDate(c.deliveryDate)]!['delivered'] += 1;
       } else {
@@ -354,8 +370,23 @@ class Statistics with ChangeNotifier {
         };
       }
     }
+    // log('Colis: ${'#' * 20}');
+    // log(lstColis.toString());
+    // log('lstExpeditor: ${'#' * 20}');
+    // log(lstExpeditor.toString());
+    // log('lstSector: ${'#' * 20}');
+    // log(lstSector.toString());
+    log('lstAgency: ${'#' * 20}');
+    log(lstAgency.toString());
+    log('lstAgency: ${'#' * 20}');
+
     // List<Map<String, dynamic>> users = bestUsers.values.toList();
     // users.sort((a, b) => (a['count'] as int).compareTo((b['count'] as int)));
-    return [lstColis, lstExpeditor, lstSector, lstAgency];
+    return {
+      'colis': lstColis,
+      'expeditor': lstExpeditor,
+      'sector': lstSector,
+      'agency': lstAgency
+    };
   }
 }

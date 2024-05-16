@@ -55,6 +55,19 @@ String getDate(DateTime? date, {bool day = true}) {
       : "${day ? "${date.day > 9 ? '' : '0'}${date.day}-" : ''}${date.month > 9 ? '' : '0'}${date.month}-${date.year}";
 }
 
+DateTime stringToDate(String date) {
+  int year = int.parse(date.split('-').last);
+  int month = int.parse(date.split('-')[1]);
+  int day = int.parse(date.split('-').first);
+  return DateTime(year, month, day);
+}
+DateTime stringToDateReversed(String date) {
+  int year = int.parse(date.split('-').first);
+  int month = int.parse(date.split('-')[1]);
+  int day = int.parse(date.split('-').last);
+  return DateTime(year, month, day);
+}
+
 String getSimpleDate(DateTime? date, {bool day = true}) {
   return date == null
       ? ""
@@ -203,6 +216,38 @@ DateTime getFirstDayOfWeek(DateTime date) {
 
   return week;
 }
+bool isSameWeekAsWednesday(DateTime date) {
+  // Find the most recent Wednesday
+  DateTime now = DateTime.now();
+  int todayWeekday = now.weekday;
+  int daysToLastWednesday = (todayWeekday - 3) % 7;
+  DateTime lastWednesday = now.subtract(Duration(days: daysToLastWednesday));
+
+  // Normalize to midnight
+  lastWednesday = DateTime(lastWednesday.year, lastWednesday.month, lastWednesday.day);
+
+  // Check if the given date is after the last Wednesday and before the next Wednesday
+  DateTime nextWednesday = lastWednesday.add(const Duration(days: 7));
+  return date.isAfter(lastWednesday) && date.isBefore(nextWednesday);
+}
+
+bool isSameWeekStartingMonday(DateTime date) {
+  // Get the current date
+  DateTime now = DateTime.now();
+  // Normalize to midnight
+  now = DateTime(now.year, now.month, now.day);
+  
+  // Calculate the most recent Monday
+  DateTime mostRecentMonday = now.subtract(Duration(days: (now.weekday - 1) % 7));
+  
+  // Calculate the next Monday
+  DateTime nextMonday = mostRecentMonday.add(const Duration(days: 7));
+  
+  // Check if the given date is after the most recent Monday and before the next Monday
+  return date.isAfter(mostRecentMonday) && date.isBefore(nextMonday);
+}
+
+
 
 DateTime getLastDayOfWeek(DateTime date) {
   final d = date.add(const Duration(days: 7));
