@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import '../../../../providers/theme_notifier.dart';
 import '../../constants/fixed_messages.dart';
 import '../../models/report.dart';
-import '../../providers/user_provider.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});

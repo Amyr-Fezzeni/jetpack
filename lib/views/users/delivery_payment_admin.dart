@@ -88,18 +88,18 @@ class _DeliveryPaymentAdminState extends State<DeliveryPaymentAdmin> {
                         children: [
                           if (DateTime.now().isBefore(payment.endTime))
                             Txt("Current Week", bold: true),
-                          Txt("From ${getSimpleDate(payment.startTime)} to ${getSimpleDate(payment.endTime)} ",
-                              bold: true),
+                          Txt("'${txt('From')}' ${getSimpleDate(payment.startTime)} ${txt('to')} ${getSimpleDate(payment.endTime)} ",
+                              bold: true,translate: false),
                         ],
                       ),
                       const Spacer(),
                     ],
                   ),
-                  Txt("Colis delivered: ${payment.nbDelivered}"),
-                  Txt("Manifest picked: ${payment.nbPickup}"),
+                  Txt("Colis delivered",extra:": ${payment.nbDelivered}"),
+                  Txt("Manifest picked",extra:": ${payment.nbPickup}"),
                   Txt("${(payment.nbDelivered * widget.user.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
                       color: payment.isPaid ? Colors.green : Colors.red,
-                      bold: true),
+                      bold: true,translate: false),
                   Align(
                       alignment: Alignment.centerRight,
                       child: Builder(builder: (context) {

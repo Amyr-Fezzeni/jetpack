@@ -11,7 +11,6 @@ import 'package:jetpack/views/colis/confirmed_return.dart';
 import 'package:jetpack/views/colis/magnifest_screen.dart';
 import 'package:jetpack/views/colis/retrun_colis_admin.dart';
 import 'package:jetpack/views/colis/retrun_colis_expeditor.dart';
-import 'package:jetpack/views/home/admin_home.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 
 class ColisGridList extends StatefulWidget {
@@ -129,7 +128,8 @@ class _ColisGridListState extends State<ColisGridList> {
                         ),
                       gridData(
                           "Ready for delivery", colis, [ColisStatus.ready]),
-                      gridData("Pickup", colis, [ColisStatus.pickup]),
+                      if (context.role == Role.admin)
+                        gridData("Pickup", colis, [ColisStatus.pickup]),
                       gridData("At the depot", colis, [ColisStatus.depot]),
                       gridData(
                           "Return depot", colis, [ColisStatus.returnDepot]),
@@ -225,7 +225,8 @@ class _ColisGridListState extends State<ColisGridList> {
                                             .contains(c.status))
                                         .length
                                         .toString(),
-                                    color: Colors.white),
+                                    color: Colors.white,
+                                    translate: false),
                               ),
                             ))
                       ],
@@ -234,7 +235,8 @@ class _ColisGridListState extends State<ColisGridList> {
                   const Gap(10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Txt(title, bold: true, center: true),
+                    child:
+                        Txt(title, bold: true, center: true, translate: false),
                   )
                 ],
               ),

@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 
@@ -36,7 +35,7 @@ class UserModel {
   String fiscalMatricule;
   double returnPrice;
   //
-  LatLng? location;
+  GeoPoint? location;
   DateTime? lastUpdateLocation;
 
   UserModel({
@@ -101,15 +100,13 @@ class UserModel {
       'secondaryphoneNumber': secondaryphoneNumber,
       'fiscalMatricule': fiscalMatricule,
       'returnPrice': returnPrice,
-      'location': location == null
-          ? null
-          : GeoPoint(location!.latitude, location!.longitude),
+      'location': location,
       'lastUpdateLocation': lastUpdateLocation?.millisecondsSinceEpoch,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    GeoPoint? gPoint = map['location'];
+    // GeoPoint? gPoint = map['location'];
     return UserModel(
       id: map['id'] as String,
       firstName: map['firstName'] as String,
@@ -140,8 +137,7 @@ class UserModel {
       secondaryphoneNumber: map['secondaryphoneNumber'] as String,
       fiscalMatricule: map['fiscalMatricule'] as String,
       returnPrice: map['returnPrice'] as double,
-      location:
-          gPoint != null ? LatLng(gPoint.latitude, gPoint.longitude) : null,
+      location:map['location'],
       lastUpdateLocation: map['lastUpdateLocation'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
               map['lastUpdateLocation'] as int)

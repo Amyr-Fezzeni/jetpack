@@ -121,7 +121,7 @@ Widget manifestCard(Manifest manifest) => Builder(builder: (context) {
             ),
             const Gap(10),
             Txt(getDate(manifest.dateCreated), bold: true, translate: false),
-            Txt('Colis: (${manifest.colis.length})', bold: true),
+            Txt('Colis: (${manifest.colis.length})', bold: true,translate: false),
             Txt('Total price',
                 extra: ': ${manifest.totalPrice.toStringAsFixed(2)} TND',
                 bold: true),

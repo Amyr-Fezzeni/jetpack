@@ -1,21 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/relaunch_colis.dart';
 import 'package:jetpack/models/report.dart';
-import 'package:jetpack/services/colis_service.dart';
-import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/services.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
-import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
-import 'package:jetpack/views/widgets/bottuns.dart';
-import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 
 class ReturnColisExpeditor extends StatefulWidget {
@@ -69,7 +62,7 @@ class _ReturnColisExpeditorState extends State<ReturnColisExpeditor> {
                                       onTap: () => customPopup(
                                           context, ColisDetails(colis: colis)),
                                       title: Txt(capitalize(colis.name),
-                                          bold: true),
+                                          bold: true,translate: false),
                                       subtitle: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -77,10 +70,10 @@ class _ReturnColisExpeditorState extends State<ReturnColisExpeditor> {
                                           Txt(colis.id,
                                               size: 10,
                                               color: context.primaryColor,
-                                              bold: true),
+                                              bold: true,translate: false),
                                           Txt("${colis.price.toStringAsFixed(2)} Dt",
                                               size: 10,
-                                              color: context.iconColor),
+                                              color: context.iconColor,translate: false),
                                         ],
                                       ),
                                       trailing: InkWell(
@@ -120,7 +113,7 @@ class _ReturnColisExpeditorState extends State<ReturnColisExpeditor> {
                                         },
                                             confirmText: txt('Yes'),
                                             description:
-                                                'Request for relaunch?'),
+                                                txt('Request for relaunch?')),
                                         child: Icon(Icons.replay,
                                             color: context.iconColor, size: 25),
                                       ),

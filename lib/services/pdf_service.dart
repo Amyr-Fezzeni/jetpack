@@ -7,21 +7,18 @@ import 'package:jetpack/models/expeditor_payment.dart';
 import 'package:jetpack/models/manifest.dart';
 import 'package:jetpack/models/return_colis.dart';
 import 'package:jetpack/models/runsheet.dart';
-import 'package:jetpack/models/user.dart';
-import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/services/util/navigation_service.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-// import 'package:flutter/material.dart' as mt;
-// import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
 class PdfService {
   static Future<void> generateMagnifest(
       Manifest invoice, List<Colis> colis) async {
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -110,6 +107,7 @@ class PdfService {
   }
 
   static Future<void> generateRunsheet(RunsheetPdf invoice) async {
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -200,6 +198,7 @@ class PdfService {
 
   static Future<void> generateExpeditorPayment(
       ExpeditorPayment invoice, List<Colis> colis) async {
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -291,6 +290,7 @@ class PdfService {
   }
 
   static Future<void> generateDayReport(RunsheetPdf invoice) async {
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -415,6 +415,7 @@ class PdfService {
   }
 
   static Future<void> generateColis(List<Colis> lst) async {
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -511,6 +512,7 @@ class PdfService {
     // await ColisService.colisCollection
     //     .doc(colis.id)
     //     .update({'status': ColisStatus.returnExpeditor.name});
+    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -633,6 +635,7 @@ class PdfService {
       required List<Widget> body,
       required List<Widget> footer,
       required String name}) async {
+    if (1 < 2) return;
     final pdf = Document(version: PdfVersion.pdf_1_5);
 
     pdf.addPage(MultiPage(

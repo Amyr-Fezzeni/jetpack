@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/services/util/language.dart';
 
 class NotificationAppBar extends StatelessWidget {
   const NotificationAppBar({super.key});
@@ -28,7 +29,7 @@ class NotificationAppBar extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                "Notifications ${count > 0 ? "($count)" : ""}",
+                "${txt('Notifications')} ${count > 0 ? "($count)" : ""}",
                 style: context.text.copyWith(
                     color: Colors.white,
                     fontSize: 20,

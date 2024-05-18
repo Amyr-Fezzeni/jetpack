@@ -86,9 +86,9 @@ class _DeliveryListState extends State<AdminList> {
                                     onTap: () => setState(
                                         () => selectedAdmin = admin),
                                     title:
-                                        Txt(admin.getFullName(), bold: true),
+                                        Txt(admin.getFullName(), bold: true,translate: false),
                                     subtitle: Txt(admin.adress,
-                                        color: context.iconColor)),
+                                        color: context.iconColor,translate: false)),
                               ))
                           .toList(),
                     );
@@ -100,10 +100,10 @@ class _DeliveryListState extends State<AdminList> {
                       h: 50,
                       radius: smallRadius,
                       function: () => Navigator.pop(context),
-                      text: "cancel"),
+                      text: txt("cancel")),
                   gradientButton(
                       function: () => Navigator.pop(context, selectedAdmin),
-                      text: "Confirm")
+                      text: txt("Confirm"))
                 ],
               )
             ],

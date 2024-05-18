@@ -21,13 +21,13 @@ class ColisCard extends StatelessWidget {
     return Card(
       color: context.bgcolor,
       child: ListTile(
-        title: Txt(capitalize(colis.name), bold: true),
+        title: Txt(capitalize(colis.name), bold: true,translate: false),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Txt(colis.id, size: 10, color: context.primaryColor, bold: true),
+            Txt(colis.id, size: 10, color: context.primaryColor, bold: true,translate: false),
             Txt("${colis.price.toStringAsFixed(2)} Dt",
-                size: 10, color: context.iconColor),
+                size: 10, color: context.iconColor,translate: false),
           ],
         ),
         trailing: InkWell(
@@ -75,21 +75,21 @@ Widget colisRunsheetCard(String id) => Builder(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Txt(colis.name, bold: true),
-                            Txt('${colis.price}TND', color: context.iconColor),
+                            Txt(colis.name, bold: true,translate: false),
+                            Txt('${colis.price}TND', color: context.iconColor,translate: false),
                             if (colis.expeditorName.isNotEmpty)
-                              Txt(colis.expeditorName, bold: true),
+                              Txt(colis.expeditorName, bold: true,translate: false),
                             if (colis.exchange)
                               Txt('EXCHANGE',
                                   color: context.iconColor, bold: true),
                             if (colis.address.isNotEmpty)
-                              Txt(colis.address, color: context.iconColor),
+                              Txt(colis.address, color: context.iconColor,translate: false),
                             // divider(),
                             if (colis.deliveryComment.isNotEmpty)
                               Txt(colis.deliveryComment,
                                   maxLines: 2,
                                   size: 12,
-                                  color: context.iconColor),
+                                  color: context.iconColor,translate: false),
                           ]),
                     ),
                   ),
@@ -215,7 +215,7 @@ Widget phoneWidget(String phoneNumber, int index, {double size = 50}) =>
                       borderRadius: BorderRadius.circular(bigRadius)),
                   child: Center(
                       child: Txt(index.toString(),
-                          color: Colors.black, size: size / 3)),
+                          color: Colors.black, size: size / 3,translate: false)),
                 ))
           ],
         ),

@@ -29,7 +29,7 @@ class NotificationScreen extends StatelessWidget {
       extendBody: true,
       backgroundColor: context.bgcolor,
       bottomNavigationBar: const CustomBottomNavigationBar(),
-      appBar: appBar("Notifications ${count > 0 ? "($count)" : ""}",
+      appBar: appBar("Notifications",extra:" ${count > 0 ? "($count)" : ""}",
           leading: false),
       body: SizedBox(
         width: context.w,

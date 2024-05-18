@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/models/report.dart';
 import 'package:jetpack/services/util/ext.dart';
@@ -43,13 +40,13 @@ class _ReportReviewState extends State<ReportReview> {
               const Gap(20),
               Row(
                 children: [
-                  Txt(widget.report.expeditorName, bold: true),
+                  Txt(widget.report.expeditorName, bold: true,translate: false),
                   const Spacer(),
                   phoneWidget(widget.report.expeditorPhone, 1)
                 ],
               ),
               divider(top: 10),
-              Txt(widget.report.reportMessage),
+              Txt(widget.report.reportMessage,translate: false),
               divider(top: 10, bottom: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -68,7 +65,7 @@ class _ReportReviewState extends State<ReportReview> {
                               .doc(report.id)
                               .update(report.toMap());
                         },
-                        hint: 'Status'),
+                        hint: txt('Status')),
                   ),
                 ],
               ),

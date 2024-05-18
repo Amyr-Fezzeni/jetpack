@@ -17,7 +17,7 @@ class AdminStat extends StatelessWidget {
     return Column(
       children: [
         const Gap(50),
-        Txt(''),
+       
         Builder(builder: (context) {
           Map<String, Map<String, Map<String, dynamic>>> data =
               context.statRead.ratringAdmin();

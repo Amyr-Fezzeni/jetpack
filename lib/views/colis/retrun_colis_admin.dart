@@ -8,7 +8,6 @@ import 'package:gap/gap.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/return_colis.dart';
 import 'package:jetpack/services/colis_service.dart';
-import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/user_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';

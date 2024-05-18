@@ -210,13 +210,13 @@ class _AddColisState extends State<AddColis> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Txt("Id: ",
-                          bold: colis.clientId.isNotEmpty,
+                      Txt("Id",
+                          bold: colis.clientId.isNotEmpty,extra: ": ",
                           color: context.invertedColor
                               .withOpacity(colis.clientId.isEmpty ? .4 : 1)),
                       Txt(colis.id,
                           bold: colis.clientId.isNotEmpty,
-                          color: context.primaryColor),
+                          color: context.primaryColor,translate: false),
                     ],
                   ),
                 ),
@@ -272,7 +272,7 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      '${clientData.firstName} ${clientData.lastName}'))
+                                                      '${clientData.firstName} ${clientData.lastName}',translate: false))
                                             ],
                                           ),
                                           Row(
@@ -280,7 +280,7 @@ class _AddColisState extends State<AddColis> {
                                               Txt("Adress",
                                                   bold: true, extra: ': '),
                                               Flexible(
-                                                  child: Txt(clientData.adress))
+                                                  child: Txt(clientData.adress,translate: false))
                                             ],
                                           ),
                                           Row(
@@ -289,7 +289,7 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      clientData.governorate))
+                                                      clientData.governorate,translate: false))
                                             ],
                                           ),
                                           Row(
@@ -297,7 +297,7 @@ class _AddColisState extends State<AddColis> {
                                               Txt("City",
                                                   bold: true, extra: ': '),
                                               Flexible(
-                                                  child: Txt(clientData.city))
+                                                  child: Txt(clientData.city,translate: false))
                                             ],
                                           ),
                                           Row(
@@ -306,7 +306,7 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      clientData.phoneNumber))
+                                                      clientData.phoneNumber,translate: false))
                                             ],
                                           ),
                                           if (clientData
@@ -317,7 +317,7 @@ class _AddColisState extends State<AddColis> {
                                                     bold: true, extra: ': '),
                                                 Flexible(
                                                     child: Txt(clientData
-                                                        .secondaryPhoneNumber))
+                                                        .secondaryPhoneNumber,translate: false))
                                               ],
                                             ),
                                         ],
@@ -375,7 +375,7 @@ class _AddColisState extends State<AddColis> {
 
                 SimpleDropDown(
                   selectedValue: colis.governorate,
-                  hint: "Governorate",
+                  hint: txt("Governorate"),
                   onChanged: (governorate) => setState(() {
                     client.governorate = governorate;
                     colis.governorate = governorate;
@@ -389,7 +389,7 @@ class _AddColisState extends State<AddColis> {
                 if (colis.governorate.isNotEmpty)
                   SimpleDropDown(
                     selectedValue: colis.city,
-                    hint: "City",
+                    hint: txt("City"),
                     onChanged: (city) {
                       setState(() {
                         client.city = city;
@@ -403,7 +403,7 @@ class _AddColisState extends State<AddColis> {
                 if (colis.city.isNotEmpty) ...[
                   SimpleDropDown(
                     selectedValue: colis.region,
-                    hint: "Region",
+                    hint: txt("Region"),
                     onChanged: (region) {
                       setState(() {
                         client.region = region;
@@ -427,10 +427,10 @@ class _AddColisState extends State<AddColis> {
                       children: [
                         Txt(
                             colis.sectorName.isEmpty
-                                ? "No sector found"
+                                ? txt("No sector found")
                                 : colis.sectorName,
                             color: context.invertedColor
-                                .withOpacity(colis.sectorName.isEmpty ? .4 : 1))
+                                .withOpacity(colis.sectorName.isEmpty ? .4 : 1),translate: false)
                       ],
                     ),
                   )
@@ -448,7 +448,7 @@ class _AddColisState extends State<AddColis> {
                     keybordType: TextInputType.text,
                     submitted: submitted),
                 CustomTextField(
-                    hint: txt("0"),
+                    hint: "0",
                     label: txt("Items"),
                     controller: items,
                     keybordType: TextInputType.number,
@@ -462,7 +462,7 @@ class _AddColisState extends State<AddColis> {
                     },
                     submitted: submitted),
                 CustomTextField(
-                    hint: txt("0"),
+                    hint: "0",
                     label: txt("Price (TND)"),
                     controller: price,
                     keybordType: TextInputType.number,
@@ -608,7 +608,7 @@ class _AddColisState extends State<AddColis> {
                               popup(context,
                                   cancel: false,
                                   description:
-                                      "Please complete required fields!");
+                                      txt("Please complete required fields!"));
                             }
                           },
                         ),

@@ -6,7 +6,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/delivery_paiment.dart';
@@ -416,8 +415,8 @@ class DeliveryProvider with ChangeNotifier {
     returnColis.clear();
   }
 
-  LatLng? lastCurrentLocation;
-  LatLng? currentLocation;
+  GeoPoint? lastCurrentLocation;
+  GeoPoint? currentLocation;
   bool locationListening = false;
   Future<void> listenLocation() async {
     // log('listenLocation()');
@@ -426,7 +425,7 @@ class DeliveryProvider with ChangeNotifier {
     if (NavigationService
             .navigatorKey.currentContext!.userprovider.currentUser ==
         null) return;
-
+    if (1 < 2) return;
     Timer.periodic(const Duration(seconds: 10), (timer) async {
       BuildContext context = NavigationService.navigatorKey.currentContext!;
       if (context.userprovider.currentUser == null) {
@@ -442,22 +441,22 @@ class DeliveryProvider with ChangeNotifier {
       final loc = await Geolocator.getCurrentPosition();
 
       // log(loc.toString());
-      if (LatLng(loc.latitude, loc.longitude) == currentLocation) {
+      if (GeoPoint(loc.latitude, loc.longitude) == currentLocation) {
         // log('same location');
         return;
       }
       if (lastCurrentLocation == null) {
         if (currentLocation == null) {
-          currentLocation = LatLng(loc.latitude, loc.longitude);
+          currentLocation = GeoPoint(loc.latitude, loc.longitude);
           updateCurrentLocation();
         } else {
           lastCurrentLocation = currentLocation;
-          currentLocation = LatLng(loc.latitude, loc.longitude);
+          currentLocation = GeoPoint(loc.latitude, loc.longitude);
           updateCurrentLocation();
         }
       } else {
         lastCurrentLocation = currentLocation;
-        currentLocation = LatLng(loc.latitude, loc.longitude);
+        currentLocation = GeoPoint(loc.latitude, loc.longitude);
         updateCurrentLocation();
       }
     });

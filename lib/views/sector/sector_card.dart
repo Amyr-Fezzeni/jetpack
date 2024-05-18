@@ -17,7 +17,7 @@ class SectorCard extends StatelessWidget {
       child: ListTile(
         title: Row(
           children: [
-            Flexible(child: Txt(sector.name)),
+            Flexible(child: Txt(sector.name,translate: false)),
             const Gap(5),
             if (sector.delivery['id'].isEmpty)
               const Icon(Icons.person_remove_alt_1_rounded,
@@ -25,7 +25,7 @@ class SectorCard extends StatelessWidget {
             
           ],
         ),
-        subtitle: Txt(sector.regions.join(', '),
+        subtitle: Txt(sector.regions.join(', '),translate: false,
             size: 10, color: context.iconColor, maxLines: 2),
         trailing: InkWell(
           onTap: () => context.moveTo(AddSector(sector: sector)),

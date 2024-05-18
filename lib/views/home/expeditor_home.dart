@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/services/colis_service.dart';
 import 'package:jetpack/services/util/ext.dart';
+import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/clients/clients_list.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
@@ -63,17 +64,17 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
                               } else {
                                 await popup(context,
                                     cancel: false,
-                                    description: "Colis not found");
+                                    description: txt("Colis not found"));
                               }
                             },
-                            text: "Confirm")
+                            text: txt("Confirm"))
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(child: divider()),
                         Text(
-                          'Or',
+                          txt('Or'),
                           style: context.theme.text18,
                         ),
                         Expanded(child: divider())
@@ -91,10 +92,11 @@ class _HomeScreenState extends State<ExpeditorHomeScreen> {
                                 context, ColisDetails(colis: colis.first));
                           } else {
                             await popup(context,
-                                cancel: false, description: "Colis not found");
+                                cancel: false,
+                                description: txt("Colis not found"));
                           }
                         },
-                        text: "Scan code")
+                        text: txt("Scan code"))
                   ],
                 ),
               ),

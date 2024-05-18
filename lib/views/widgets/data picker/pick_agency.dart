@@ -84,9 +84,9 @@ class _AgencyListState extends State<AgencyList> {
                                 child: ListTile(
                                     onTap: () =>
                                         setState(() => selectedAgency = agency),
-                                    title: Txt(agency.name, bold: true),
+                                    title: Txt(agency.name, bold: true,translate: false),
                                     subtitle: Txt(agency.agencyLead,
-                                        color: context.iconColor)),
+                                        color: context.iconColor,translate: false)),
                               ))
                           .toList(),
                     );
@@ -98,10 +98,10 @@ class _AgencyListState extends State<AgencyList> {
                       h: 50,
                       radius: smallRadius,
                       function: () => Navigator.pop(context),
-                      text: "cancel"),
+                      text: txt("cancel")),
                   gradientButton(
                       function: () => Navigator.pop(context, selectedAgency),
-                      text: "Confirm")
+                      text: txt("Confirm"))
                 ],
               )
             ],

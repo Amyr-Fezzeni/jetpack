@@ -85,7 +85,7 @@ class _PublicProfileState extends State<PublicProfile> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Txt(user.getFullName(), size: 20, bold: true),
+                          Txt(user.getFullName(), size: 20, bold: true,translate: false),
                           const Gap(5),
                           Icon(
                             Icons.verified,

@@ -52,7 +52,7 @@ import 'package:provider/provider.dart';
 // }
 
 AppBar appBar(String title,
-    {leading = true, Widget? action, bool leadingProfile = false}) {
+    {leading = true, Widget? action, bool leadingProfile = false, String extra=''}) {
   var context = NavigationService.navigatorKey.currentContext!;
   return AppBar(
     backgroundColor: context.bgcolor,
@@ -60,6 +60,7 @@ AppBar appBar(String title,
     shadowColor: Colors.black45,
     elevation: 0,
     title: Txt(title,
+    extra: extra,
         style:
             context.text.copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
     centerTitle: true,

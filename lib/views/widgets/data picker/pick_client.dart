@@ -87,16 +87,16 @@ class _ClientListState extends State<ClientList> {
                                         setState(() => selectedClient = client),
                                     title: Txt(
                                         "${client.firstName}${client.lastName}",
-                                        bold: true),
+                                        bold: true,translate: false),
                                     subtitle: Txt(client.adress,
-                                        color: context.iconColor)),
+                                        color: context.iconColor,translate: false)),
                               ))
                           .toList(),
                     );
                   }),
               borderButton(
                   function: () => context.moveTo(const AddClient()),
-                  text: "Add new client",
+                  text: txt("Add new client"),
                   opacity: 0,
                   textColor: context.primaryColor),
               Row(

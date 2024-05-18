@@ -67,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
               ),
-              Txt(context.currentUser.getFullName(), size: 20, bold: true),
+              Txt(context.currentUser.getFullName(), size: 20, bold: true,translate: false),
               const Gap(20),
 
               CustomTextField(

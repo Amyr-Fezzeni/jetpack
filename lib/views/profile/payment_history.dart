@@ -92,8 +92,8 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
                                     children: [
                                       if (currentWeek)
                                         Txt("Current Week", bold: true),
-                                      Txt("From ${getSimpleDate(payment.startTime)} to ${getSimpleDate(payment.endTime)} ",
-                                          bold: true),
+                                      Txt("${txt('From')} ${getSimpleDate(payment.startTime)} ${txt('to')} ${getSimpleDate(payment.endTime)} ",
+                                          bold: true,translate: false),
                                     ],
                                   ),
                                   const Spacer(),
@@ -111,13 +111,13 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
                                 ],
                               ),
 
-                              Txt("Colis delivered: ${payment.nbDelivered}"),
-                              Txt("Manifest picked: ${payment.nbPickup}"),
+                              Txt("Colis delivered",extra:": ${payment.nbDelivered}"),
+                              Txt("Manifest picked",extra:": ${payment.nbPickup}"),
                               Txt("${(payment.nbDelivered * context.currentUser.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
                                   color: payment.isPaid
                                       ? Colors.green
                                       : Colors.red,
-                                  bold: true),
+                                  bold: true,translate: false),
 
                               // divider(bottom: 10, top: 10)
                             ],

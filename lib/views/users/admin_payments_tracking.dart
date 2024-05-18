@@ -3,21 +3,16 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/models/expeditor_payment.dart';
-import 'package:jetpack/models/user.dart';
 import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
-import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
-import 'package:jetpack/views/widgets/bottuns.dart';
-import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 
 class AdminTrackingScreen extends StatefulWidget {
@@ -178,7 +173,7 @@ class _AdminTrackingScreenState extends State<AdminTrackingScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Txt(payment.expeditorName, bold: true),
+                              Txt(payment.expeditorName, bold: true,translate: false),
                               Txt("Date: ${getDate(payment.date)}", bold: true),
                               Txt('Total price',
                                   color: context.iconColor,

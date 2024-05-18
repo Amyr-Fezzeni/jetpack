@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:jetpack/services/util/ext.dart';
@@ -17,7 +18,7 @@ String txt(String key) {
   LanguageModel language = NavigationService.navigatorKey.currentContext!
       .read<UserProvider>()
       .currentLanguage;
-  // addKey(key);
+  addKey(key);
   return language == LanguageModel.english
       ? english[key] ?? key
       : frensh[key] ?? key;
@@ -25,12 +26,13 @@ String txt(String key) {
 
 void addKey(String key) {
   File file = File(
-      '/Users/letaff/flutter projects/others/mymizze/lib/constants/language.json');
+      '/Users/letaff/flutter projects/jetpack/lib/constants/language.json');
   Map<String, dynamic> data =
       jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
   if (!data.containsKey(key)) {
     data.addAll({key: key});
     file.writeAsStringSync(jsonEncode(data));
+    log('$key saved');
   }
 }
 

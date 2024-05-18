@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/enum_classes.dart';
 import 'package:jetpack/models/user.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
-import 'package:jetpack/views/google%20map/delivery_tracking.dart';
 import 'package:jetpack/views/users/add_user.dart';
 import 'package:jetpack/views/users/delivery_payment_admin.dart';
 import 'package:jetpack/views/users/expeditor_tracking.dart';
@@ -28,8 +27,8 @@ class UserCard extends StatelessWidget {
             : Card(
                 color: context.bgcolor,
                 child: ListTile(
-                  title: Txt(user.getFullName()),
-                  subtitle: Txt(user.email, size: 10, color: context.iconColor),
+                  title: Txt(user.getFullName(),translate: false),
+                  subtitle: Txt(user.email, size: 10, color: context.iconColor,translate: false),
                   leading: profileIcon(url: user.photo),
                   trailing: InkWell(
                     onTap: () =>
@@ -64,8 +63,8 @@ class DeliveryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Txt(user.getFullName(), bold: true),
-                Txt(user.email, size: 10, color: context.iconColor)
+                Txt(user.getFullName(), bold: true,translate: false),
+                Txt(user.email, size: 10, color: context.iconColor,translate: false)
               ],
             ),
           ),
@@ -93,12 +92,12 @@ class DeliveryCard extends StatelessWidget {
                         cancel: false);
                     return;
                   }
-                  customPopup(context, DeliveryTrackingMap(delivery: user));
-                  // final location = user.location!;
-                  // var uri = Uri.parse(
-                  //     "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}");
+                  // customPopup(context, DeliveryTrackingMap(delivery: user));
+                  final location = user.location!;
+                  var uri = Uri.parse(
+                      "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}");
 
-                  // await launchUrl(uri);
+                  await launchUrl(uri);
                 },
                 child: Icon(Icons.location_on_outlined,
                     color: context.iconColor, size: 25),
@@ -133,8 +132,8 @@ class ExpeditorCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Txt(user.getFullName(), bold: true),
-                Txt(user.email, size: 10, color: context.iconColor)
+                Txt(user.getFullName(), bold: true,translate: false),
+                Txt(user.email, size: 10, color: context.iconColor,translate: false)
               ],
             ),
           ),

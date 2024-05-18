@@ -107,11 +107,11 @@ class _AddSectorState extends State<AddSector> {
                           Builder(builder: (context) {
                             return Txt(
                                 sector.delivery['name'].isEmpty
-                                    ? 'Delivery'
+                                    ? txt('Delivery')
                                     : sector.delivery['name'],
                                 bold: !sector.delivery['name'].isEmpty,
                                 color: context.invertedColor.withOpacity(
-                                    sector.delivery['name'].isEmpty ? .4 : 1));
+                                    sector.delivery['name'].isEmpty ? .4 : 1),translate: false);
                           }),
                           const Spacer(),
                           Icon(
@@ -165,7 +165,7 @@ class _AddSectorState extends State<AddSector> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(child: Txt(e, bold: true)),
+                                Expanded(child: Txt(e, bold: true,translate: false)),
                                 const Spacer(),
                                 deleteButton(
                                     function: () => setState(

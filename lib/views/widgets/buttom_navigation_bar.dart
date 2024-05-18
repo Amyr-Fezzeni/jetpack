@@ -112,7 +112,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                                       child: Center(
                                         child: Txt(
                                             (count > 99 ? '+99' : count)
-                                                .toString(),
+                                                .toString(),translate: false,
                                             size: 10,
                                             color: Colors.white),
                                       ),

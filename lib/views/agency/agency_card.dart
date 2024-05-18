@@ -13,8 +13,8 @@ class AgencyCard extends StatelessWidget {
     return Card(
       color: context.bgcolor,
       child: ListTile(
-        title: Txt(agency.name),
-        subtitle: Txt(agency.agencyLead, size: 10, color: context.iconColor),
+        title: Txt(agency.name,translate: false),
+        subtitle: Txt(agency.agencyLead, size: 10, color: context.iconColor,translate: false),
         trailing: InkWell(
           onTap: () => context.moveTo(AddAgency(agency: agency)),
           child:

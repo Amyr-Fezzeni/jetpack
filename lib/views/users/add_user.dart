@@ -314,7 +314,7 @@ class _AddUserState extends State<AddUser> {
                               children: [
                                 Txt(user.birthday != null
                                     ? getDate(user.birthday)
-                                    : '--/ --/ ----'),
+                                    : '--/ --/ ----',translate: false),
                                 svgImage(calendar)
                               ],
                             ),
@@ -350,10 +350,10 @@ class _AddUserState extends State<AddUser> {
                             bool agencyEmpty =
                                 user.agency == null || user.agency!['id'] == '';
                             return Txt(
-                                agencyEmpty ? 'Agency' : user.agency!['name'],
+                                agencyEmpty ? txt('Agency') : user.agency!['name'],
                                 bold: !agencyEmpty,
                                 color: context.invertedColor
-                                    .withOpacity(agencyEmpty ? .4 : 1));
+                                    .withOpacity(agencyEmpty ? .4 : 1),translate: false);
                           }),
                           const Spacer(),
                           Icon(
@@ -416,10 +416,10 @@ class _AddUserState extends State<AddUser> {
                           children: [
                             Txt(
                                 user.sector['name'].isEmpty
-                                    ? "No sector found"
-                                    : "Sector: ${user.sector['name']}",
+                                    ? txt("No sector found")
+                                    : "${txt('Sector')}: ${user.sector['name']}",
                                 color: context.invertedColor.withOpacity(
-                                    user.sector['name'].isEmpty ? .4 : 1))
+                                    user.sector['name'].isEmpty ? .4 : 1),translate: false)
                           ],
                         ),
                       )

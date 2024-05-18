@@ -112,7 +112,7 @@ class _AddAgencyState extends State<AddAgency> {
                             return Txt(
                                 agency.agencyLead.isEmpty
                                     ? 'Agency admin'
-                                    : agency.agencyLead,
+                                    : agency.agencyLead,translate: false,
                                 bold: agency.agencyLead.isNotEmpty,
                                 color: context.invertedColor.withOpacity(
                                     agency.agencyLead.isEmpty ? .4 : 1));
@@ -159,7 +159,7 @@ class _AddAgencyState extends State<AddAgency> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(child: Txt(e, bold: true)),
+                                Expanded(child: Txt(e, bold: true,translate: false)),
                                 const Spacer(),
                                 deleteButton(
                                     function: () =>
@@ -172,7 +172,7 @@ class _AddAgencyState extends State<AddAgency> {
                       )),
                   const Gap(20),
                   CustomTextField(
-                      hint: txt("0"),
+                      hint: "0",
                       label: txt("Employee"),
                       controller: employee,
                       keybordType: TextInputType.number,

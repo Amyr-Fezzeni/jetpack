@@ -2,7 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
 import 'package:jetpack/models/relaunch_colis.dart';
@@ -229,7 +228,7 @@ Widget relaunchWidget(RelaunchColis relaunch) => Builder(builder: (context) {
             children: [
               Row(
                 children: [
-                  Txt(relaunch.expeditorName, bold: true),
+                  Txt(relaunch.expeditorName, bold: true,translate: false),
                   const Spacer(),
                   deleteButton(function: () {
                     RelaunchColisService.colisCollection
@@ -238,7 +237,7 @@ Widget relaunchWidget(RelaunchColis relaunch) => Builder(builder: (context) {
                   })
                 ],
               ),
-              Txt(relaunch.colisId, color: context.primaryColor),
+              Txt(relaunch.colisId, color: context.primaryColor,translate: false),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(

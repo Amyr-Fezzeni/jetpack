@@ -84,9 +84,9 @@ class _SectorListState extends State<SectorList> {
                                 child: ListTile(
                                     onTap: () =>
                                         setState(() => selectedSector = sector),
-                                    title: Txt(sector.name, bold: true),
+                                    title: Txt(sector.name, bold: true,translate: false),
                                     subtitle: Txt(sector.regions.join(', '),
-                                        color: context.iconColor)),
+                                        color: context.iconColor,translate: false)),
                               ))
                           .toList(),
                     );
@@ -98,10 +98,10 @@ class _SectorListState extends State<SectorList> {
                       h: 50,
                       radius: smallRadius,
                       function: () => Navigator.pop(context),
-                      text: "cancel"),
+                      text: txt("cancel")),
                   gradientButton(
                       function: () => Navigator.pop(context, selectedSector),
-                      text: "Confirm")
+                      text: txt("Confirm"))
                 ],
               )
             ],

@@ -58,63 +58,63 @@ class _RunsheetColisDetailsState extends State<RunsheetColisDetails> {
               Row(
                 children: [
                   Txt("Client Name", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.name))
+                  Flexible(child: Txt(widget.colis.name,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Governorate", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.governorate))
+                  Flexible(child: Txt(widget.colis.governorate,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("City", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.city))
+                  Flexible(child: Txt(widget.colis.city,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Region", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.region))
+                  Flexible(child: Txt(widget.colis.region,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Adress", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.address))
+                  Flexible(child: Txt(widget.colis.address,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Phone number", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.phone1))
+                  Flexible(child: Txt(widget.colis.phone1,translate: false))
                 ],
               ),
               if (widget.colis.phone2.isNotEmpty)
                 Row(
                   children: [
                     Txt("secondary phone number", bold: true, extra: ': '),
-                    Flexible(child: Txt(widget.colis.phone2))
+                    Flexible(child: Txt(widget.colis.phone2,translate: false))
                   ],
                 ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Txt("Client comment", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.comment))
+                  Flexible(child: Txt(widget.colis.comment,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Items", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.numberOfItems.toString()))
+                  Flexible(child: Txt(widget.colis.numberOfItems.toString(),translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Price", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.price.toStringAsFixed(2)))
+                  Flexible(child: Txt(widget.colis.price.toStringAsFixed(2),translate: false))
                 ],
               ),
               Row(
@@ -138,14 +138,14 @@ class _RunsheetColisDetailsState extends State<RunsheetColisDetails> {
               Row(
                 children: [
                   Txt("Attempt", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.tentative.toString()))
+                  Flexible(child: Txt(widget.colis.tentative.toString(),translate: false))
                 ],
               ),
               divider(),
               Row(
                 children: [
                   Txt("Sector", bold: true, extra: ': '),
-                  Flexible(child: Txt(widget.colis.sectorName))
+                  Flexible(child: Txt(widget.colis.sectorName,translate: false))
                 ],
               ),
             ],
@@ -178,7 +178,7 @@ class _RunsheetColisDetailsState extends State<RunsheetColisDetails> {
                               .update({"deliveryComment": comment.text}).then(
                                   (value) => context.pop());
                         },
-                        text: "Save")
+                        text: txt("Save"))
                   ],
                 ),
                 // const Gap(10),

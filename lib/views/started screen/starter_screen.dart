@@ -22,7 +22,7 @@ class StarterScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Txt("Livraison la plus rapide dans toute la Tunisie",
+            child: Txt("Fastest delivery throughout Tunisia",
                 size: 20,
                 bold: true,
                 center: true,
@@ -31,7 +31,7 @@ class StarterScreen extends StatelessWidget {
           const Spacer(),
           gradientButton(
               function: () => context.moveTo(const LoginScreen()),
-              text: "Continue"),
+              text: txt("Continue")),
           const Spacer()
         ],
       ),

@@ -4,7 +4,6 @@ import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/providers/theme_notifier.dart';
 import 'package:jetpack/services/shared_data.dart';
 import 'package:jetpack/services/util/ext.dart';
-import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/views/started%20screen/starter_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -95,7 +94,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen>
                 child: SizedBox(
                   width: context.w * .3,
                   // width: size,
-                  child: Center(child: Txt('')),
+                  child: const Center(child: Text('')),
                 ),
               ),
             ],

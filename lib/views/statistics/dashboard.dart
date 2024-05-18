@@ -5,8 +5,6 @@ import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/statistics/admin_stat.dart';
 import 'package:jetpack/views/statistics/delivery_stat.dart';
 import 'package:jetpack/views/statistics/expeditor_stat.dart';
-import 'package:jetpack/views/statistics/statistic_widget.dart';
-import 'package:jetpack/views/widgets/bottuns.dart';
 import 'package:jetpack/views/widgets/buttom_navigation_bar.dart';
 
 class HomeStatsScreen extends StatefulWidget {

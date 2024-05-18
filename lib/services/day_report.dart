@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jetpack/models/colis.dart';
-import 'package:jetpack/models/manifest.dart';
 import 'package:jetpack/models/runsheet.dart';
 import 'package:jetpack/models/user.dart';
 import 'package:jetpack/services/util/language.dart';

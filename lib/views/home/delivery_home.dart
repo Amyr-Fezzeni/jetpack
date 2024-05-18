@@ -116,7 +116,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                           }
                           context.pop();
                         },
-                        text: "Scan code")
+                        text: txt("Scan code"))
                   ],
                 ),
               ),
@@ -256,22 +256,27 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   border:
                       Border.all(color: context.invertedColor.withOpacity(.2))),
               child: Center(
-                child: Txt(
-                    "you have ${context.deliveryWatch.depot.length} colis at depot"),
-              )),
+                  child: Row(
+                children: [
+                  Txt("you have",
+                      extra: " ${context.deliveryWatch.depot.length}"),
+                  Txt("colis at depot"),
+                ],
+              ))),
         Column(
           children: context.deliveryWatch.depot
               .map((colis) => Card(
                     color: context.bgcolor,
                     child: ListTile(
-                      title: Txt(colis.name, bold: true),
+                      title: Txt(colis.name, bold: true, translate: false),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Txt(colis.id,
                               size: 10,
                               color: context.primaryColor,
-                              bold: true),
+                              bold: true,
+                              translate: false),
                           if (colis.appointmentDate != null) ...[
                             Txt('Appointment',
                                 extra: ": ${getDate(colis.appointmentDate)}")
@@ -293,7 +298,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             borderButton(
-                text: 'End of day report',
+                text: txt('End of day report'),
                 textColor: context.invertedColor.withOpacity(.6),
                 color: context.invertedColor.withOpacity(.2),
                 trailing: Icon(
@@ -367,8 +372,13 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   border:
                       Border.all(color: context.invertedColor.withOpacity(.2))),
               child: Center(
-                child: Txt(
-                    "you have ${context.deliveryWatch.payments.length} payment to pickup"),
+                child: Row(
+                  children: [
+                    Txt("you have",
+                        extra: " ${context.deliveryWatch.payments.length} "),
+                    Txt("payment to pickup"),
+                  ],
+                ),
               )),
         Column(
           children: context.deliveryWatch.payments
@@ -387,15 +397,18 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Txt(payment.expeditorName, bold: true),
-                                    Txt([payment.region, payment.adress]
-                                        .join(', ')),
+                                    Txt(
+                                        [payment.region, payment.adress]
+                                            .join(', '),
+                                        translate: false),
                                     Txt('Total price',
                                         color: context.iconColor,
                                         extra: ": ${payment.totalprice}TND"),
                                     Txt('Net price',
                                         color: context.iconColor,
                                         extra: ": ${payment.price}TND"),
-                                    Txt(getDate(payment.date)),
+                                    Txt(getDate(payment.date),
+                                        translate: false),
                                   ]),
                               Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -458,9 +471,13 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   border:
                       Border.all(color: context.invertedColor.withOpacity(.2))),
               child: Center(
-                child: Txt(
-                    "you have ${context.deliveryWatch.returnColis.length} colis return to pickup"),
-              )),
+                  child: Row(
+                children: [
+                  Txt("you have",
+                      extra: " ${context.deliveryWatch.returnColis.length} "),
+                  Txt("colis return to pickup"),
+                ],
+              ))),
         Column(
           children: context.deliveryWatch.returnColis
               .map((colis) => FutureBuilder(
@@ -488,18 +505,21 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Txt(user.getFullName(),
-                                                  bold: true),
+                                                  bold: true, translate: false),
                                               SizedBox(
                                                 width: context.w * .6,
-                                                child: Txt([
-                                                  user.governorate,
-                                                  user.region,
-                                                  user.adress
-                                                ].join(', ')),
+                                                child: Txt(
+                                                    [
+                                                      user.governorate,
+                                                      user.region,
+                                                      user.adress
+                                                    ].join(', '),
+                                                    translate: false),
                                               ),
                                               Txt("${colis.colis.length} colis",
                                                   // size: 10,
-                                                  color: context.iconColor),
+                                                  color: context.iconColor,
+                                                  translate: false),
                                             ]),
                                         Column(
                                           crossAxisAlignment:
@@ -554,7 +574,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                                                                                 fontWeight: FontWeight.bold,
                                                                                               )),
                                                                                           Text('${colis.price}TND', style: context.theme.text18),
-                                                                                          if (colis.exchange) Text('EXCHANGE', style: context.theme.text18),
+                                                                                          if (colis.exchange) Text(txt('EXCHANGE'), style: context.theme.text18),
                                                                                           if (colis.address.isNotEmpty) Text(colis.address, style: context.theme.text18),
                                                                                         ]),
                                                                                       ),
@@ -604,7 +624,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                         function: () async {
                                           popup(context,
                                               description:
-                                                  'Are you sure you want to close this colis?',
+                                                  txt('Are you sure you want to close this colis?'),
                                               confirmFunction: () {
                                             for (var c in colis.colis) {
                                               ColisService.colisCollection
@@ -649,15 +669,20 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   border:
                       Border.all(color: context.invertedColor.withOpacity(.2))),
               child: Center(
-                child: Txt(
-                    "you have ${context.deliveryWatch.pickup.length} manifest to pickup"),
-              )),
+                  child: Row(
+                children: [
+                  Txt("you have",
+                      extra: " ${context.deliveryWatch.pickup.length} "),
+                  Txt("manifest to pickup"),
+                ],
+              ))),
         Column(
           children: context.deliveryWatch.pickup
               .map((manifest) => Card(
                     color: context.bgcolor,
                     child: ListTile(
-                      title: Txt(manifest.expeditorName, bold: true),
+                      title: Txt(manifest.expeditorName,
+                          bold: true, translate: false),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

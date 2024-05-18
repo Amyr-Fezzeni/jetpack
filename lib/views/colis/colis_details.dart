@@ -69,7 +69,7 @@ class ColisDetails extends StatelessWidget {
                 Row(
                   children: [
                     Txt("Expeditor Name", bold: true, extra: ': '),
-                    Flexible(child: Txt(colis.expeditorName))
+                    Flexible(child: Txt(colis.expeditorName,translate: false))
                   ],
                 ),
                 Align(
@@ -91,62 +91,63 @@ class ColisDetails extends StatelessWidget {
               Row(
                 children: [
                   Txt("Client Name", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.name))
+                  Flexible(child: Txt(colis.name,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Governorate", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.governorate))
+                  Flexible(child: Txt(colis.governorate,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("City", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.city))
+                  Flexible(child: Txt(colis.city,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Region", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.region))
+                  Flexible(child: Txt(colis.region,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Adress", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.address))
+                  Flexible(child: Txt(colis.address,translate: false
+                  ))
                 ],
               ),
               Row(
                 children: [
                   Txt("Phone number", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.phone1))
+                  Flexible(child: Txt(colis.phone1,translate: false))
                 ],
               ),
               if (colis.phone2.isNotEmpty)
                 Row(
                   children: [
                     Txt("secondary phone number", bold: true, extra: ': '),
-                    Flexible(child: Txt(colis.phone2))
+                    Flexible(child: Txt(colis.phone2,translate: false))
                   ],
                 ),
               Row(
                 children: [
                   Txt("Comment", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.comment))
+                  Flexible(child: Txt(colis.comment,translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Items", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.numberOfItems.toString()))
+                  Flexible(child: Txt(colis.numberOfItems.toString(),translate: false))
                 ],
               ),
               Row(
                 children: [
                   Txt("Price", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.price.toStringAsFixed(2)))
+                  Flexible(child: Txt(colis.price.toStringAsFixed(2),translate: false))
                 ],
               ),
               Row(
@@ -170,14 +171,14 @@ class ColisDetails extends StatelessWidget {
               Row(
                 children: [
                   Txt("Attempt", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.tentative.toString()))
+                  Flexible(child: Txt(colis.tentative.toString(),translate: false))
                 ],
               ),
               divider(),
               Row(
                 children: [
                   Txt("Sector", bold: true, extra: ': '),
-                  Flexible(child: Txt(colis.sectorName))
+                  Flexible(child: Txt(colis.sectorName,translate: false))
                 ],
               ),
               if ([Role.admin.name, Role.expeditor.name]
@@ -193,7 +194,7 @@ class ColisDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Txt("Delivery", bold: true, extra: ': '),
-                    Expanded(child: Txt(colis.deliveryName)),
+                    Expanded(child: Txt(colis.deliveryName,translate: false)),
                     const Spacer(),
                     phoneWidgetId('', id: colis.deliveryId)
                   ],
@@ -272,7 +273,7 @@ class ColisDetails extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5.0)),
                             ),
-                            child: Txt(getDate(colis.appointmentDate)))
+                            child: Txt(getDate(colis.appointmentDate),translate: false))
                     ],
                   ),
                 ),

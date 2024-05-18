@@ -13,7 +13,6 @@ import 'package:jetpack/views/sector/sector_list.dart';
 import 'package:jetpack/views/splash%20screen/splash_screen.dart';
 import 'package:jetpack/views/users/expeditor_tracking.dart';
 import 'package:jetpack/views/widgets/bottuns.dart';
-import 'package:jetpack/views/widgets/default_screen.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +50,7 @@ class NavPanel extends StatelessWidget {
                       children: [
                         Flexible(
                             child: Txt(context.currentUser.getFullName(),
-                                bold: true)),
+                                bold: true,translate: false)),
                         Flexible(
                           child: Txt(
                               "${context.currentUser.role == Role.admin ? 'Admin' : context.currentUser.role == Role.expeditor ? 'Expeditor' : 'Delivery'} account",
@@ -203,7 +202,7 @@ class _AccountsState extends State<Accounts> {
                     children: [
                       profileIcon(size: 25),
                       const Gap(5),
-                      Txt(e, bold: true),
+                      Txt(e, bold: true,translate: false),
                       const Spacer(),
                       deleteButton(function: () async {
                         DataPrefrences.removeAccount(accountName: e)

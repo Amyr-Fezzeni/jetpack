@@ -63,27 +63,30 @@ class _ExpeditorTrackingScreenState extends State<ExpeditorTrackingScreen> {
               ],
             ),
             payment
-                ? SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        StreamBuilder(
-                            stream: function,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                      ConnectionState.active &&
-                                  snapshot.data != null) {
-                                return Column(
-                                  children: [
-                                    ...snapshot.data!.docs.reversed
-                                        .map((e) =>
-                                            ExpeditorPayment.fromMap(e.data()))
-                                        .map((payment) => paymentCard(payment))
-                                  ],
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            })
-                      ],
+                ? Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          StreamBuilder(
+                              stream: function,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.active &&
+                                    snapshot.data != null) {
+                                  return Column(
+                                    children: [
+                                      ...snapshot.data!.docs.reversed
+                                          .map((e) => ExpeditorPayment.fromMap(
+                                              e.data()))
+                                          .map(
+                                              (payment) => paymentCard(payment))
+                                    ],
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              })
+                        ],
+                      ),
                     ),
                   )
                 : Expanded(
@@ -261,14 +264,17 @@ class _ExpeditorTrackingScreenState extends State<ExpeditorTrackingScreen> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Txt(colis.id, bold: true, color: red),
-                            Txt(colis.name, bold: true),
-                            Txt('${colis.price}TND', color: context.iconColor),
+                            Txt(colis.id,
+                                bold: true, color: red, translate: false),
+                            Txt(colis.name, bold: true, translate: false),
+                            Txt('${colis.price}TND',
+                                color: context.iconColor, translate: false),
                             if (colis.exchange)
                               Txt('EXCHANGE',
                                   color: context.iconColor, bold: true),
                             if (colis.address.isNotEmpty)
-                              Txt(colis.address, color: context.iconColor),
+                              Txt(colis.address,
+                                  color: context.iconColor, translate: false),
                           ]),
                     ),
                   ),
@@ -416,8 +422,11 @@ class _ExpeditorTrackingScreenState extends State<ExpeditorTrackingScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Txt(payment.expeditorName, bold: true),
-                              Txt("Date: ${getDate(payment.date)}", bold: true),
+                              Txt(payment.expeditorName,
+                                  bold: true, translate: false),
+                              Txt("Date",
+                                  extra: ": ${getDate(payment.date)}",
+                                  bold: true),
                               Txt('Total price',
                                   color: context.iconColor,
                                   extra: ": ${payment.totalprice}TND"),

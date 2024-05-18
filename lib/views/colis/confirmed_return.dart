@@ -3,22 +3,14 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:jetpack/constants/style.dart';
 import 'package:jetpack/models/colis.dart';
-import 'package:jetpack/models/enum_classes.dart';
-import 'package:jetpack/models/expeditor_payment.dart';
 import 'package:jetpack/models/return_colis.dart';
-import 'package:jetpack/models/user.dart';
-import 'package:jetpack/services/payment_service.dart';
 import 'package:jetpack/services/pdf_service.dart';
 import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/services/util/language.dart';
 import 'package:jetpack/services/util/logic_service.dart';
-import 'package:jetpack/views/colis/colis_card.dart';
 import 'package:jetpack/views/colis/colis_details.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
-import 'package:jetpack/views/widgets/bottuns.dart';
-import 'package:jetpack/views/widgets/loader.dart';
 import 'package:jetpack/views/widgets/popup.dart';
 
 class ConfirmedReturnScreen extends StatefulWidget {
@@ -175,9 +167,9 @@ class _ConfirmedReturnScreenState extends State<ConfirmedReturnScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Txt(invoice.expeditorName, bold: true),
-                              Txt("Date: ${getDate(invoice.date)}", bold: true),
-                              Txt('', color: context.iconColor, extra: ""),
+                              Txt(invoice.expeditorName, bold: true,translate: false),
+                              Txt("Date: ${getDate(invoice.date)}", bold: true,translate: false),
+                              
                             ]),
                       ),
                     ),

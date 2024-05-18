@@ -13,8 +13,8 @@ class ClientCard extends StatelessWidget {
     return Card(
       color: context.bgcolor,
       child: ListTile(
-        title: Txt('${client.firstName} ${client.lastName}'),
-        subtitle: Txt(client.phoneNumber, size: 10, color: context.iconColor),
+        title: Txt('${client.firstName} ${client.lastName}',translate: false),
+        subtitle: Txt(client.phoneNumber, size: 10, color: context.iconColor,translate: false),
         trailing: InkWell(
           onTap: () => context.moveTo(AddClient(client: client)),
           child: Icon(Icons.arrow_forward_ios_rounded,

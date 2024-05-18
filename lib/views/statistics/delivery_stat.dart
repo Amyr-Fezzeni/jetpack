@@ -42,7 +42,7 @@ class _DeliveryStatState extends State<DeliveryStat> {
             .runsheetColisDelivery(context.userprovider.currentUser!);
         data.sort((a, b) => stringToDateReversed(a['date'])
             .compareTo(stringToDateReversed(b['date'])));
-        log('colis per day: $data');
+        // log('colis per day: $data');
         return SfCartesianChart(
           palette: palette,
           tooltipBehavior: TooltipBehavior(enable: true, elevation: 5),

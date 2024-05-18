@@ -88,9 +88,9 @@ class _DeliveryListState extends State<DeliveryList> {
                                     onTap: () => setState(
                                         () => selectedDelivery = delivery),
                                     title:
-                                        Txt(delivery.getFullName(), bold: true),
+                                        Txt(delivery.getFullName(), bold: true,translate: false),
                                     subtitle: Txt(delivery.adress,
-                                        color: context.iconColor)),
+                                        color: context.iconColor,translate: false)),
                               ))
                           .toList(),
                     );
@@ -102,10 +102,10 @@ class _DeliveryListState extends State<DeliveryList> {
                       h: 50,
                       radius: smallRadius,
                       function: () => Navigator.pop(context),
-                      text: "cancel"),
+                      text: txt("cancel")),
                   gradientButton(
                       function: () => Navigator.pop(context, selectedDelivery),
-                      text: "Confirm")
+                      text: txt("Confirm"))
                 ],
               )
             ],

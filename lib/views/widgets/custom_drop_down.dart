@@ -228,7 +228,7 @@ class _CustDropDownState extends State<CustDropDown>
                 child: _isAnyItemSelected
                     ? _itemSelected!
                     : Txt(widget.hintText,
-                        color: context.invertedColor.withOpacity(.7)),
+                        color: context.invertedColor.withOpacity(.7),translate: false),
               ),
               Flexible(
                 flex: 1,
@@ -328,7 +328,7 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
                           child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
-                              child: Center(child: Txt(e, bold: true))),
+                              child: Center(child: Txt(e, bold: true,translate: false))),
                         ),
                         divider()
                       ],
@@ -344,7 +344,7 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
                     : widget.hint,
                 color: widget.selectedValue.isNotEmpty
                     ? null
-                    : context.invertedColor.withOpacity(.4)),
+                    : context.invertedColor.withOpacity(.4),translate: false),
             const Spacer(),
             Icon(Icons.arrow_drop_down_rounded,
                 color: context.iconColor, size: 25)
