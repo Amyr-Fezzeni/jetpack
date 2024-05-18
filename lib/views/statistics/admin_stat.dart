@@ -9,14 +9,9 @@ import 'package:jetpack/services/util/logic_service.dart';
 import 'package:jetpack/views/widgets/loader.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class AdminStat extends StatefulWidget {
+class AdminStat extends StatelessWidget {
   const AdminStat({super.key});
 
-  @override
-  State<AdminStat> createState() => _AdminStatState();
-}
-
-class _AdminStatState extends State<AdminStat> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +26,11 @@ class _AdminStatState extends State<AdminStat> {
           // log(colisData.toString());
           colisData.sort((a, b) =>
               stringToDate(b['date']).compareTo(stringToDate(a['date'])));
-
+          log(colisData.toString());
+          // [{date: 12-05-2024, delivered: 0, canceled: 1},
+          //{date: 04-05-2024, delivered: 1, canceled: 0},
+          //{date: 02-05-2024, delivered: 3, canceled: 0},
+          //{date: 01-05-2024, delivered: 2, canceled: 0}]
           return Column(
             children: [
               Txt('Colis', bold: true, size: 18, color: palette[5]),
@@ -62,23 +61,29 @@ class _AdminStatState extends State<AdminStat> {
                     data['expeditor']!.values.map((e) => e).toList();
                 expeditor.sort((a, b) =>
                     (b['delivered'] as int).compareTo((a['delivered'] as int)));
-
+                log(expeditor.toString());
                 return SizedBox(
                   width: double.maxFinite,
-                  child: DataTable(columns: [
-                    DataColumn(label: Txt('Expeditor name', bold: true)),
-                    DataColumn(label: Txt('Colis delivered', bold: true)),
-                  ], rows: [
-                    for (var d in expeditor.take(3))
-                      DataRow(
-                          color: MaterialStateColor.resolveWith(
-                              (states) => Colors.green.withOpacity(.1)),
-                          cells: [
-                            DataCell(Txt(d['name'], translate: false)),
-                            DataCell(Txt(d['delivered'].toString(),
-                                translate: false)),
-                          ])
-                  ]),
+                  child: Expanded(
+                    child: DataTable(columns: [
+                      DataColumn(label: Txt('Expeditor name', bold: true)),
+                      DataColumn(label: Txt('delivered', bold: true)),
+                      // DataColumn(label: Txt(' Total', bold: true)),
+                    ], rows: [
+                      for (var d in expeditor.take(3))
+                        DataRow(
+                            color: MaterialStateColor.resolveWith(
+                                (states) => Colors.green.withOpacity(.1)),
+                            cells: [
+                              DataCell(Txt(d['name'], translate: false)),
+                              DataCell(Txt(d['delivered'].toString(),
+                                  translate: false)),
+                              // DataCell(Txt(
+                              //     (d['canceled'] + d['delivered']).toString(),
+                              //     translate: false)),
+                            ])
+                    ]),
+                  ),
                 );
               }),
               divider(top: 10, bottom: 10),

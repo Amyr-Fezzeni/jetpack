@@ -172,7 +172,8 @@ class Statistics with ChangeNotifier {
   }
 
   List<Map<String, dynamic>> colisExpeditor(UserModel user) {
-    final data = colis.where((p) => p.expeditorId == user.id);
+    final data = colis
+        .where((p) => p.expeditorId == user.id); //&& sameMonth(p.creationDate)
     int delivered = 0;
     double deliveredPrice = 0;
     int canceled = 0;
@@ -186,7 +187,7 @@ class Statistics with ChangeNotifier {
       if ([ColisStatus.returnConfirmed.name, ColisStatus.closedReturn.name]
           .contains(c.status)) {
         canceled += 1;
-        canceledPrice += c.price - user.price;
+        canceledPrice += c.price - user.returnPrice;
       }
     }
     return [
@@ -370,18 +371,7 @@ class Statistics with ChangeNotifier {
         };
       }
     }
-    // log('Colis: ${'#' * 20}');
-    // log(lstColis.toString());
-    // log('lstExpeditor: ${'#' * 20}');
-    // log(lstExpeditor.toString());
-    // log('lstSector: ${'#' * 20}');
-    // log(lstSector.toString());
-    log('lstAgency: ${'#' * 20}');
-    log(lstAgency.toString());
-    log('lstAgency: ${'#' * 20}');
 
-    // List<Map<String, dynamic>> users = bestUsers.values.toList();
-    // users.sort((a, b) => (a['count'] as int).compareTo((b['count'] as int)));
     return {
       'colis': lstColis,
       'expeditor': lstExpeditor,

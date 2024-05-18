@@ -53,13 +53,13 @@ class _DeliveryStatState extends State<DeliveryStat> {
                 xValueMapper: (final d, _) =>
                     (d['date'] as String).split('-').skip(1).take(2).join('/'),
                 yValueMapper: (final d, _) => d['delivered'],
-                name: txt('Colis per day')),
+                name: txt('Colis delivered')),
             StackedColumnSeries(
                 dataSource: data,
                 xValueMapper: (final d, _) =>
                     (d['date'] as String).split('-').skip(1).take(2).join('/'),
                 yValueMapper: (final d, _) => d['canceled'],
-                name: txt('Colis per day')),
+                name: txt('Colis canceled')),
           ],
           primaryXAxis: const CategoryAxis(),
         );

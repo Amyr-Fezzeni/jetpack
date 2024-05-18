@@ -41,6 +41,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
         List<Map<String, dynamic>> data =
             context.statRead.colisExpeditor(context.userprovider.currentUser!);
         log('colis total: $data');
+//[{type: delivered, count: 10, price: 497.4}, {type: canceled, count: 5, price: 177.0}]
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -84,7 +85,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
       Builder(builder: (context) {
         final data =
             context.statRead.colisExpeditor(context.userprovider.currentUser!);
-       
+
         return SfCircularChart(
           palette: palette,
           title: ChartTitle(text: "", textStyle: context.text),
@@ -111,7 +112,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
         List<Map<String, dynamic>> data =
             context.statRead.colisDay(context.userprovider.currentUser!);
 
-        log('colis per day: $data');
+        // log('colis per day: $data');
         return SfCartesianChart(
           palette: palette,
           tooltipBehavior: TooltipBehavior(enable: true, elevation: 5),
@@ -141,7 +142,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
 
         return Column(
           children: [
-            Txt('Top users', bold: true),
+            Txt('Top clients', bold: true),
             SizedBox(
               width: double.maxFinite,
               child: DataTable(columns: [
@@ -156,7 +157,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
               ]),
             ),
             divider(top: 10, bottom: 10),
-            Txt('Worst users', bold: true),
+            Txt('Worst clients', bold: true),
             SizedBox(
               width: double.maxFinite,
               child: DataTable(columns: [
