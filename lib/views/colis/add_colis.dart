@@ -134,7 +134,7 @@ class _AddColisState extends State<AddColis> {
         colis.sectorName = '';
       });
       await popup(context,
-          cancel: false, description: "No sector found with governorate data");
+          cancel: false, description: txt("No sector found with governorate data"));
       return;
     }
 
@@ -211,12 +211,14 @@ class _AddColisState extends State<AddColis> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Txt("Id",
-                          bold: colis.clientId.isNotEmpty,extra: ": ",
+                          bold: colis.clientId.isNotEmpty,
+                          extra: ": ",
                           color: context.invertedColor
                               .withOpacity(colis.clientId.isEmpty ? .4 : 1)),
                       Txt(colis.id,
                           bold: colis.clientId.isNotEmpty,
-                          color: context.primaryColor,translate: false),
+                          color: context.primaryColor,
+                          translate: false),
                     ],
                   ),
                 ),
@@ -244,7 +246,7 @@ class _AddColisState extends State<AddColis> {
                               popup(context,
                                   cancel: false,
                                   description:
-                                      "No Client found with this phone number '${phoneController.text}'");
+                                      "${txt('No Client found with this phone number')} '${phoneController.text}'");
                             } else {
                               final clientData =
                                   Client.fromMap(data.docs.first.data());
@@ -272,7 +274,8 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      '${clientData.firstName} ${clientData.lastName}',translate: false))
+                                                      '${clientData.firstName} ${clientData.lastName}',
+                                                      translate: false))
                                             ],
                                           ),
                                           Row(
@@ -280,7 +283,8 @@ class _AddColisState extends State<AddColis> {
                                               Txt("Adress",
                                                   bold: true, extra: ': '),
                                               Flexible(
-                                                  child: Txt(clientData.adress,translate: false))
+                                                  child: Txt(clientData.adress,
+                                                      translate: false))
                                             ],
                                           ),
                                           Row(
@@ -289,7 +293,8 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      clientData.governorate,translate: false))
+                                                      clientData.governorate,
+                                                      translate: false))
                                             ],
                                           ),
                                           Row(
@@ -297,7 +302,8 @@ class _AddColisState extends State<AddColis> {
                                               Txt("City",
                                                   bold: true, extra: ': '),
                                               Flexible(
-                                                  child: Txt(clientData.city,translate: false))
+                                                  child: Txt(clientData.city,
+                                                      translate: false))
                                             ],
                                           ),
                                           Row(
@@ -306,7 +312,8 @@ class _AddColisState extends State<AddColis> {
                                                   bold: true, extra: ': '),
                                               Flexible(
                                                   child: Txt(
-                                                      clientData.phoneNumber,translate: false))
+                                                      clientData.phoneNumber,
+                                                      translate: false))
                                             ],
                                           ),
                                           if (clientData
@@ -316,8 +323,10 @@ class _AddColisState extends State<AddColis> {
                                                 Txt("secondary phone number",
                                                     bold: true, extra: ': '),
                                                 Flexible(
-                                                    child: Txt(clientData
-                                                        .secondaryPhoneNumber,translate: false))
+                                                    child: Txt(
+                                                        clientData
+                                                            .secondaryPhoneNumber,
+                                                        translate: false))
                                               ],
                                             ),
                                         ],
@@ -342,7 +351,7 @@ class _AddColisState extends State<AddColis> {
                                           setState(() {});
                                           setSector();
                                         },
-                                        text: "Confirm")
+                                        text: txt("Confirm"))
                                   ],
                                 );
                               }));
@@ -430,7 +439,8 @@ class _AddColisState extends State<AddColis> {
                                 ? txt("No sector found")
                                 : colis.sectorName,
                             color: context.invertedColor
-                                .withOpacity(colis.sectorName.isEmpty ? .4 : 1),translate: false)
+                                .withOpacity(colis.sectorName.isEmpty ? .4 : 1),
+                            translate: false)
                       ],
                     ),
                   )

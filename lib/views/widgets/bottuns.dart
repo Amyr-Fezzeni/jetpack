@@ -303,12 +303,13 @@ Widget checkBox(bool value, String title, Function() function,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Txt(title),
+                  Txt(title, translate: false),
                   if (description != null)
                     Txt(description,
                         color: NavigationService
                             .navigatorKey.currentContext!.invertedColor
-                            .withOpacity(.7)),
+                            .withOpacity(.7),
+                        translate: false),
                 ],
               ),
             ),

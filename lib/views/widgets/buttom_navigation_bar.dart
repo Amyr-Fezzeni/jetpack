@@ -41,7 +41,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
                           ? context.primaryColor
                           : context.invertedColor.withOpacity(.7),
                     ),
-              if (context.currentPage == index) ...[const Gap(5), Txt(title)]
+              if (context.currentPage == index) ...[
+                const Gap(5),
+                Txt(title, translate: false)
+              ]
             ],
           ),
         ),
@@ -112,7 +115,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                                       child: Center(
                                         child: Txt(
                                             (count > 99 ? '+99' : count)
-                                                .toString(),translate: false,
+                                                .toString(),
+                                            translate: false,
                                             size: 10,
                                             color: Colors.white),
                                       ),

@@ -425,8 +425,7 @@ class DeliveryProvider with ChangeNotifier {
     if (NavigationService
             .navigatorKey.currentContext!.userprovider.currentUser ==
         null) return;
-    if (1 < 2) return;
-    Timer.periodic(const Duration(seconds: 10), (timer) async {
+    Timer.periodic(const Duration(seconds: 60), (timer) async {
       BuildContext context = NavigationService.navigatorKey.currentContext!;
       if (context.userprovider.currentUser == null) {
         timer.cancel();

@@ -120,7 +120,8 @@ class _AddUserState extends State<AddUser> {
         user.sector = {"id": '', "name": ''};
       });
       await popup(context,
-          cancel: false, description: "No sector found with adress data");
+          cancel: false,
+          description: txt("No sector found with governorate data"));
       return;
     }
 
@@ -312,9 +313,11 @@ class _AddUserState extends State<AddUser> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Txt(user.birthday != null
-                                    ? getDate(user.birthday)
-                                    : '--/ --/ ----',translate: false),
+                                Txt(
+                                    user.birthday != null
+                                        ? getDate(user.birthday)
+                                        : '--/ --/ ----',
+                                    translate: false),
                                 svgImage(calendar)
                               ],
                             ),
@@ -350,10 +353,13 @@ class _AddUserState extends State<AddUser> {
                             bool agencyEmpty =
                                 user.agency == null || user.agency!['id'] == '';
                             return Txt(
-                                agencyEmpty ? txt('Agency') : user.agency!['name'],
+                                agencyEmpty
+                                    ? txt('Agency')
+                                    : user.agency!['name'],
                                 bold: !agencyEmpty,
                                 color: context.invertedColor
-                                    .withOpacity(agencyEmpty ? .4 : 1),translate: false);
+                                    .withOpacity(agencyEmpty ? .4 : 1),
+                                translate: false);
                           }),
                           const Spacer(),
                           Icon(
@@ -419,7 +425,8 @@ class _AddUserState extends State<AddUser> {
                                     ? txt("No sector found")
                                     : "${txt('Sector')}: ${user.sector['name']}",
                                 color: context.invertedColor.withOpacity(
-                                    user.sector['name'].isEmpty ? .4 : 1),translate: false)
+                                    user.sector['name'].isEmpty ? .4 : 1),
+                                translate: false)
                           ],
                         ),
                       )

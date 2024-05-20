@@ -58,7 +58,7 @@ Widget buildMenuTile(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Txt(title),
+                Txt(title, translate: false),
                 if (subtitle.isNotEmpty)
                   Txt(subtitle,
                       style: context.text.copyWith(
@@ -128,8 +128,3 @@ Widget pngIcon(String url,
         ),
       ),
     );
-
-
-
-
-    

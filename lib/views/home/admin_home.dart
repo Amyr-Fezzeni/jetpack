@@ -50,7 +50,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                             child: CustomTextField(
                                 marginH: 0,
                                 marginV: 0,
-                                hint: 'Code',
+                                hint: txt('Code'),
                                 controller: controller)),
                         const Gap(5),
                         gradientButton(
@@ -64,14 +64,14 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                               }
                               context.pop();
                             },
-                            text: "Confirm")
+                            text: txt("Confirm"))
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(child: divider()),
                         Text(
-                          'Or',
+                          txt('Or'),
                           style: context.theme.text18,
                         ),
                         Expanded(child: divider())
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                           }
                           context.pop();
                         },
-                        text: "Scan code")
+                        text: txt("Scan code"))
                   ],
                 ),
               ),

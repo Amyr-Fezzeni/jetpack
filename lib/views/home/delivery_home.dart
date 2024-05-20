@@ -64,7 +64,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                             child: CustomTextField(
                                 marginH: 0,
                                 marginV: 0,
-                                hint: 'Code',
+                                hint: txt('Code'),
                                 controller: controller)),
                         const Gap(5),
                         gradientButton(
@@ -85,14 +85,14 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                               }
                               context.pop();
                             },
-                            text: "Confirm")
+                            text: txt("Confirm"))
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(child: divider()),
                         Text(
-                          'Or',
+                          txt('Or'),
                           style: context.theme.text18,
                         ),
                         Expanded(child: divider())
@@ -298,7 +298,7 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             borderButton(
-                text: txt('End of day report'),
+                text: 'End of day report',
                 textColor: context.invertedColor.withOpacity(.6),
                 color: context.invertedColor.withOpacity(.2),
                 trailing: Icon(
@@ -623,8 +623,8 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                         textColor: context.primaryColor,
                                         function: () async {
                                           popup(context,
-                                              description:
-                                                  txt('Are you sure you want to close this colis?'),
+                                              description: txt(
+                                                  'Are you sure you want to close this colis?'),
                                               confirmFunction: () {
                                             for (var c in colis.colis) {
                                               ColisService.colisCollection

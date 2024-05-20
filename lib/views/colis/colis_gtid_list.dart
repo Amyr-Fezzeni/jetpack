@@ -235,8 +235,7 @@ class _ColisGridListState extends State<ColisGridList> {
                   const Gap(10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child:
-                        Txt(title, bold: true, center: true, translate: false),
+                    child: Txt(title, bold: true, center: true),
                   )
                 ],
               ),

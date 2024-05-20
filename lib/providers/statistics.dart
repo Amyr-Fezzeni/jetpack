@@ -191,8 +191,8 @@ class Statistics with ChangeNotifier {
       }
     }
     return [
-      {"type": "delivered", "count": delivered, "price": deliveredPrice},
-      {"type": "canceled", "count": canceled, "price": canceledPrice}
+      {"type": "Colis delivered", "count": delivered, "price": deliveredPrice},
+      {"type": "Colis canceled", "count": canceled, "price": canceledPrice}
     ];
   }
 

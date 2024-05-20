@@ -18,10 +18,14 @@ String txt(String key) {
   LanguageModel language = NavigationService.navigatorKey.currentContext!
       .read<UserProvider>()
       .currentLanguage;
-  addKey(key);
-  return language == LanguageModel.english
-      ? english[key] ?? key
-      : frensh[key] ?? key;
+  // addKey(key);
+  final data = language == LanguageModel.english
+      ? english[key] ?? "$key"
+      : language == LanguageModel.french
+          ? frensh[key] ?? "$key"
+          : arabe[key] ?? "$key";
+  if (data.contains('####')) log(data);
+  return data;
 }
 
 void addKey(String key) {

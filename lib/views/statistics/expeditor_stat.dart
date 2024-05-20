@@ -59,7 +59,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
                           translate: false, color: palette.first)),
                 ),
                 const Gap(10),
-                Txt('Colis delivered', translate: false, color: palette.first),
+                Txt('Colis delivered', color: palette.first),
               ],
             ),
             Column(
@@ -75,7 +75,7 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
                           translate: false, color: palette[1])),
                 ),
                 const Gap(10),
-                Txt('Colis canceled', translate: false, color: palette[1]),
+                Txt('Colis canceled', color: palette[1]),
               ],
             ),
           ],
@@ -97,7 +97,8 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
           series: <CircularSeries>[
             DoughnutSeries<Map<String, dynamic>, String>(
                 dataSource: data,
-                xValueMapper: (Map<String, dynamic> data, _) => data['type'],
+                xValueMapper: (Map<String, dynamic> data, _) =>
+                    txt(data['type']),
                 yValueMapper: (Map<String, dynamic> data, _) => data['price'],
                 enableTooltip: true,
                 // maximumValue: 700,
@@ -146,8 +147,8 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
             SizedBox(
               width: double.maxFinite,
               child: DataTable(columns: [
-                DataColumn(label: Txt('Name', translate: false)),
-                DataColumn(label: Txt('Colis delivered', translate: false)),
+                DataColumn(label: Txt('Name')),
+                DataColumn(label: Txt('Colis delivered')),
               ], rows: [
                 for (var d in delivered.take(3))
                   DataRow(cells: [
@@ -161,8 +162,8 @@ class _ExpeditorStatState extends State<ExpeditorStat> {
             SizedBox(
               width: double.maxFinite,
               child: DataTable(columns: [
-                DataColumn(label: Txt('Name', translate: false)),
-                DataColumn(label: Txt('Colis canceled', translate: false)),
+                DataColumn(label: Txt('Name')),
+                DataColumn(label: Txt('Colis canceled')),
               ], rows: [
                 for (var d in canceled.take(3))
                   DataRow(cells: [

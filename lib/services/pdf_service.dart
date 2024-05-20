@@ -18,7 +18,6 @@ import 'package:pdf/widgets.dart';
 class PdfService {
   static Future<void> generateMagnifest(
       Manifest invoice, List<Colis> colis) async {
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -107,7 +106,6 @@ class PdfService {
   }
 
   static Future<void> generateRunsheet(RunsheetPdf invoice) async {
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -198,7 +196,6 @@ class PdfService {
 
   static Future<void> generateExpeditorPayment(
       ExpeditorPayment invoice, List<Colis> colis) async {
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -290,7 +287,6 @@ class PdfService {
   }
 
   static Future<void> generateDayReport(RunsheetPdf invoice) async {
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -415,7 +411,6 @@ class PdfService {
   }
 
   static Future<void> generateColis(List<Colis> lst) async {
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();
@@ -512,7 +507,6 @@ class PdfService {
     // await ColisService.colisCollection
     //     .doc(colis.id)
     //     .update({'status': ColisStatus.returnExpeditor.name});
-    if (1 < 2) return;
     await requestPermission();
     final pdf = Document();
     final image = (await rootBundle.load(logo)).buffer.asUint8List();

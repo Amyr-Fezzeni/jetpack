@@ -56,10 +56,10 @@ class _ExpeditorTrackingScreenState extends State<ExpeditorTrackingScreen> {
               children: [
                 gradientButton(
                     function: () => setState(() => payment = true),
-                    text: "Payment list"),
+                    text: txt("Payment list")),
                 gradientButton(
                     function: () => setState(() => payment = false),
-                    text: "Colis list"),
+                    text: txt("Colis list")),
               ],
             ),
             payment
