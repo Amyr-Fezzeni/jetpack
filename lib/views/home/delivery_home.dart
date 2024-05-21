@@ -306,6 +306,8 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                   color: context.invertedColor.withOpacity(.6),
                   size: 20,
                 ),
+                w: context.w * .4,
+                h: null,
                 function: () async {
                   if (context.deliveryRead.runsheetData == null) return;
                   await DayReportService.getDayReport(
@@ -322,6 +324,8 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                 text: 'Generate runsheet',
                 textColor: context.primaryColor,
                 opacity: 0.1,
+                w: context.w * .4,
+                h: null,
                 trailing: Icon(
                   Icons.download,
                   color: context.primaryColor,

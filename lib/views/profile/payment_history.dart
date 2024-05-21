@@ -91,9 +91,12 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       if (currentWeek)
-                                        Txt("Current Week", bold: true),
+                                        Txt("Current Week",
+                                            bold: true, color: Colors.black),
                                       Txt("${txt('From')} ${getSimpleDate(payment.startTime)} ${txt('to')} ${getSimpleDate(payment.endTime)} ",
-                                          bold: true,translate: false),
+                                          bold: true,
+                                          translate: false,
+                                          color: Colors.black),
                                     ],
                                   ),
                                   const Spacer(),
@@ -111,13 +114,19 @@ class _PaymentHistoryWidgetState extends State<PaymentHistoryWidget> {
                                 ],
                               ),
 
-                              Txt("Colis delivered",extra:": ${payment.nbDelivered}"),
-                              Txt("Manifest picked",extra:": ${payment.nbPickup}"),
-                              Txt("${(payment.nbDelivered * context.currentUser.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
-                                  color: payment.isPaid
-                                      ? Colors.green
-                                      : Colors.red,
-                                  bold: true,translate: false),
+                              Txt("Colis delivered",
+                                  extra: ": ${payment.nbDelivered}",
+                                  color: Colors.black),
+                              Txt("Manifest picked",
+                                  extra: ": ${payment.nbPickup}",
+                                  color: Colors.black),
+                              Txt(
+                                "${(payment.nbDelivered * context.currentUser.price + payment.nbPickup * 1).toStringAsFixed(2)} TND",
+                                color:
+                                    payment.isPaid ? Colors.green : Colors.red,
+                                bold: true,
+                                translate: false,
+                              ),
 
                               // divider(bottom: 10, top: 10)
                             ],

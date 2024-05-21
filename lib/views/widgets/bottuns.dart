@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:jetpack/constants/constants.dart';
 import 'package:jetpack/constants/style.dart';
@@ -173,7 +174,7 @@ Widget borderButton(
     {String text = '',
     Function? function,
     Color? color,
-    double h = 35,
+    double? h = 35,
     double opacity = 1,
     Widget? leading,
     Color? textColor,
@@ -210,7 +211,13 @@ Widget borderButton(
                 padding: const EdgeInsets.only(right: 5),
                 child: leading,
               ),
-            Txt(text, color: textColor, bold: bold),
+            Flexible(
+                child: SizedBox(
+                    child: Txt(text,
+                        color: textColor,
+                        bold: bold,
+                        center: true,
+                        maxLines: 2))),
             if (trailing != null)
               Padding(
                 padding: const EdgeInsets.only(left: 5),

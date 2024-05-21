@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jetpack/services/util/ext.dart';
 import 'package:jetpack/views/profile/payment_history.dart';
 import 'package:jetpack/views/widgets/appbar.dart';
 
@@ -16,6 +17,7 @@ class _DeliveryPaymentHistoryScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar('Payment history'),
+      backgroundColor: context.bgcolor,
       body: const SingleChildScrollView(
         child: PaymentHistoryWidget(),
       ),

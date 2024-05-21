@@ -50,7 +50,7 @@ class NavPanel extends StatelessWidget {
                       children: [
                         Flexible(
                             child: Txt(context.currentUser.getFullName(),
-                                bold: true,translate: false)),
+                                bold: true, translate: false)),
                         Flexible(
                           child: Txt(
                               "${context.currentUser.role == Role.admin ? 'Admin' : context.currentUser.role == Role.expeditor ? 'Expeditor' : 'Delivery'} account",
@@ -84,10 +84,11 @@ class NavPanel extends StatelessWidget {
                   title: txt('Settings'),
                   icon: Icons.settings,
                   screen: const SettingsScreen()),
-              buildMenuTile(
-                  title: txt('Help & Support'),
-                  icon: Icons.contact_support_outlined,
-                  screen: const ReportScreen()),
+              if ([Role.expeditor].contains(context.currentUser.role))
+                buildMenuTile(
+                    title: txt('Help & Support'),
+                    icon: Icons.contact_support_outlined,
+                    screen: const ReportScreen()),
               const Accounts(),
               const Spacer(),
               Builder(builder: (context) {
@@ -202,7 +203,7 @@ class _AccountsState extends State<Accounts> {
                     children: [
                       profileIcon(size: 25),
                       const Gap(5),
-                      Txt(e, bold: true,translate: false),
+                      Txt(e, bold: true, translate: false),
                       const Spacer(),
                       deleteButton(function: () async {
                         DataPrefrences.removeAccount(accountName: e)

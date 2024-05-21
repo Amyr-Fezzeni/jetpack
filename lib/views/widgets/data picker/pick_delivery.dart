@@ -53,7 +53,9 @@ class _DeliveryListState extends State<DeliveryList> {
   Widget build(BuildContext context) {
     return Container(
         color: context.bgcolor,
-        child: SingleChildScrollView(
+        // height: 400,
+        width: context.w,
+        child: SizedBox(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -87,10 +89,11 @@ class _DeliveryListState extends State<DeliveryList> {
                                 child: ListTile(
                                     onTap: () => setState(
                                         () => selectedDelivery = delivery),
-                                    title:
-                                        Txt(delivery.getFullName(), bold: true,translate: false),
+                                    title: Txt(delivery.getFullName(),
+                                        bold: true, translate: false),
                                     subtitle: Txt(delivery.adress,
-                                        color: context.iconColor,translate: false)),
+                                        color: context.iconColor,
+                                        translate: false)),
                               ))
                           .toList(),
                     );
@@ -100,11 +103,13 @@ class _DeliveryListState extends State<DeliveryList> {
                 children: [
                   borderButton(
                       h: 50,
+                      w: context.w * .3,
                       radius: smallRadius,
                       function: () => Navigator.pop(context),
                       text: txt("cancel")),
                   gradientButton(
                       function: () => Navigator.pop(context, selectedDelivery),
+                      w: context.w * .3,
                       text: txt("Confirm"))
                 ],
               )
