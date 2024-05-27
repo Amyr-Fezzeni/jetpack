@@ -42,3 +42,4 @@ const supportedAudios = ['mp3', 'wav'];
 const supportedDocuments = ['pdf', 'txt'];
 
 
+// flutter run -d Chrome --web-renderer html --profile
