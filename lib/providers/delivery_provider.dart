@@ -114,8 +114,10 @@ class DeliveryProvider with ChangeNotifier {
 
   Future<void> scanRunsheet(String colisId) async {
     BuildContext context = NavigationService.navigatorKey.currentContext!;
+    // log('message ${depot.map((e) => e.id).contains(colisId)}');
     if (!depot.map((e) => e.id).contains(colisId)) {
-      popup(context,
+      log('not found');
+      await popup(NavigationService.navigatorKey.currentContext!,
           description: txt("Colis Not found or already scanned"),
           cancel: false);
       return;
@@ -227,35 +229,8 @@ class DeliveryProvider with ChangeNotifier {
       if (runsheetData != null) {
         if (runsheetData!.colis.contains(c.id)) runsheet.add(c);
       }
-      // if ([
-      //   ColisStatus.inDelivery.name,
-      //   ColisStatus.confirmed.name,
-      //   ColisStatus.delivered.name,
-      //   ColisStatus.canceled.name,
-      //   ColisStatus.returnDepot.name,
-      //   ColisStatus.appointment.name
-      // ].contains(c.status)) {
-      //   // if (c.status == ColisStatus.appointment.name &&
-      //   //     (c.appointmentDate == null ||
-      //   //         c.appointmentDate?.day != DateTime.now().day)) {
-      //   //   continue;
-      //   // }
-      //   runsheet.add(c);
-      // }
     }
   }
-
-  // getRunsheetColis(List<String> listId) async {
-  //   final data = await ColisService.colisCollection
-  //       .where('deliveryId',
-  //           isEqualTo: NavigationService.navigatorKey.currentContext!.userId)
-  //       .get();
-  //   runsheet = data.docs
-  //       .where((doc) => listId.contains(doc.id))
-  //       .map((doc) => Colis.fromMap(doc.data()))
-  //       .toList();
-  //   notifyListeners();
-  // }
 
   Future<void> updateOrderRunsheet(oldIndex, newIndex) async {
     log("$oldIndex, $newIndex");
@@ -475,14 +450,10 @@ class DeliveryProvider with ChangeNotifier {
 
   Future<bool> requestLocationPermition() async {
     await Geolocator.requestPermission();
-    //log((await Geolocator.checkPermission()).toString());
-    // Position pos = await Geolocator.getCurrentPosition();
-    // //log((await location.requestPermission()).toString());
     bool serviceEnabled;
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (serviceEnabled) {
-      // log("serviceEnabled: $serviceEnabled");
       return true;
     }
     if (!serviceEnabled) {
@@ -495,7 +466,6 @@ class DeliveryProvider with ChangeNotifier {
     if (permission == LocationPermission.deniedForever) {
       permission = await Geolocator.requestPermission();
     }
-    // log("permission: $permission");
     return permission == LocationPermission.whileInUse ||
         permission == LocationPermission.always;
   }

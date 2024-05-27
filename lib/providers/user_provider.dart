@@ -61,6 +61,8 @@ class UserProvider with ChangeNotifier {
         .stopColisStream();
     NavigationService.navigatorKey.currentContext!.adminRead.stopColisStream();
 
+    // NavigationService.navigatorKey.currentContext!.deliveryRead.lo();
+
     stopUserListen();
     currentUser = null;
     DataPrefrences.setLogin("");

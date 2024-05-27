@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +72,9 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                         gradientButton(
                             function: () {
                               final code = controller.text;
+                              log(code);
                               if (code.trim().isEmpty) return;
+                              log(code);
                               switch (currentFilter) {
                                 case "Runsheet":
                                   context.deliveryRead.scanRunsheet(code);
@@ -79,8 +83,10 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
                                   break;
                                 case "Retour":
                                   break;
-                                default:
+                                case "Pickup":
                                   context.deliveryRead.scanManifest(code);
+                                  break;
+                                default:
                                   break;
                               }
                               context.pop();
@@ -122,15 +128,12 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
               ),
               maxWidth: false);
         },
-        child: const Icon(
-          Icons.qr_code_scanner_rounded,
-          color: Colors.white,
-          size: 25,
-        ),
+        child: const Icon(Icons.qr_code_scanner_rounded,
+            color: Colors.white, size: 25),
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SingleChildScrollView(
-        // physics: const NeverScrollableScrollPhysics(),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
@@ -729,5 +732,3 @@ class _HomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 }
-//  onTap: () => PdfService.generateColis(colis),
-

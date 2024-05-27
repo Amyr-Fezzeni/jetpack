@@ -21,13 +21,17 @@ class ColisCard extends StatelessWidget {
     return Card(
       color: context.bgcolor,
       child: ListTile(
-        title: Txt(capitalize(colis.name), bold: true,translate: false),
+        title: Txt(capitalize(colis.name), bold: true, translate: false),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Txt(colis.id, size: 10, color: context.primaryColor, bold: true,translate: false),
+            Txt(colis.id,
+                size: 10,
+                color: context.primaryColor,
+                bold: true,
+                translate: false),
             Txt("${colis.price.toStringAsFixed(2)} Dt",
-                size: 10, color: context.iconColor,translate: false),
+                size: 10, color: context.iconColor, translate: false),
           ],
         ),
         trailing: InkWell(
@@ -75,21 +79,25 @@ Widget colisRunsheetCard(String id) => Builder(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Txt(colis.name, bold: true,translate: false),
-                            Txt('${colis.price}TND', color: context.iconColor,translate: false),
+                            Txt(colis.name, bold: true, translate: false),
+                            Txt('${colis.price}TND',
+                                color: context.iconColor, translate: false),
                             if (colis.expeditorName.isNotEmpty)
-                              Txt(colis.expeditorName, bold: true,translate: false),
+                              Txt(colis.expeditorName,
+                                  bold: true, translate: false),
                             if (colis.exchange)
                               Txt('EXCHANGE',
                                   color: context.iconColor, bold: true),
                             if (colis.address.isNotEmpty)
-                              Txt(colis.address, color: context.iconColor,translate: false),
+                              Txt(colis.address,
+                                  color: context.iconColor, translate: false),
                             // divider(),
                             if (colis.deliveryComment.isNotEmpty)
                               Txt(colis.deliveryComment,
                                   maxLines: 2,
                                   size: 12,
-                                  color: context.iconColor,translate: false),
+                                  color: context.iconColor,
+                                  translate: false),
                           ]),
                     ),
                   ),
@@ -146,6 +154,11 @@ Widget colisRunsheetCard(String id) => Builder(
                         ]
                             .map((ColisStatus status) => PopupMenuItem(
                                   onTap: () async {
+                                    if (colis.status ==
+                                            ColisStatus.delivered.name &&
+                                        status != ColisStatus.canceled) {
+                                      return;
+                                    }
                                     if (colis.status == status.name) {
                                       return;
                                     }
@@ -170,7 +183,7 @@ Widget colisRunsheetCard(String id) => Builder(
                                   },
                                   value: status.name,
                                   child: Text(
-                                    getText(status.name),
+                                    txt(getText(status.name)),
                                     style: context.theme.text18,
                                   ),
                                 ))
@@ -215,7 +228,9 @@ Widget phoneWidget(String phoneNumber, int index, {double size = 50}) =>
                       borderRadius: BorderRadius.circular(bigRadius)),
                   child: Center(
                       child: Txt(index.toString(),
-                          color: Colors.black, size: size / 3,translate: false)),
+                          color: Colors.black,
+                          size: size / 3,
+                          translate: false)),
                 ))
           ],
         ),

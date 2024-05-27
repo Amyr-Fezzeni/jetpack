@@ -312,13 +312,14 @@ Future<PlatformFile?> pickImage() async {
 
 Future<String?> scanQrcode() async {
   try {
-    log("here");
+
     final barcode = await BarcodeScanner.scan();
-    log('1');
+
     log(barcode.toString());
 
-    log('barcode?:${barcode.rawContent}');
+
     return barcode.rawContent;
+    
   } on PlatformException catch (e) {
     if (e.code == BarcodeScanner.cameraAccessDenied) {
       log('The user did not grant the camera permission!');

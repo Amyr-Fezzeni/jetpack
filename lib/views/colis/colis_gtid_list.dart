@@ -91,31 +91,7 @@ class _ColisGridListState extends State<ColisGridList> {
                                                 size: 35),
                                           ),
                                         ),
-                                        // Positioned(
-                                        //     top: 0,
-                                        //     right: 0,
-                                        //     child: Container(
-                                        //       height: 30,
-                                        //       width: 30,
-                                        //       decoration: BoxDecoration(
-                                        //           color: context
-                                        //               .primaryColor
-                                        //               .withOpacity(.8),
-                                        //           borderRadius:
-                                        //               BorderRadius
-                                        //                   .circular(
-                                        //                       bigRadius)),
-                                        //       child: Center(
-                                        //         child: Txt(
-                                        //             colis
-                                        //                 .where((c) =>
-                                        //                     c.status ==
-                                        //                     status.name)
-                                        //                 .length
-                                        //                 .toString(),
-                                        //             color: Colors.white),
-                                        //       ),
-                                        //     ))
+            
                                       ],
                                     ),
                                   ),
