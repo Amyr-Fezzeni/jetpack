@@ -80,7 +80,7 @@ class _AgencyListState extends State<AgencyList> {
                                 color: selectedAgency != null &&
                                         selectedAgency!.id == agency.id
                                     ? context.primaryColor.withOpacity(.3)
-                                    : null,
+                                    : context.bgcolor,
                                 child: ListTile(
                                     onTap: () =>
                                         setState(() => selectedAgency = agency),

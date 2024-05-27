@@ -228,7 +228,8 @@ class _CustDropDownState extends State<CustDropDown>
                 child: _isAnyItemSelected
                     ? _itemSelected!
                     : Txt(widget.hintText,
-                        color: context.invertedColor.withOpacity(.7),translate: false),
+                        color: context.invertedColor.withOpacity(.7),
+                        translate: false),
               ),
               Flexible(
                 flex: 1,
@@ -315,25 +316,29 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
       ),
       child: InkWell(
         onTap: () => customPopup(context, Builder(builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: widget.values
-                .map((e) => Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            widget.onChanged(e);
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              child: Center(child: Txt(e, bold: true,translate: false))),
-                        ),
-                        divider()
-                      ],
-                    ))
-                .toList(),
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.values
+                  .map((e) => Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              widget.onChanged(e);
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                child: Center(
+                                    child:
+                                        Txt(e, bold: true, translate: false))),
+                          ),
+                          divider()
+                        ],
+                      ))
+                  .toList(),
+            ),
           );
         }), maxWidth: false),
         child: Row(
@@ -344,7 +349,8 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
                     : widget.hint,
                 color: widget.selectedValue.isNotEmpty
                     ? null
-                    : context.invertedColor.withOpacity(.4),translate: false),
+                    : context.invertedColor.withOpacity(.4),
+                translate: false),
             const Spacer(),
             Icon(Icons.arrow_drop_down_rounded,
                 color: context.iconColor, size: 25)

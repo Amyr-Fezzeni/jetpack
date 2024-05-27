@@ -81,7 +81,7 @@ class _DeliveryListState extends State<AdminList> {
                                 color: selectedAdmin != null &&
                                         selectedAdmin!.id == admin.id
                                     ? context.primaryColor.withOpacity(.3)
-                                    : null,
+                                    : context.bgcolor,
                                 child: ListTile(
                                     onTap: () => setState(
                                         () => selectedAdmin = admin),

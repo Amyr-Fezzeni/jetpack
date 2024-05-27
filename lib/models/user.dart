@@ -117,7 +117,7 @@ class UserModel {
       sector: map['sector'] is Map<String, dynamic>
           ? map['sector']
           : {"id": '', "name": ""},
-      price: map['price'] as double,
+      price: double.parse(map['price'].toString()),
       governorate: map['governorate'] ?? '',
       city: map['city'] ?? '',
       region: map['region'] ?? '',
@@ -136,8 +136,8 @@ class UserModel {
       role: getUserRoleFromString(map['role']),
       secondaryphoneNumber: map['secondaryphoneNumber'] as String,
       fiscalMatricule: map['fiscalMatricule'] as String,
-      returnPrice: map['returnPrice'] as double,
-      location:map['location'],
+      returnPrice: double.parse(map['returnPrice'].toString()),
+      location: map['location'],
       lastUpdateLocation: map['lastUpdateLocation'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
               map['lastUpdateLocation'] as int)
